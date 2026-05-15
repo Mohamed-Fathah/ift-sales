@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IFT Chennai – Book Publication Sales System</title>
+  <meta name="description" content="Islamic Foundation Trust Chennai – Book Fair Sales & Inventory Management Software" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+:root {
+  --primary: #059669; /* Premium Emerald Green */
+  --primary-hover: #047857;
+  --secondary: #0ea5e9; /* Light blue accent */
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --bg-color: #f1f5f9;
+  --surface: rgba(255, 255, 255, 0.95);
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border: #e2e8f0;
+  --radius: 12px;
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--surface);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-right: 1px solid var(--glass-border);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-main {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.logo-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: none;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+
+.nav-item {
+  width: 90%;
+  margin: 0 auto 0.25rem auto;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item:hover {
+  background: rgba(5, 150, 105, 0.05);
+  color: var(--primary);
+  transform: translateX(4px);
+}
+
+.nav-item.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2);
+}
+.nav-item.active .nav-icon {
+  color: white;
+}
+
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.topbar {
+  background: var(--surface);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1.25rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.datetime-display {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Pages */
+.page {
+  display: none;
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.page.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dashboard */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-left: 4px solid var(--primary);
+}
+
+.stat-card.alert-card { border-left-color: var(--danger); }
+.stat-icon { font-size: 2rem; }
+.stat-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+.stat-value { font-size: 1.5rem; font-weight: 700; }
+
+/* Buttons */
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn-primary { background: var(--primary); color: white; box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2); }
+.btn-primary:hover { background: var(--primary-hover); box-shadow: 0 4px 6px rgba(5, 150, 105, 0.3); transform: translateY(-1px); }
+.btn-success { background: var(--secondary); color: white; }
+.btn-success:hover { filter: brightness(1.1); }
+.btn-outline { background: white; border-color: var(--border); color: var(--text-main); }
+.btn-outline:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+/* Forms & Inputs */
+.form-group { margin-bottom: 1rem; }
+.form-row { display: flex; gap: 1rem; }
+.form-row .form-group { flex: 1; }
+.flex-2 { flex: 2 !important; }
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  color: var(--text-main);
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+}
+
+.input-readonly {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-body { padding: 1.5rem; }
+.card-body.p0 { padding: 0; }
+.card-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  background: #f8fafc;
+}
+
+/* Billing Layout */
+.billing-layout {
+  display: flex;
+  gap: 1.5rem;
+  height: calc(100vh - 140px);
+}
+
+.billing-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.billing-right {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+}
+
+.bill-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-bottom: 0;
+}
+
+.bill-table-wrap {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 200px;
+}
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+th { background: #f1f5f9; font-weight: 600; position: sticky; top: 0; z-index: 10; color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+tbody tr { transition: background-color 0.2s; }
+tbody tr:hover { background-color: #f8fafc; }
+.empty-bill-msg { text-align: center; color: var(--text-muted); padding: 3rem !important; }
+.out-of-stock-text { color: var(--danger); font-weight: bold; }
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--surface);
+  width: 90%;
+  max-width: 600px;
+  border-radius: var(--radius);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body { padding: 1.5rem; overflow-y: auto; }
+.modal-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* Search results */
+.search-results {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  display: none;
+  background: white;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  position: absolute;
+  width: calc(100% - 3rem); /* Matches input width considering padding */
+  z-index: 50;
+}
+.search-bar-wrap { position: relative; }
+.search-result-item {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.search-result-item:hover { background: rgba(5, 150, 105, 0.05); }
+
+.text-danger { color: var(--danger); }
+.text-success { color: var(--secondary); }
+
+/* Reports Tabs */
+.reports-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: white;
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+.report-tab {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.report-tab:hover {
+  background: #f1f5f9;
+  color: var(--text-main);
+}
+
+.report-tab.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+}
+
+/* ========================================= */
+/* RESPONSIVE DESIGN (Mobiles & Tablets)     */
+/* ========================================= */
+@media screen and (max-width: 992px) {
+  .billing-layout {
+    flex-direction: column;
+    height: auto;
+  }
+  .billing-left, .billing-right {
+    flex: none;
+    width: 100%;
+  }
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  .form-row .form-group { margin-bottom: 1rem; }
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+  }
+  .sidebar.collapsed {
+    transform: translateX(0);
+  }
+  .sidebar-toggle {
+    display: block;
+    color: var(--text-main);
+  }
+  .mobile-menu-btn {
+    display: block;
+  }
+  .topbar {
+    padding: 1rem;
+  }
+  .page {
+    padding: 1rem;
+  }
+  
+  /* Make tables responsive */
+  .card-body.p0, .bill-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table {
+    min-width: 600px; /* Forces scroll on small screens */
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar-right {
+    gap: 0.5rem;
+  }
+  .topbar-right .btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  .datetime-display {
+    display: none; /* Hide date on very small screens to save space */
+  }
+}
+
+/* Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #modal-receipt.active {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    background: white;
+  }
+  #printArea, #printArea * {
+    visibility: visible;
+  }
+  #printArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .receipt-actions, .modal-close {
+    display: none !important;
+  }
+}
+
+</style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="logo.png" alt="Islamic Foundation Trust" style="max-height: 40px; width: auto; object-fit: contain;">
+        <div class="logo-text">
+          <span class="logo-main" style="font-size: 0.95rem; line-height: 1.2; display: block;">Islamic Foundation</span>
+          <span class="logo-main" style="font-size: 0.95rem; line-height: 1.2; display: block;">Trust</span>
+        </div>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">&#9776;</button>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-page="dashboard" id="nav-dashboard">
+        <span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-item" data-page="billing" id="nav-billing">
+        <span class="nav-icon">🧾</span><span class="nav-label">New Sale / Bill</span>
+      </button>
+      <button class="nav-item" data-page="sales" id="nav-sales">
+        <span class="nav-icon">📋</span><span class="nav-label">Sales History</span>
+      </button>
+      <button class="nav-item" data-page="stock" id="nav-stock">
+        <span class="nav-icon">📦</span><span class="nav-label">Stock Management</span>
+      </button>
+      <button class="nav-item" data-page="books" id="nav-books">
+        <span class="nav-icon">📚</span><span class="nav-label">Books Catalog</span>
+      </button>
+      <button class="nav-item" data-page="reports" id="nav-reports">
+        <span class="nav-icon">📊</span><span class="nav-label">Reports</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="org-info" style="line-height: 1.4;">
+        <div class="org-name" style="font-weight: 600; color: var(--text-main); margin-bottom: 4px;">Islamic Foundation Trust</div>
+        <div class="org-city">#138, IFT Lane, Perambur High Road</div>
+        <div class="org-city">Chennai – 600012</div>
+        <div class="org-city" style="margin-top: 4px;">📞 +91 99529 64011</div>
+        <div class="org-city">✉️ fc.iftchennai@gmail.com</div>
+        <div class="org-city" style="margin-top: 15px; font-size: 0.75rem; color: var(--primary);">
+          &copy; 2026 All Rights Reserved<br>
+          <a href="https://fafacreatives.in" target="_blank" style="color: inherit; text-decoration: none; font-weight: 600;">fafacreatives.in</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+
+    <!-- TOP HEADER BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">&#9776;</button>
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="datetime-display" id="datetimeDisplay"></div>
+        <button class="btn btn-primary" onclick="showPage('billing')" id="newSaleBtn">+ New Sale</button>
+      </div>
+    </header>
+
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <section class="page active" id="page-dashboard">
+      <div class="dashboard-grid">
+        <div class="stat-card" id="card-total-sales">
+          <div class="stat-icon">💰</div>
+          <div class="stat-body">
+            <div class="stat-label">Today's Revenue</div>
+            <div class="stat-value" id="stat-revenue">₹0</div>
+          </div>
+        </div>
+        <div class="stat-card" id="card-bills">
+          <div class="stat-icon">🧾</div>
+          <div class="stat-body">
+            <div class="stat-label">Bills Today</div>
+            <div class="stat-value" id="stat-bills">0</div>
+          </div>
+        </div>
+        <div class="stat-card" id="card-books-sold">
+          <div class="stat-icon">📖</div>
+          <div class="stat-body">
+            <div class="stat-label">Books Sold Today</div>
+            <div class="stat-value" id="stat-books-sold">0</div>
+          </div>
+        </div>
+        <div class="stat-card alert-card" id="card-low-stock">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-body">
+            <div class="stat-label">Low / Out of Stock</div>
+            <div class="stat-value" id="stat-low-stock">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-bottom">
+        <div class="dashboard-section">
+          <h2 class="section-title">Recent Sales</h2>
+          <div class="recent-sales-list" id="recentSalesList">
+            <div class="empty-state">No sales recorded yet. <button class="link-btn" onclick="showPage('billing')">Create first bill →</button></div>
+          </div>
+        </div>
+        <div class="dashboard-section">
+          <h2 class="section-title">Stock Alerts</h2>
+          <div class="stock-alerts-list" id="stockAlertsList">
+            <div class="empty-state">All books have sufficient stock.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BILLING PAGE ===== -->
+    <section class="page" id="page-billing">
+      <div class="billing-layout">
+
+        <!-- Left: Customer & Book Search -->
+        <div class="billing-left">
+          <!-- Customer Info -->
+          <div class="card">
+            <div class="card-header">👤 Customer Details</div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Bill No.</label>
+                  <input type="text" id="billNo" readonly class="input-readonly" />
+                </div>
+                <div class="form-group">
+                  <label>Date</label>
+                  <input type="date" id="billDate" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group flex-2">
+                  <label>Customer Name</label>
+                  <input type="text" id="customerName" placeholder="Enter customer name" />
+                </div>
+                <div class="form-group flex-2">
+                  <label>Contact Number</label>
+                  <input type="tel" id="customerPhone" placeholder="+91 XXXXX XXXXX" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Book Search -->
+          <div class="card">
+            <div class="card-header">🔍 Add Book to Bill</div>
+            <div class="card-body">
+              <div class="search-bar-wrap">
+                <input type="text" id="bookSearch" placeholder="Search by Book Title or ISBN..." autocomplete="off" />
+                <button class="btn btn-outline" onclick="clearSearch()" title="Clear">✕</button>
+              </div>
+              <div class="search-results" id="searchResults"></div>
+
+              <!-- Add to bill panel (hidden until book selected) -->
+              <div class="add-book-panel" id="addBookPanel" style="display:none;">
+                <div class="selected-book-info" id="selectedBookInfo"></div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" id="addQty" min="1" value="1" />
+                  </div>
+                  <div class="form-group">
+                    <label>MRP (₹)</label>
+                    <input type="number" id="addMRP" step="0.01" readonly class="input-readonly" />
+                  </div>
+                  <div class="form-group">
+                    <label>Discount (%)</label>
+                    <input type="number" id="addDiscount" min="0" max="100" value="0" step="0.5" />
+                  </div>
+                  <div class="form-group">
+                    <label>After Discount (₹)</label>
+                    <input type="number" id="addAfterDiscount" step="0.01" readonly class="input-readonly" />
+                  </div>
+                </div>
+                <button class="btn btn-success full-width" onclick="addBookToBill()">+ Add to Bill</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Bill Preview -->
+        <div class="billing-right">
+          <div class="card bill-card">
+            <div class="card-header">
+              🧾 Invoice Preview
+              <span class="bill-counter" id="billItemCount">0 items</span>
+            </div>
+            <div class="card-body p0">
+              <div class="bill-table-wrap">
+                <table class="bill-table" id="billTable">
+                  <thead>
+                    <tr>
+                      <th>S.No</th>
+                      <th>Title</th>
+                      <th>Qty</th>
+                      <th>MRP (₹)</th>
+                      <th>Disc%</th>
+                      <th>Rate (₹)</th>
+                      <th>Total (₹)</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="billTableBody">
+                    <tr id="billEmptyRow">
+                      <td colspan="8" class="empty-bill-msg">Add books using the search on the left</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="bill-totals" id="billTotals" style="display:none;">
+                <div class="total-row"><span>Subtotal (MRP)</span><span id="totalMRP">₹0.00</span></div>
+                <div class="total-row discount-row"><span>Total Discount</span><span id="totalDiscount">-₹0.00</span></div>
+                <div class="total-row grand-total"><span>Grand Total</span><span id="grandTotal">₹0.00</span></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="form-group">
+                <label>Payment Mode</label>
+                <select id="paymentMode">
+                  <option value="Cash">Cash</option>
+                  <option value="UPI">UPI</option>
+                  <option value="Card">Card</option>
+                  <option value="Cheque">Cheque</option>
+                </select>
+              </div>
+              <div class="bill-actions">
+                <button class="btn btn-outline" onclick="clearBill()">🗑 Clear Bill</button>
+                <button class="btn btn-primary" onclick="finalizeBill()">✅ Finalize & Generate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SALES HISTORY PAGE ===== -->
+    <section class="page" id="page-sales">
+      <div class="page-toolbar">
+        <div class="search-bar-wrap small">
+          <input type="text" id="salesSearch" placeholder="Search by bill no, customer..." oninput="filterSales()" />
+        </div>
+        <input type="date" id="salesDateFilter" onchange="filterSales()" />
+      </div>
+      <div class="card">
+        <div class="card-body p0">
+          <table class="data-table" id="salesTable">
+            <thead>
+              <tr>
+                <th>Bill No</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th>Items</th>
+                <th>Total (₹)</th>
+                <th>Payment</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="salesTableBody">
+              <tr><td colspan="8" class="empty-bill-msg">No sales yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STOCK MANAGEMENT PAGE ===== -->
+    <section class="page" id="page-stock">
+      <div class="page-toolbar">
+        <div class="search-bar-wrap small">
+          <input type="text" id="stockSearch" placeholder="Search by title, ISBN, author..." oninput="filterStock()" />
+        </div>
+        <select id="stockFilter" onchange="filterStock()">
+          <option value="all">All Books</option>
+          <option value="instock">In Stock</option>
+          <option value="outofstock">Out of Stock</option>
+          <option value="lowstock">Low Stock (≤5)</option>
+        </select>
+        <button class="btn btn-primary" onclick="openStockUpdateModal()">📦 Update Stock</button>
+      </div>
+      <div class="card">
+        <div class="card-body p0">
+          <table class="data-table" id="stockTable">
+            <thead>
+              <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>MRP (₹)</th>
+                <th>In Stock</th>
+                <th>Sold</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="stockTableBody">
+              <tr><td colspan="9" class="empty-bill-msg">No books in catalog. Add via Books Catalog.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BOOKS CATALOG PAGE ===== -->
+    <section class="page" id="page-books">
+      <div class="page-toolbar">
+        <div class="search-bar-wrap small">
+          <input type="text" id="booksSearch" placeholder="Search books..." oninput="filterBooks()" />
+        </div>
+        <select id="booksCategory" onchange="filterBooks()">
+          <option value="all">All Categories</option>
+        </select>
+        <button class="btn btn-outline" onclick="exportExcel()">📤 Export Excel</button>
+        <button class="btn btn-outline" onclick="openExcelImport()" id="excelImportBtn">📥 Import Excel</button>
+        <button class="btn btn-primary" onclick="openAddBookModal()">+ Add Book</button>
+      </div>
+      <div class="card">
+        <div class="card-body p0">
+          <table class="data-table" id="booksTable">
+            <thead>
+              <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>MRP (₹)</th>
+                <th>Stock</th>
+                <th>Publication</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="booksTableBody">
+              <tr><td colspan="8" class="empty-bill-msg">No books added yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== REPORTS PAGE ===== -->
+    <section class="page" id="page-reports">
+      <div class="reports-tabs">
+        <button class="report-tab active" data-report="summary" onclick="showReport('summary')">📊 Summary</button>
+        <button class="report-tab" data-report="byTitle" onclick="showReport('byTitle')">📖 By Title</button>
+        <button class="report-tab" data-report="byAuthor" onclick="showReport('byAuthor')">✍️ By Author</button>
+        <button class="report-tab" data-report="byCategory" onclick="showReport('byCategory')">🗂 By Category</button>
+        <button class="report-tab" data-report="byStock" onclick="showReport('byStock')">📦 Stock Report</button>
+      </div>
+      <div class="card">
+        <div class="card-body" id="reportContent">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======= MODALS ======= -->
+
+  <!-- Add Book Modal -->
+  <div class="modal-overlay" id="modal-addBook">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>📚 Add / Edit Book</h3>
+        <button class="modal-close" onclick="closeModal('modal-addBook')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editBookISBN" />
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>Book Title *</label>
+            <input type="text" id="bookTitle" placeholder="Full title of the book" />
+          </div>
+          <div class="form-group flex-1">
+            <label>ISBN</label>
+            <input type="text" id="bookISBN" placeholder="978-XX-XXX-XXXX-X" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>Author *</label>
+            <input type="text" id="bookAuthor" placeholder="Author name" />
+          </div>
+          <div class="form-group flex-1">
+            <label>Category</label>
+            <input type="text" id="bookCategory" placeholder="e.g. Islamic Studies" list="categoryList" />
+            <datalist id="categoryList"></datalist>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>MRP (₹) *</label>
+            <input type="number" id="bookMRP" step="0.01" min="0" placeholder="0.00" />
+          </div>
+          <div class="form-group">
+            <label>Initial Stock *</label>
+            <input type="number" id="bookStock" min="0" value="0" />
+          </div>
+          <div class="form-group flex-2">
+            <label>Publication</label>
+            <input type="text" id="bookPublication" value="Islamic Foundation Trust" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description / Notes</label>
+          <textarea id="bookDesc" rows="2" placeholder="Optional description"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-addBook')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveBook()">💾 Save Book</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Update Modal -->
+  <div class="modal-overlay" id="modal-stockUpdate">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>📦 Update Stock</h3>
+        <button class="modal-close" onclick="closeModal('modal-stockUpdate')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Select Book</label>
+          <select id="stockUpdateBook"></select>
+        </div>
+        <div class="form-group">
+          <label>Action</label>
+          <select id="stockUpdateAction">
+            <option value="add">Add Stock (Received)</option>
+            <option value="set">Set Exact Quantity</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="number" id="stockUpdateQty" min="0" value="0" />
+        </div>
+        <div class="form-group">
+          <label>Notes (optional)</label>
+          <input type="text" id="stockUpdateNote" placeholder="e.g. Book fair stock arrival" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-stockUpdate')">Cancel</button>
+        <button class="btn btn-primary" onclick="applyStockUpdate()">Update Stock</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Excel Import Modal -->
+  <div class="modal-overlay" id="modal-excel">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>📥 Bulk Import via Excel</h3>
+        <button class="modal-close" onclick="closeModal('modal-excel')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="hint">Upload an Excel (.xlsx) or CSV file with columns:<br/>
+          <code>Title, ISBN, Author, Category, MRP, Stock, Publication, Description</code>
+        </p>
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-icon">📁</div>
+          <p>Drop Excel/CSV file here or click to browse</p>
+          <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" hidden onchange="handleExcelUpload(event)" />
+          <button class="btn btn-outline" onclick="document.getElementById('excelFile').click()">Browse File</button>
+        </div>
+        <div id="importPreview" style="display:none;"></div>
+        <div class="form-group" style="margin-top:1rem;">
+          <label>
+            <input type="checkbox" id="overwriteExisting" /> Overwrite existing books (same ISBN)
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-excel')">Cancel</button>
+        <button class="btn btn-primary" id="importBtn" onclick="importBooks()" disabled>📥 Import Books</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Modal -->
+  <div class="modal-overlay" id="modal-receipt">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3>🧾 Invoice / Receipt</h3>
+        <div class="receipt-actions">
+          <button class="btn btn-outline" onclick="printReceipt()">🖨 Print</button>
+          <button class="btn btn-outline" onclick="downloadPDF()">📄 Download PDF</button>
+          <button class="btn btn-outline" onclick="copyShareLink()">🔗 Share Link</button>
+          <button class="btn btn-primary" onclick="closeModal('modal-receipt')">Done</button>
+        </div>
+      </div>
+      <div class="modal-body p0" id="receiptContent">
+        <!-- Receipt rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+const DB_KEYS = {
+  BOOKS: 'ift_books',
+  SALES: 'ift_sales',
+  SETTINGS: 'ift_settings'
+};
+
+const db = {
+  // --- Books Data ---
+  getBooks: function() {
+    const data = localStorage.getItem(DB_KEYS.BOOKS);
+    return data ? JSON.parse(data) : [];
+  },
+  
+  saveBooks: function(books) {
+    localStorage.setItem(DB_KEYS.BOOKS, JSON.stringify(books));
+  },
+
+  addBook: function(book) {
+    const books = this.getBooks();
+    const existing = books.find(b => b.isbn === book.isbn && book.isbn !== '');
+    if (existing) {
+      throw new Error(`Book with ISBN ${book.isbn} already exists!`);
+    }
+    // ensure ID
+    book.id = book.id || 'B' + Date.now();
+    books.push(book);
+    this.saveBooks(books);
+    return book;
+  },
+
+  updateBook: function(updatedBook) {
+    const books = this.getBooks();
+    const index = books.findIndex(b => b.id === updatedBook.id || b.isbn === updatedBook.isbn);
+    if (index !== -1) {
+      books[index] = { ...books[index], ...updatedBook };
+      this.saveBooks(books);
+      return true;
+    }
+    return false;
+  },
+  
+  deleteBook: function(idOrIsbn) {
+    let books = this.getBooks();
+    books = books.filter(b => b.id !== idOrIsbn && b.isbn !== idOrIsbn);
+    this.saveBooks(books);
+  },
+
+  updateStock: function(idOrIsbn, qtyChange, exact = false) {
+    const books = this.getBooks();
+    const book = books.find(b => b.id === idOrIsbn || b.isbn === idOrIsbn);
+    if (book) {
+      if (exact) {
+        book.stock = parseInt(qtyChange);
+      } else {
+        book.stock = parseInt(book.stock || 0) + parseInt(qtyChange);
+      }
+      if (book.stock < 0) book.stock = 0; // prevent negative
+      this.saveBooks(books);
+      return book;
+    }
+    return null;
+  },
+
+  // --- Sales Data ---
+  getSales: function() {
+    const data = localStorage.getItem(DB_KEYS.SALES);
+    return data ? JSON.parse(data) : [];
+  },
+
+  saveSales: function(sales) {
+    localStorage.setItem(DB_KEYS.SALES, JSON.stringify(sales));
+  },
+
+  addSale: function(sale) {
+    const sales = this.getSales();
+    sale.id = 'INV' + Date.now();
+    // Reduce stock for each item sold
+    sale.items.forEach(item => {
+      this.updateStock(item.bookId || item.isbn, -item.qty);
+    });
+    sales.push(sale);
+    this.saveSales(sales);
+    return sale;
+  },
+
+  // --- Helpers ---
+  searchBooks: function(query) {
+    const books = this.getBooks();
+    if (!query) return books;
+    query = query.toLowerCase();
+    return books.filter(b => 
+      b.title.toLowerCase().includes(query) || 
+      (b.isbn && b.isbn.toLowerCase().includes(query)) ||
+      (b.author && b.author.toLowerCase().includes(query))
+    );
+  },
+  
+  generateBillNo: function() {
+    const sales = this.getSales();
+    const prefix = 'IFT-';
+    const dateStr = new Date().toISOString().slice(2,10).replace(/-/g, ''); // YYMMDD
+    const count = (sales.length + 1).toString().padStart(4, '0');
+    return `${prefix}${dateStr}-${count}`;
+  }
+};
+
+// Initialize with some dummy data if empty
+function initDb() {
+  if (db.getBooks().length === 0) {
+    db.saveBooks([
+      {
+        id: 'B1',
+        isbn: '978-81-232-0355-3',
+        title: 'Arabic Words for Children',
+        author: 'Moulavi M.A. Mohamed Haneefa Manbayee',
+        category: 'Children',
+        mrp: 65.00,
+        stock: 100,
+        publication: 'Islamic Foundation Trust',
+        desc: ''
+      },
+      {
+        id: 'B2',
+        isbn: '978-81-232-0356-0',
+        title: 'Stories of the Prophets',
+        author: 'Ibn Kathir',
+        category: 'History',
+        mrp: 250.00,
+        stock: 0, // out of stock demo
+        publication: 'Islamic Foundation Trust',
+        desc: ''
+      }
+    ]);
+  }
+}
+
+initDb();
+
+</script>
+  <script>
+// UI State
+let currentBillItems = [];
+let selectedBookForBill = null;
+
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+  // Navigation
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const pageId = e.currentTarget.dataset.page;
+      showPage(pageId);
+    });
+  });
+
+  // Init Date
+  document.getElementById('datetimeDisplay').textContent = new Date().toLocaleDateString('en-IN', {
+    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+  });
+
+  // Setup Billing
+  document.getElementById('billDate').valueAsDate = new Date();
+  
+  // Real-time calculations in add book panel
+  const calcDiscounts = () => {
+    const qty = parseFloat(document.getElementById('addQty').value) || 0;
+    const mrp = parseFloat(document.getElementById('addMRP').value) || 0;
+    const discount = parseFloat(document.getElementById('addDiscount').value) || 0;
+    
+    const afterDiscount = mrp - (mrp * (discount / 100));
+    document.getElementById('addAfterDiscount').value = afterDiscount.toFixed(2);
+  };
+
+  document.getElementById('addQty').addEventListener('input', calcDiscounts);
+  document.getElementById('addDiscount').addEventListener('input', calcDiscounts);
+
+  // Search input listeners
+  document.getElementById('bookSearch').addEventListener('input', debounce(handleBookSearch, 300));
+  
+  // Sidebar toggle
+  document.getElementById('sidebarToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+  });
+  
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    });
+  }
+
+  // Initial render
+  showPage('dashboard');
+});
+
+// Navigation
+function showPage(pageId) {
+  // Update Nav Active State
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById(`nav-${pageId}`).classList.add('active');
+
+  // Show corresponding page
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.getElementById(`page-${pageId}`).classList.add('active');
+
+  // Update Header Title
+  const titles = {
+    'dashboard': 'Dashboard',
+    'billing': 'New Sale / Bill',
+    'sales': 'Sales History',
+    'stock': 'Stock Management',
+    'books': 'Books Catalog',
+    'reports': 'Reports'
+  };
+  document.getElementById('pageTitle').textContent = titles[pageId];
+
+  // Refresh page data
+  if (pageId === 'dashboard') loadDashboard();
+  if (pageId === 'billing') initBilling();
+  if (pageId === 'books') loadBooks();
+  if (pageId === 'stock') loadStock();
+  if (pageId === 'sales') loadSales();
+  if (pageId === 'reports') showReport('summary');
+}
+
+// ---------------- BILLING LOGIC ---------------- //
+
+function initBilling() {
+  document.getElementById('billNo').value = db.generateBillNo();
+  renderBillTable();
+}
+
+function handleBookSearch(e) {
+  const query = e.target.value.trim();
+  const resultsDiv = document.getElementById('searchResults');
+  
+  if (query.length < 2) {
+    resultsDiv.style.display = 'none';
+    return;
+  }
+
+  const books = db.searchBooks(query);
+  resultsDiv.innerHTML = '';
+  
+  if (books.length === 0) {
+    resultsDiv.innerHTML = '<div class="search-result-item">No books found.</div>';
+  } else {
+    books.forEach(book => {
+      const isOutOfStock = book.stock <= 0;
+      const div = document.createElement('div');
+      div.className = `search-result-item ${isOutOfStock ? 'text-danger' : ''}`;
+      div.innerHTML = `
+        <strong>${book.title}</strong> (ISBN: ${book.isbn})<br/>
+        <small>MRP: ₹${book.mrp} | Stock: ${book.stock}</small>
+        ${isOutOfStock ? '<small style="float:right; color:red;">OUT OF STOCK</small>' : ''}
+      `;
+      if (!isOutOfStock) {
+        div.onclick = () => selectBookForBill(book);
+      } else {
+        div.style.cursor = 'not-allowed';
+      }
+      resultsDiv.appendChild(div);
+    });
+  }
+  resultsDiv.style.display = 'block';
+}
+
+function selectBookForBill(book) {
+  selectedBookForBill = book;
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('bookSearch').value = book.title;
+  
+  // Show add panel
+  document.getElementById('addBookPanel').style.display = 'block';
+  document.getElementById('selectedBookInfo').innerHTML = `
+    <strong>${book.title}</strong><br/>
+    <small>ISBN: ${book.isbn} | In Stock: ${book.stock}</small>
+  `;
+  
+  document.getElementById('addQty').value = 1;
+  document.getElementById('addQty').max = book.stock;
+  document.getElementById('addMRP').value = book.mrp;
+  document.getElementById('addDiscount').value = 0;
+  document.getElementById('addAfterDiscount').value = book.mrp;
+}
+
+function clearSearch() {
+  document.getElementById('bookSearch').value = '';
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('addBookPanel').style.display = 'none';
+  selectedBookForBill = null;
+}
+
+function addBookToBill() {
+  if (!selectedBookForBill) return;
+
+  const qty = parseInt(document.getElementById('addQty').value);
+  if (qty > selectedBookForBill.stock) {
+    showToast(`Only ${selectedBookForBill.stock} items in stock!`, 'error');
+    return;
+  }
+
+  const mrp = parseFloat(document.getElementById('addMRP').value);
+  const discount = parseFloat(document.getElementById('addDiscount').value);
+  const rate = parseFloat(document.getElementById('addAfterDiscount').value);
+
+  currentBillItems.push({
+    id: Date.now().toString(),
+    bookId: selectedBookForBill.id,
+    isbn: selectedBookForBill.isbn,
+    title: selectedBookForBill.title,
+    qty: qty,
+    mrp: mrp,
+    discountPercent: discount,
+    rate: rate,
+    total: rate * qty
+  });
+
+  clearSearch();
+  renderBillTable();
+  showToast('Book added to bill', 'success');
+}
+
+function removeBillItem(id) {
+  currentBillItems = currentBillItems.filter(item => item.id !== id);
+  renderBillTable();
+}
+
+function renderBillTable() {
+  const tbody = document.getElementById('billTableBody');
+  const emptyRow = document.getElementById('billEmptyRow');
+  const totalsDiv = document.getElementById('billTotals');
+  
+  tbody.innerHTML = '';
+  
+  if (currentBillItems.length === 0) {
+    tbody.appendChild(emptyRow);
+    emptyRow.style.display = 'table-row';
+    totalsDiv.style.display = 'none';
+    document.getElementById('billItemCount').textContent = '0 items';
+    return;
+  }
+
+  emptyRow.style.display = 'none';
+  totalsDiv.style.display = 'block';
+
+  let subtotal = 0;
+  let totalDiscountValue = 0;
+  let grandTotal = 0;
+
+  currentBillItems.forEach((item, index) => {
+    const totalMRP = item.qty * item.mrp;
+    const itemTotal = item.qty * item.rate;
+    subtotal += totalMRP;
+    grandTotal += itemTotal;
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${item.title}</td>
+      <td>${item.qty}</td>
+      <td>${item.mrp.toFixed(2)}</td>
+      <td>${item.discountPercent}%</td>
+      <td>${item.rate.toFixed(2)}</td>
+      <td>${itemTotal.toFixed(2)}</td>
+      <td><button class="btn btn-outline" style="padding:2px 5px; color:var(--danger)" onclick="removeBillItem('${item.id}')">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  totalDiscountValue = subtotal - grandTotal;
+
+  document.getElementById('totalMRP').textContent = `₹${subtotal.toFixed(2)}`;
+  document.getElementById('totalDiscount').textContent = `-₹${totalDiscountValue.toFixed(2)}`;
+  document.getElementById('grandTotal').textContent = `₹${grandTotal.toFixed(2)}`;
+  document.getElementById('billItemCount').textContent = `${currentBillItems.length} items`;
+}
+
+function clearBill() {
+  if(confirm("Are you sure you want to clear the current bill?")) {
+    currentBillItems = [];
+    document.getElementById('customerName').value = '';
+    document.getElementById('customerPhone').value = '';
+    renderBillTable();
+  }
+}
+
+function finalizeBill() {
+  if (currentBillItems.length === 0) {
+    showToast("Bill is empty!", 'error');
+    return;
+  }
+
+  const customerName = document.getElementById('customerName').value.trim();
+  
+  const subtotal = currentBillItems.reduce((acc, item) => acc + (item.mrp * item.qty), 0);
+  const grandTotal = currentBillItems.reduce((acc, item) => acc + item.total, 0);
+
+  const saleData = {
+    billNo: document.getElementById('billNo').value,
+    date: document.getElementById('billDate').value,
+    customerName: customerName || 'Walk-in Customer',
+    customerPhone: document.getElementById('customerPhone').value,
+    paymentMode: document.getElementById('paymentMode').value,
+    items: [...currentBillItems],
+    subtotal: subtotal,
+    discountTotal: subtotal - grandTotal,
+    grandTotal: grandTotal,
+    timestamp: new Date().toISOString()
+  };
+
+  db.addSale(saleData);
+  
+  showToast("Bill Generated Successfully!", 'success');
+  
+  // Show Receipt Modal
+  generateReceiptHTML(saleData);
+  
+  // Reset
+  currentBillItems = [];
+  document.getElementById('customerName').value = '';
+  document.getElementById('customerPhone').value = '';
+  initBilling();
+}
+
+
+// ---------------- CATALOG LOGIC ---------------- //
+function loadBooks() {
+  const tbody = document.getElementById('booksTableBody');
+  const books = db.getBooks();
+  tbody.innerHTML = '';
+  
+  if (books.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-bill-msg">No books found.</td></tr>';
+    return;
+  }
+
+  books.forEach(book => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${book.isbn}</td>
+        <td>${book.title}</td>
+        <td>${book.author}</td>
+        <td>${book.category || '-'}</td>
+        <td>₹${book.mrp}</td>
+        <td>${book.stock}</td>
+        <td>${book.publication || '-'}</td>
+        <td>
+          <button class="btn btn-outline" style="padding:2px 6px" onclick="editBook('${book.id}')">✏️</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function filterBooks() {
+  const query = document.getElementById('booksSearch').value.toLowerCase();
+  const tbody = document.getElementById('booksTableBody');
+  const books = db.getBooks().filter(b => 
+    b.title.toLowerCase().includes(query) || 
+    b.isbn.toLowerCase().includes(query) ||
+    b.author.toLowerCase().includes(query)
+  );
+
+  tbody.innerHTML = '';
+  books.forEach(book => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${book.isbn}</td>
+        <td>${book.title}</td>
+        <td>${book.author}</td>
+        <td>${book.category || '-'}</td>
+        <td>₹${book.mrp}</td>
+        <td>${book.stock}</td>
+        <td>${book.publication || '-'}</td>
+        <td>
+          <button class="btn btn-outline" style="padding:2px 6px" onclick="editBook('${book.id}')">✏️</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function openAddBookModal() {
+  document.getElementById('editBookISBN').value = '';
+  document.getElementById('bookTitle').value = '';
+  document.getElementById('bookISBN').value = '';
+  document.getElementById('bookAuthor').value = '';
+  document.getElementById('bookCategory').value = '';
+  document.getElementById('bookMRP').value = '';
+  document.getElementById('bookStock').value = '0';
+  document.getElementById('bookPublication').value = 'Islamic Foundation Trust';
+  document.getElementById('bookDesc').value = '';
+  openModal('modal-addBook');
+}
+
+function saveBook() {
+  const title = document.getElementById('bookTitle').value.trim();
+  const isbn = document.getElementById('bookISBN').value.trim();
+  const author = document.getElementById('bookAuthor').value.trim();
+  const mrp = parseFloat(document.getElementById('bookMRP').value);
+  const stock = parseInt(document.getElementById('bookStock').value);
+  
+  if(!title || !author || isNaN(mrp) || isNaN(stock)) {
+    showToast("Please fill all required fields correctly", "error");
+    return;
+  }
+
+  const bookData = {
+    title, isbn, author, mrp, stock,
+    category: document.getElementById('bookCategory').value.trim(),
+    publication: document.getElementById('bookPublication').value.trim(),
+    desc: document.getElementById('bookDesc').value.trim()
+  };
+
+  const editId = document.getElementById('editBookISBN').value;
+  if (editId) {
+    bookData.id = editId;
+    db.updateBook(bookData);
+    showToast("Book updated!", "success");
+  } else {
+    try {
+      db.addBook(bookData);
+      showToast("Book added!", "success");
+    } catch(e) {
+      showToast(e.message, "error");
+      return;
+    }
+  }
+
+  closeModal('modal-addBook');
+  loadBooks();
+  loadStock();
+}
+
+function editBook(id) {
+  const book = db.getBooks().find(b => b.id === id);
+  if(!book) return;
+  
+  document.getElementById('editBookISBN').value = book.id;
+  document.getElementById('bookTitle').value = book.title;
+  document.getElementById('bookISBN').value = book.isbn || '';
+  document.getElementById('bookAuthor').value = book.author || '';
+  document.getElementById('bookCategory').value = book.category || '';
+  document.getElementById('bookMRP').value = book.mrp;
+  document.getElementById('bookStock').value = book.stock;
+  document.getElementById('bookPublication').value = book.publication || '';
+  document.getElementById('bookDesc').value = book.desc || '';
+  
+  openModal('modal-addBook');
+}
+
+
+// ---------------- STOCK LOGIC ---------------- //
+function loadStock() {
+  const tbody = document.getElementById('stockTableBody');
+  const books = db.getBooks();
+  
+  if (books.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" class="empty-bill-msg">No books found.</td></tr>';
+    return;
+  }
+
+  renderStockTable(books);
+}
+
+function renderStockTable(books) {
+  const tbody = document.getElementById('stockTableBody');
+  tbody.innerHTML = '';
+  
+  books.forEach(book => {
+    let status = '<span style="color:var(--secondary)">In Stock</span>';
+    if (book.stock === 0) status = '<span class="out-of-stock-text">Out of Stock</span>';
+    else if (book.stock <= 5) status = '<span style="color:var(--warning)">Low Stock</span>';
+    
+    tbody.innerHTML += `
+      <tr>
+        <td>${book.isbn}</td>
+        <td>${book.title}</td>
+        <td>${book.author}</td>
+        <td>${book.category || '-'}</td>
+        <td>₹${book.mrp}</td>
+        <td><strong>${book.stock}</strong></td>
+        <td>-</td>
+        <td>${status}</td>
+        <td>
+           <button class="btn btn-outline" style="padding:2px 6px" onclick="openStockUpdateModalFor('${book.id}')">+ Add</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function filterStock() {
+  const query = document.getElementById('stockSearch').value.toLowerCase();
+  const filter = document.getElementById('stockFilter').value;
+  
+  let books = db.getBooks().filter(b => 
+    b.title.toLowerCase().includes(query) || 
+    (b.isbn && b.isbn.toLowerCase().includes(query)) ||
+    (b.author && b.author.toLowerCase().includes(query))
+  );
+
+  if (filter === 'instock') books = books.filter(b => b.stock > 0);
+  if (filter === 'outofstock') books = books.filter(b => b.stock === 0);
+  if (filter === 'lowstock') books = books.filter(b => b.stock > 0 && b.stock <= 5);
+
+  renderStockTable(books);
+}
+
+function openStockUpdateModal() {
+  const select = document.getElementById('stockUpdateBook');
+  select.innerHTML = '<option value="">-- Select a Book --</option>';
+  db.getBooks().forEach(b => {
+    select.innerHTML += `<option value="${b.id}">${b.title} (${b.isbn})</option>`;
+  });
+  document.getElementById('stockUpdateQty').value = '';
+  document.getElementById('stockUpdateNote').value = '';
+  openModal('modal-stockUpdate');
+}
+
+function openStockUpdateModalFor(id) {
+  openStockUpdateModal();
+  document.getElementById('stockUpdateBook').value = id;
+}
+
+function applyStockUpdate() {
+  const id = document.getElementById('stockUpdateBook').value;
+  const action = document.getElementById('stockUpdateAction').value;
+  const qty = parseInt(document.getElementById('stockUpdateQty').value);
+  
+  if (!id || isNaN(qty) || qty < 0) {
+    showToast("Invalid inputs", "error");
+    return;
+  }
+
+  db.updateStock(id, qty, action === 'set');
+  showToast("Stock updated successfully", "success");
+  closeModal('modal-stockUpdate');
+  loadStock();
+}
+
+
+// ---------------- SALES & DASHBOARD ---------------- //
+function loadDashboard() {
+  const sales = db.getSales();
+  const books = db.getBooks();
+  
+  const today = new Date().toISOString().slice(0,10);
+  const todaySales = sales.filter(s => s.date === today);
+  
+  const rev = todaySales.reduce((acc, s) => acc + s.grandTotal, 0);
+  const booksSold = todaySales.reduce((acc, s) => acc + s.items.reduce((sum, i)=>sum+i.qty, 0), 0);
+  
+  document.getElementById('stat-revenue').textContent = `₹${rev.toFixed(2)}`;
+  document.getElementById('stat-bills').textContent = todaySales.length;
+  document.getElementById('stat-books-sold').textContent = booksSold;
+  
+  const lowStock = books.filter(b => b.stock <= 5).length;
+  document.getElementById('stat-low-stock').textContent = lowStock;
+
+  // Recent Sales
+  const recentList = document.getElementById('recentSalesList');
+  if(sales.length === 0) {
+    recentList.innerHTML = '<div class="empty-state">No sales recorded yet.</div>';
+  } else {
+    recentList.innerHTML = '';
+    sales.slice().reverse().slice(0, 5).forEach(s => {
+      recentList.innerHTML += `
+        <div style="padding: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+          <div><strong>${s.billNo}</strong> <br/> <small>${s.customerName}</small></div>
+          <div style="text-align:right;"><strong>₹${s.grandTotal.toFixed(2)}</strong> <br/> <small>${s.items.length} items</small></div>
+        </div>
+      `;
+    });
+  }
+}
+
+function loadSales() {
+  const tbody = document.getElementById('salesTableBody');
+  const sales = db.getSales();
+  
+  if (sales.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-bill-msg">No sales found.</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = '';
+  sales.slice().reverse().forEach(sale => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${sale.billNo}</td>
+        <td>${sale.date}</td>
+        <td>${sale.customerName}</td>
+        <td>${sale.customerPhone || '-'}</td>
+        <td>${sale.items.length}</td>
+        <td>₹${sale.grandTotal.toFixed(2)}</td>
+        <td>${sale.paymentMode}</td>
+        <td>
+          <button class="btn btn-outline" style="padding:2px 6px" onclick="viewReceipt('${sale.id}')">👁 View</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function viewReceipt(id) {
+  const sale = db.getSales().find(s => s.id === id);
+  if(sale) {
+    generateReceiptHTML(sale);
+  }
+}
+
+
+// ---------------- RECEIPT ---------------- //
+function generateReceiptHTML(sale) {
+  let itemsHtml = '';
+  sale.items.forEach((item, index) => {
+    itemsHtml += `
+      <tr>
+        <td style="padding:5px; border-bottom:1px solid #ddd;">${index+1}</td>
+        <td style="padding:5px; border-bottom:1px solid #ddd;">${item.title}</td>
+        <td style="padding:5px; border-bottom:1px solid #ddd;">${item.qty}</td>
+        <td style="padding:5px; border-bottom:1px solid #ddd;">₹${item.mrp.toFixed(2)}</td>
+        <td style="padding:5px; border-bottom:1px solid #ddd;">${item.discountPercent}%</td>
+        <td style="padding:5px; border-bottom:1px solid #ddd;">₹${item.rate.toFixed(2)}</td>
+        <td style="padding:5px; border-bottom:1px solid #ddd; text-align:right;">₹${item.total.toFixed(2)}</td>
+      </tr>
+    `;
+  });
+
+  const html = `
+    <div id="printArea" style="padding: 20px; font-family: 'Inter', sans-serif; background:white; color:black;">
+      <div style="text-align:center; margin-bottom: 20px;">
+        <img src="logo.png" alt="Islamic Foundation Trust" style="max-height: 60px; width: auto; object-fit: contain; margin-bottom: 10px;">
+        <h2 style="margin:0;">ISLAMIC FOUNDATION TRUST</h2>
+        <p style="margin:5px 0; font-size:12px; color: #444;">
+          #138, IFT Lane, Perambur High Road, Chennai – 600012<br>
+          📞 044-26624401, +91 99529 64011 | ✉️ fc.iftchennai@gmail.com
+        </p>
+        <h3 style="margin:10px 0 5px 0;">CASH RECEIPT / INVOICE</h3>
+      </div>
+      
+      <div style="display:flex; justify-content:space-between; margin-bottom: 20px; font-size: 14px;">
+        <div>
+          <strong>Bill No:</strong> ${sale.billNo}<br>
+          <strong>Date:</strong> ${sale.date}<br>
+          <strong>Payment:</strong> ${sale.paymentMode}
+        </div>
+        <div style="text-align:right;">
+          <strong>Name:</strong> ${sale.customerName}<br>
+          <strong>Contact:</strong> ${sale.customerPhone || 'N/A'}
+        </div>
+      </div>
+      
+      <table style="width:100%; border-collapse: collapse; font-size:14px; margin-bottom:20px;">
+        <thead>
+          <tr style="background:#f0f0f0;">
+            <th style="padding:5px; text-align:left;">S.No</th>
+            <th style="padding:5px; text-align:left;">Title</th>
+            <th style="padding:5px; text-align:left;">Qty</th>
+            <th style="padding:5px; text-align:left;">MRP</th>
+            <th style="padding:5px; text-align:left;">Disc%</th>
+            <th style="padding:5px; text-align:left;">Rate</th>
+            <th style="padding:5px; text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+      </table>
+      
+      <div style="display:flex; justify-content:flex-end; font-size:14px;">
+        <div style="width: 250px;">
+          <div style="display:flex; justify-content:space-between; padding:5px 0;">
+            <span>Subtotal:</span>
+            <span>₹${sale.subtotal.toFixed(2)}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:5px 0;">
+            <span>Discount:</span>
+            <span>-₹${sale.discountTotal.toFixed(2)}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:5px 0; border-top:1px solid #000; font-weight:bold; font-size:16px;">
+            <span>Total:</span>
+            <span>₹${sale.grandTotal.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 30px; text-align:center; font-size: 12px; color:#555;">
+        Thank you for shopping with Islamic Foundation Trust!<br>
+        * Books once sold will not be taken back. *
+      </div>
+      <div style="margin-top: 15px; text-align:center; font-size: 10px; color:#888;">
+        All Rights Reserved &copy; 2026 fafacreatives.in
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('receiptContent').innerHTML = html;
+  openModal('modal-receipt');
+}
+
+function printReceipt() {
+  const content = document.getElementById('printArea').innerHTML;
+  const printWindow = window.open('', '', 'height=600,width=800');
+  printWindow.document.write('<html><head><title>Print Receipt</title>');
+  printWindow.document.write('<style>body{margin:0;padding:20px;}</style></head><body>');
+  printWindow.document.write(content);
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  printWindow.print();
+}
+
+function downloadPDF() {
+  const element = document.getElementById('printArea');
+  const opt = {
+    margin:       10,
+    filename:     'IFT_Receipt.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2 },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(element).save();
+}
+
+function copyShareLink() {
+  // In a real cloud app, this would be a link to a receipt on the server.
+  // For local mode, we'll just show a success message.
+  const dummyLink = window.location.origin + window.location.pathname + "?receiptId=DEMO_ID";
+  navigator.clipboard.writeText(dummyLink).then(() => {
+    showToast("Receipt Link Copied to Clipboard!", "success");
+  }).catch(err => {
+    showToast("Failed to copy link", "error");
+  });
+}
+
+// ---------------- REPORTS LOGIC ---------------- //
+function showReport(reportType) {
+  // Update Tabs Active State
+  document.querySelectorAll('.report-tab').forEach(el => el.classList.remove('active'));
+  const tab = document.querySelector(`.report-tab[data-report="${reportType}"]`);
+  if(tab) tab.classList.add('active');
+
+  const contentDiv = document.getElementById('reportContent');
+  const sales = db.getSales();
+  const books = db.getBooks();
+
+  if (reportType === 'summary') {
+    const totalRev = sales.reduce((acc, s) => acc + s.grandTotal, 0);
+    const totalBills = sales.length;
+    contentDiv.innerHTML = `
+      <h3>Overall Summary</h3>
+      <p>Total Revenue: ₹${totalRev.toFixed(2)}</p>
+      <p>Total Bills Generated: ${totalBills}</p>
+      <p>Total Unique Books in Catalog: ${books.length}</p>
+    `;
+  } else if (reportType === 'byTitle') {
+    const titleSales = {};
+    sales.forEach(s => {
+      s.items.forEach(item => {
+        titleSales[item.title] = (titleSales[item.title] || 0) + item.qty;
+      });
+    });
+    let html = '<h3>Sales by Title</h3><table class="data-table"><thead><tr><th>Title</th><th>Qty Sold</th></tr></thead><tbody>';
+    Object.entries(titleSales).sort((a,b) => b[1] - a[1]).forEach(([title, qty]) => {
+      html += `<tr><td>${title}</td><td>${qty}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    contentDiv.innerHTML = html;
+  } else if (reportType === 'byAuthor') {
+    // Collect Author sales
+    const authorSales = {};
+    sales.forEach(s => {
+      s.items.forEach(item => {
+        const book = books.find(b => b.isbn === item.isbn || b.id === item.bookId);
+        const author = book ? book.author : 'Unknown';
+        authorSales[author] = (authorSales[author] || 0) + item.qty;
+      });
+    });
+    let html = '<h3>Sales by Author</h3><table class="data-table"><thead><tr><th>Author</th><th>Qty Sold</th></tr></thead><tbody>';
+    Object.entries(authorSales).sort((a,b) => b[1] - a[1]).forEach(([author, qty]) => {
+      html += `<tr><td>${author}</td><td>${qty}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    contentDiv.innerHTML = html;
+  } else if (reportType === 'byCategory') {
+     const catSales = {};
+     sales.forEach(s => {
+      s.items.forEach(item => {
+        const book = books.find(b => b.isbn === item.isbn || b.id === item.bookId);
+        const cat = book && book.category ? book.category : 'Uncategorized';
+        catSales[cat] = (catSales[cat] || 0) + item.qty;
+      });
+    });
+    let html = '<h3>Sales by Category</h3><table class="data-table"><thead><tr><th>Category</th><th>Qty Sold</th></tr></thead><tbody>';
+    Object.entries(catSales).sort((a,b) => b[1] - a[1]).forEach(([cat, qty]) => {
+      html += `<tr><td>${cat}</td><td>${qty}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    contentDiv.innerHTML = html;
+  } else if (reportType === 'byStock') {
+    let html = '<h3>Stock Report</h3><table class="data-table"><thead><tr><th>Title</th><th>In Stock</th></tr></thead><tbody>';
+    books.sort((a,b) => a.stock - b.stock).forEach(b => {
+      let stockColor = b.stock === 0 ? 'var(--danger)' : b.stock <= 5 ? 'var(--warning)' : 'inherit';
+      html += `<tr><td>${b.title}</td><td style="color:${stockColor}; font-weight:bold">${b.stock}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    contentDiv.innerHTML = html;
+  }
+}
+
+
+// ---------------- UTILS & MODALS ---------------- //
+
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function showToast(message, type='info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.style.padding = '10px 20px';
+  toast.style.marginBottom = '10px';
+  toast.style.borderRadius = '4px';
+  toast.style.color = 'white';
+  toast.style.background = type === 'success' ? 'var(--secondary)' : type === 'error' ? 'var(--danger)' : '#333';
+  toast.textContent = message;
+  
+  // ensure toast container styling
+  container.style.position = 'fixed';
+  container.style.bottom = '20px';
+  container.style.right = '20px';
+  container.style.zIndex = '9999';
+
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => { clearTimeout(timeout); func(...args); };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// Open Excel Import Modal
+function openExcelImport() {
+  openModal('modal-excel');
+}
+
+// Handling Excel Upload using SheetJS (XLSX)
+function handleExcelUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, {type: 'array'});
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    const json = XLSX.utils.sheet_to_json(worksheet);
+    
+    document.getElementById('importPreview').style.display = 'block';
+    document.getElementById('importPreview').innerHTML = `Found ${json.length} records ready to import.`;
+    document.getElementById('importBtn').disabled = false;
+    document.getElementById('importBtn').onclick = () => processExcelImport(json);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function processExcelImport(data) {
+  const overwrite = document.getElementById('overwriteExisting').checked;
+  let added = 0;
+  let updated = 0;
+  
+  data.forEach(row => {
+    // Map columns (fuzzy matching for common names)
+    const title = row['Title'] || row['Name'] || row['Book Name'];
+    const isbn = (row['ISBN'] || '').toString();
+    const author = row['Author'] || '';
+    const mrp = parseFloat(row['MRP'] || row['Price']) || 0;
+    const stock = parseInt(row['Stock'] || row['Qty'] || row['Quantity']) || 0;
+    const category = row['Category'] || '';
+    const publication = row['Publication'] || 'Islamic Foundation Trust';
+    
+    if (title && mrp) {
+      const existing = db.getBooks().find(b => b.isbn === isbn && isbn !== '');
+      if (existing && overwrite) {
+        db.updateBook({ id: existing.id, title, author, mrp, stock, category, publication });
+        updated++;
+      } else if (!existing) {
+        db.addBook({ title, isbn, author, mrp, stock, category, publication, desc:'' });
+        added++;
+      }
+    }
+  });
+  
+  showToast(`Imported: ${added} added, ${updated} updated.`, 'success');
+  closeModal('modal-excel');
+  loadBooks();
+}
+
+// Export Excel Data
+function exportExcel() {
+  const books = db.getBooks();
+  const sales = db.getSales();
+  
+  if (books.length === 0) {
+    showToast("No books to export!", "warning");
+    return;
+  }
+
+  // Calculate sales and revenue per book
+  const salesData = {};
+  sales.forEach(sale => {
+    sale.items.forEach(item => {
+      const id = item.bookId || item.isbn;
+      if (!salesData[id]) {
+        salesData[id] = { qty: 0, revenue: 0 };
+      }
+      salesData[id].qty += item.qty;
+      salesData[id].revenue += item.total;
+    });
+  });
+
+  // Map data to comprehensive format for Excel
+  const exportData = books.map(b => {
+    const soldQty = salesData[b.id]?.qty || salesData[b.isbn]?.qty || 0;
+    const revenue = salesData[b.id]?.revenue || salesData[b.isbn]?.revenue || 0;
+    const startingStock = b.stock + soldQty;
+    
+    return {
+      'ISBN': b.isbn || '',
+      'Title': b.title,
+      'Author': b.author || '',
+      'Category': b.category || '',
+      'MRP (₹)': b.mrp,
+      'Starting Stock': startingStock,
+      'Total Sales (Qty)': soldQty,
+      'Total Revenue (₹)': revenue.toFixed(2),
+      'Current Stock (Left)': b.stock,
+      'Publication': b.publication || ''
+    };
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Comprehensive_Stock");
+
+  const dateStr = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(workbook, `IFT_Comprehensive_Report_${dateStr}.xlsx`);
+  
+  showToast("Excel Exported Successfully!", "success");
+}
+
+</script>
+</body>
+</html>

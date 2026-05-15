@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IFT Chennai – Book Publication Sales System</title>
+  <meta name="description" content="Islamic Foundation Trust Chennai – Book Fair Sales & Inventory Management Software" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=2" />
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="logo.png" alt="Islamic Foundation Trust" style="max-height: 40px; width: auto; object-fit: contain;">
+        <div class="logo-text">
+          <span class="logo-main" style="font-size: 0.95rem; line-height: 1.2; display: block;">Islamic Foundation</span>
+          <span class="logo-main" style="font-size: 0.95rem; line-height: 1.2; display: block;">Trust</span>
+        </div>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">&#9776;</button>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-page="dashboard" id="nav-dashboard">
+        <span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-item" data-page="billing" id="nav-billing">
+        <span class="nav-icon">🧾</span><span class="nav-label">New Sale / Bill</span>
+      </button>
+      <button class="nav-item" data-page="sales" id="nav-sales">
+        <span class="nav-icon">📋</span><span class="nav-label">Sales History</span>
+      </button>
+      <button class="nav-item" data-page="stock" id="nav-stock">
+        <span class="nav-icon">📦</span><span class="nav-label">Stock Management</span>
+      </button>
+      <button class="nav-item" data-page="books" id="nav-books">
+        <span class="nav-icon">📚</span><span class="nav-label">Books Catalog</span>
+      </button>
+      <button class="nav-item" data-page="reports" id="nav-reports">
+        <span class="nav-icon">📊</span><span class="nav-label">Reports</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="org-info" style="line-height: 1.4;">
+        <div class="org-name" style="font-weight: 600; color: var(--text-main); margin-bottom: 4px;">Islamic Foundation Trust</div>
+        <div class="org-city">#138, IFT Lane, Perambur High Road</div>
+        <div class="org-city">Chennai – 600012</div>
+        <div class="org-city" style="margin-top: 4px;">📞 +91 99529 64011</div>
+        <div class="org-city">✉️ fc.iftchennai@gmail.com</div>
+        <div class="org-city" style="margin-top: 15px; font-size: 0.75rem; color: var(--primary);">
+          &copy; 2026 All Rights Reserved<br>
+          <a href="https://fafacreatives.in" target="_blank" style="color: inherit; text-decoration: none; font-weight: 600;">fafacreatives.in</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+
+    <!-- TOP HEADER BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">&#9776;</button>
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="datetime-display" id="datetimeDisplay"></div>
+        <button class="btn btn-primary" onclick="showPage('billing')" id="newSaleBtn">+ New Sale</button>
+      </div>
+    </header>
+
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <section class="page active" id="page-dashboard">
+      <div class="dashboard-grid">
+        <div class="stat-card" id="card-total-sales">
+          <div class="stat-icon">💰</div>
+          <div class="stat-body">
+            <div class="stat-label">Today's Revenue</div>
+            <div class="stat-value" id="stat-revenue">₹0</div>
+          </div>
+        </div>
+        <div class="stat-card" id="card-bills">
+          <div class="stat-icon">🧾</div>
+          <div class="stat-body">
+            <div class="stat-label">Bills Today</div>
+            <div class="stat-value" id="stat-bills">0</div>
+          </div>
+        </div>
+        <div class="stat-card" id="card-books-sold">
+          <div class="stat-icon">📖</div>
+          <div class="stat-body">
+            <div class="stat-label">Books Sold Today</div>
+            <div class="stat-value" id="stat-books-sold">0</div>
+          </div>
+        </div>
+        <div class="stat-card alert-card" id="card-low-stock">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-body">
+            <div class="stat-label">Low / Out of Stock</div>
+            <div class="stat-value" id="stat-low-stock">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-bottom">
+        <div class="dashboard-section">
+          <h2 class="section-title">Recent Sales</h2>
+          <div class="recent-sales-list" id="recentSalesList">
+            <div class="empty-state">No sales recorded yet. <button class="link-btn" onclick="showPage('billing')">Create first bill →</button></div>
+          </div>
+        </div>
+        <div class="dashboard-section">
+          <h2 class="section-title">Stock Alerts</h2>
+          <div class="stock-alerts-list" id="stockAlertsList">
+            <div class="empty-state">All books have sufficient stock.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BILLING PAGE ===== -->
+    <section class="page" id="page-billing">
+      <div class="billing-layout">
+
+        <!-- Left: Customer & Book Search -->
+        <div class="billing-left">
+          <!-- Customer Info -->
+          <div class="card">
+            <div class="card-header">👤 Customer Details</div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Bill No.</label>
+                  <input type="text" id="billNo" readonly class="input-readonly" />
+                </div>
+                <div class="form-group">
+                  <label>Date</label>
+                  <input type="date" id="billDate" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group flex-2">
+                  <label>Customer Name</label>
+                  <input type="text" id="customerName" placeholder="Enter customer name" />
+                </div>
+                <div class="form-group flex-2">
+                  <label>Contact Number</label>
+                  <input type="tel" id="customerPhone" placeholder="+91 XXXXX XXXXX" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Book Search -->
+          <div class="card">
+            <div class="card-header">🔍 Add Book to Bill</div>
+            <div class="card-body">
+              <div class="search-bar-wrap">
+                <input type="text" id="bookSearch" placeholder="Search by Book Title or ISBN..." autocomplete="off" />
+                <button class="btn btn-outline" onclick="clearSearch()" title="Clear">✕</button>
+              </div>
+              <div class="search-results" id="searchResults"></div>
+
+              <!-- Add to bill panel (hidden until book selected) -->
+              <div class="add-book-panel" id="addBookPanel" style="display:none;">
+                <div class="selected-book-info" id="selectedBookInfo"></div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" id="addQty" min="1" value="1" />
+                  </div>
+                  <div class="form-group">
+                    <label>MRP (₹)</label>
+                    <input type="number" id="addMRP" step="0.01" readonly class="input-readonly" />
+                  </div>
+                  <div class="form-group">
+                    <label>Discount (%)</label>
+                    <input type="number" id="addDiscount" min="0" max="100" value="0" step="0.5" />
+                  </div>
+                  <div class="form-group">
+                    <label>After Discount (₹)</label>
+                    <input type="number" id="addAfterDiscount" step="0.01" readonly class="input-readonly" />
+                  </div>
+                </div>
+                <button class="btn btn-success full-width" onclick="addBookToBill()">+ Add to Bill</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Bill Preview -->
+        <div class="billing-right">
+          <div class="card bill-card">
+            <div class="card-header">
+              🧾 Invoice Preview
+              <span class="bill-counter" id="billItemCount">0 items</span>
+            </div>
+            <div class="card-body p0">
+              <div class="bill-table-wrap">
+                <table class="bill-table" id="billTable">
+                  <thead>
+                    <tr>
+                      <th>S.No</th>
+                      <th>Title</th>
+                      <th>Qty</th>
+                      <th>MRP (₹)</th>
+                      <th>Disc%</th>
+                      <th>Rate (₹)</th>
+                      <th>Total (₹)</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="billTableBody">
+                    <tr id="billEmptyRow">
+                      <td colspan="8" class="empty-bill-msg">Add books using the search on the left</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="bill-totals" id="billTotals" style="display:none;">
+                <div class="total-row"><span>Subtotal (MRP)</span><span id="totalMRP">₹0.00</span></div>
+                <div class="total-row discount-row"><span>Total Discount</span><span id="totalDiscount">-₹0.00</span></div>
+                <div class="total-row grand-total"><span>Grand Total</span><span id="grandTotal">₹0.00</span></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="form-group">
+                <label>Payment Mode</label>
+                <select id="paymentMode">
+                  <option value="Cash">Cash</option>
+                  <option value="UPI">UPI</option>
+                  <option value="Card">Card</option>
+                  <option value="Cheque">Cheque</option>
+                </select>
+              </div>
+              <div class="bill-actions">
+                <button class="btn btn-outline" onclick="clearBill()">🗑 Clear Bill</button>
+                <button class="btn btn-primary" onclick="finalizeBill()">✅ Finalize & Generate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SALES HISTORY PAGE ===== -->
+    <section class="page" id="page-sales">
+      <div class="page-toolbar">
+        <div class="search-bar-wrap small">
+          <input type="text" id="salesSearch" placeholder="Search by bill no, customer..." oninput="filterSales()" />
+        </div>
+        <input type="date" id="salesDateFilter" onchange="filterSales()" />
+      </div>
+      <div class="card">
+        <div class="card-body p0">
+          <table class="data-table" id="salesTable">
+            <thead>
+              <tr>
+                <th>Bill No</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th>Items</th>
+                <th>Total (₹)</th>
+                <th>Payment</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="salesTableBody">
+              <tr><td colspan="8" class="empty-bill-msg">No sales yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STOCK MANAGEMENT PAGE ===== -->
+    <section class="page" id="page-stock">
+      <div class="page-toolbar">
+        <div class="search-bar-wrap small">
+          <input type="text" id="stockSearch" placeholder="Search by title, ISBN, author..." oninput="filterStock()" />
+        </div>
+        <select id="stockFilter" onchange="filterStock()">
+          <option value="all">All Books</option>
+          <option value="instock">In Stock</option>
+          <option value="outofstock">Out of Stock</option>
+          <option value="lowstock">Low Stock (≤5)</option>
+        </select>
+        <button class="btn btn-primary" onclick="openStockUpdateModal()">📦 Update Stock</button>
+      </div>
+      <div class="card">
+        <div class="card-body p0">
+          <table class="data-table" id="stockTable">
+            <thead>
+              <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>MRP (₹)</th>
+                <th>In Stock</th>
+                <th>Sold</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="stockTableBody">
+              <tr><td colspan="9" class="empty-bill-msg">No books in catalog. Add via Books Catalog.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BOOKS CATALOG PAGE ===== -->
+    <section class="page" id="page-books">
+      <div class="page-toolbar">
+        <div class="search-bar-wrap small">
+          <input type="text" id="booksSearch" placeholder="Search books..." oninput="filterBooks()" />
+        </div>
+        <select id="booksCategory" onchange="filterBooks()">
+          <option value="all">All Categories</option>
+        </select>
+        <button class="btn btn-outline" onclick="exportExcel()">📤 Export Excel</button>
+        <button class="btn btn-outline" onclick="openExcelImport()" id="excelImportBtn">📥 Import Excel</button>
+        <button class="btn btn-primary" onclick="openAddBookModal()">+ Add Book</button>
+      </div>
+      <div class="card">
+        <div class="card-body p0">
+          <table class="data-table" id="booksTable">
+            <thead>
+              <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>MRP (₹)</th>
+                <th>Stock</th>
+                <th>Publication</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="booksTableBody">
+              <tr><td colspan="8" class="empty-bill-msg">No books added yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== REPORTS PAGE ===== -->
+    <section class="page" id="page-reports">
+      <div class="reports-tabs">
+        <button class="report-tab active" data-report="summary" onclick="showReport('summary')">📊 Summary</button>
+        <button class="report-tab" data-report="byTitle" onclick="showReport('byTitle')">📖 By Title</button>
+        <button class="report-tab" data-report="byAuthor" onclick="showReport('byAuthor')">✍️ By Author</button>
+        <button class="report-tab" data-report="byCategory" onclick="showReport('byCategory')">🗂 By Category</button>
+        <button class="report-tab" data-report="byStock" onclick="showReport('byStock')">📦 Stock Report</button>
+      </div>
+      <div class="card">
+        <div class="card-body" id="reportContent">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======= MODALS ======= -->
+
+  <!-- Add Book Modal -->
+  <div class="modal-overlay" id="modal-addBook">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>📚 Add / Edit Book</h3>
+        <button class="modal-close" onclick="closeModal('modal-addBook')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editBookISBN" />
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>Book Title *</label>
+            <input type="text" id="bookTitle" placeholder="Full title of the book" />
+          </div>
+          <div class="form-group flex-1">
+            <label>ISBN</label>
+            <input type="text" id="bookISBN" placeholder="978-XX-XXX-XXXX-X" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>Author *</label>
+            <input type="text" id="bookAuthor" placeholder="Author name" />
+          </div>
+          <div class="form-group flex-1">
+            <label>Category</label>
+            <input type="text" id="bookCategory" placeholder="e.g. Islamic Studies" list="categoryList" />
+            <datalist id="categoryList"></datalist>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>MRP (₹) *</label>
+            <input type="number" id="bookMRP" step="0.01" min="0" placeholder="0.00" />
+          </div>
+          <div class="form-group">
+            <label>Initial Stock *</label>
+            <input type="number" id="bookStock" min="0" value="0" />
+          </div>
+          <div class="form-group flex-2">
+            <label>Publication</label>
+            <input type="text" id="bookPublication" value="Islamic Foundation Trust" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description / Notes</label>
+          <textarea id="bookDesc" rows="2" placeholder="Optional description"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-addBook')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveBook()">💾 Save Book</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Update Modal -->
+  <div class="modal-overlay" id="modal-stockUpdate">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>📦 Update Stock</h3>
+        <button class="modal-close" onclick="closeModal('modal-stockUpdate')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Select Book</label>
+          <select id="stockUpdateBook"></select>
+        </div>
+        <div class="form-group">
+          <label>Action</label>
+          <select id="stockUpdateAction">
+            <option value="add">Add Stock (Received)</option>
+            <option value="set">Set Exact Quantity</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="number" id="stockUpdateQty" min="0" value="0" />
+        </div>
+        <div class="form-group">
+          <label>Notes (optional)</label>
+          <input type="text" id="stockUpdateNote" placeholder="e.g. Book fair stock arrival" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-stockUpdate')">Cancel</button>
+        <button class="btn btn-primary" onclick="applyStockUpdate()">Update Stock</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Excel Import Modal -->
+  <div class="modal-overlay" id="modal-excel">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>📥 Bulk Import via Excel</h3>
+        <button class="modal-close" onclick="closeModal('modal-excel')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="hint">Upload an Excel (.xlsx) or CSV file with columns:<br/>
+          <code>Title, ISBN, Author, Category, MRP, Stock, Publication, Description</code>
+        </p>
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-icon">📁</div>
+          <p>Drop Excel/CSV file here or click to browse</p>
+          <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" hidden onchange="handleExcelUpload(event)" />
+          <button class="btn btn-outline" onclick="document.getElementById('excelFile').click()">Browse File</button>
+        </div>
+        <div id="importPreview" style="display:none;"></div>
+        <div class="form-group" style="margin-top:1rem;">
+          <label>
+            <input type="checkbox" id="overwriteExisting" /> Overwrite existing books (same ISBN)
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-excel')">Cancel</button>
+        <button class="btn btn-primary" id="importBtn" onclick="importBooks()" disabled>📥 Import Books</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Modal -->
+  <div class="modal-overlay" id="modal-receipt">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3>🧾 Invoice / Receipt</h3>
+        <div class="receipt-actions">
+          <button class="btn btn-outline" onclick="printReceipt()">🖨 Print</button>
+          <button class="btn btn-outline" onclick="downloadPDF()">📄 Download PDF</button>
+          <button class="btn btn-outline" onclick="copyShareLink()">🔗 Share Link</button>
+          <button class="btn btn-primary" onclick="closeModal('modal-receipt')">Done</button>
+        </div>
+      </div>
+      <div class="modal-body p0" id="receiptContent">
+        <!-- Receipt rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="db.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
