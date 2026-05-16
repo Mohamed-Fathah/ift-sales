@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&display=swap');
+
+/* ─── IFT Brand Tokens ─────────────────────────────── */
+:root {
+  --ift-navy:       #1B2A6B;
+  --ift-navy-dark:  #111A46;
+  --ift-navy-hover: #243580;
+  --ift-gold:       #C8922A;
+  --ift-gold-light: #E8A832;
+  --ift-gold-pale:  #FDF8EE;
+
+  --sidebar-w:      260px;
+  --header-h:       56px;
+}
+
+/* ─── Base ─────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body { @apply bg-gray-50 text-gray-900; }
+
+  ::-webkit-scrollbar        { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track  { background: transparent; }
+  ::-webkit-scrollbar-thumb  { @apply rounded-full bg-gray-300; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-gray-400; }
+}
+
+/* ─── Component Layer ──────────────────────────────── */
+@layer components {
+
+  /* Sidebar shell */
+  .sidebar {
+    width: var(--sidebar-w);
+    background-color: var(--ift-navy);
+    @apply flex flex-col h-screen shrink-0 sticky top-0;
+  }
+
+  /* Nav links */
+  .sidebar-link {
+    @apply flex items-center gap-2.5 mx-2 px-3 py-2 rounded-lg text-[13px] font-medium
+           text-slate-300 cursor-pointer transition-colors duration-100 select-none;
+  }
+  .sidebar-link:hover { background: rgba(255,255,255,0.08); @apply text-white; }
+  .sidebar-link.active {
+    background-color: var(--ift-gold);
+    @apply text-white shadow-sm;
+  }
+
+  /* Section labels */
+  .sidebar-section {
+    @apply px-3 pt-4 pb-1 text-[10px] font-semibold tracking-widest uppercase text-slate-500;
+  }
+
+  /* Header bar */
+  .app-header {
+    height: var(--header-h);
+    @apply sticky top-0 z-10 flex items-center justify-between px-6
+           bg-white border-b border-gray-200 shrink-0;
+  }
+
+  /* Page cards */
+  .card {
+    @apply bg-white rounded-xl border border-gray-100 shadow-sm p-5;
+  }
+
+  /* Stat card accent bar */
+  .stat-card {
+    @apply card relative overflow-hidden;
+  }
+
+  /* Form inputs */
+  .input {
+    @apply w-full px-3 py-2.5 rounded-lg border border-gray-300 text-sm bg-white
+           transition-shadow duration-100
+           focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400;
+  }
+  .input-error { @apply border-red-400 focus:ring-red-200 focus:border-red-400; }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5
+           text-sm font-semibold rounded-lg transition-all duration-100
+           focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn text-white focus:ring-blue-400;
+    background-color: var(--ift-navy);
+  }
+  .btn-primary:not(:disabled):hover { background-color: var(--ift-navy-hover); }
+
+  .btn-gold {
+    @apply btn text-white focus:ring-yellow-400;
+    background-color: var(--ift-gold);
+  }
+  .btn-gold:not(:disabled):hover { background-color: var(--ift-gold-light); }
+
+  .btn-outline {
+    @apply btn border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-gray-300;
+  }
+
+  /* Badges */
+  .badge        { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium; }
+  .badge-green  { @apply badge bg-emerald-50 text-emerald-700; }
+  .badge-red    { @apply badge bg-red-50 text-red-600; }
+  .badge-yellow { @apply badge bg-amber-50 text-amber-700; }
+  .badge-blue   { @apply badge bg-blue-50 text-blue-700; }
+  .badge-gray   { @apply badge bg-gray-100 text-gray-600; }
+
+  /* Page title */
+  .page-title { @apply text-xl font-semibold text-gray-900; }
+  .page-sub   { @apply text-sm text-gray-500; }
+
+  /* Table */
+  .table-auto-ift { @apply w-full text-sm text-left; }
+  .table-auto-ift thead tr { @apply bg-gray-50 text-gray-500 text-xs uppercase tracking-wide; }
+  .table-auto-ift thead th { @apply px-4 py-3 font-medium; }
+  .table-auto-ift tbody tr { @apply border-t border-gray-100 hover:bg-gray-50 transition-colors; }
+  .table-auto-ift tbody td { @apply px-4 py-3; }
+}
