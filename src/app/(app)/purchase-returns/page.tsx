@@ -66,14 +66,33 @@ export default function PurchaseReturnsPage() {
     setLoading(true)
     try {
       const supabase = createClient()
-      const { data, error } = await supabase
+
+      // Step 1: fetch returns without FK join
+      const { data: returns, error } = await supabase
         .from('purchase_returns')
-        .select(`id, return_no, return_date, total_amount, status, notes,
-          purchase_invoices!purchase_invoice_id(invoice_no, parties!supplier_id(name))`)
+        .select('id, return_no, return_date, total_amount, status, notes, purchase_invoice_id')
         .order('return_date', { ascending: false })
       if (error) throw new Error(error.message)
 
-      const ids = ((data ?? []) as any[]).map(r => r.id as string)
+      const returnsArr = (returns ?? []) as any[]
+
+      // Step 2: manually fetch invoice + supplier for each unique invoice id
+      const invoiceIds = [...new Set(returnsArr.map(r => r.purchase_invoice_id).filter(Boolean))]
+      const invoiceMap = new Map<string, { invoice_no: string; supplier_name: string }>()
+      if (invoiceIds.length > 0) {
+        const { data: invData } = await supabase
+          .from('purchase_invoices')
+          .select('id, invoice_no, parties!supplier_id(name)')
+          .in('id', invoiceIds)
+        for (const inv of (invData ?? []) as any[]) {
+          invoiceMap.set(inv.id, {
+            invoice_no:    inv.invoice_no ?? '',
+            supplier_name: (inv.parties as any)?.name ?? 'Unknown',
+          })
+        }
+      }
+
+      const ids = returnsArr.map(r => r.id as string)
       const cntMap = new Map<string, number>()
       if (ids.length > 0) {
         const { data: items } = await supabase
@@ -82,17 +101,20 @@ export default function PurchaseReturnsPage() {
           cntMap.set(i.return_id, (cntMap.get(i.return_id) ?? 0) + 1)
       }
 
-      setRows(((data ?? []) as any[]).map(r => ({
-        id:            r.id,
-        return_no:     r.return_no     ?? '',
-        return_date:   r.return_date   ?? '',
-        invoice_no:    (r.purchase_invoices as any)?.invoice_no ?? '',
-        supplier_name: (r.purchase_invoices as any)?.parties?.name ?? 'Unknown',
-        total_amount:  Number(r.total_amount ?? 0),
-        status:        r.status        ?? 'confirmed',
-        notes:         r.notes         ?? '',
-        items_count:   cntMap.get(r.id) ?? 0,
-      })))
+      setRows(returnsArr.map(r => {
+        const inv = invoiceMap.get(r.purchase_invoice_id) ?? { invoice_no: '', supplier_name: 'Unknown' }
+        return {
+          id:            r.id,
+          return_no:     r.return_no    ?? '',
+          return_date:   r.return_date  ?? '',
+          invoice_no:    inv.invoice_no,
+          supplier_name: inv.supplier_name,
+          total_amount:  Number(r.total_amount ?? 0),
+          status:        r.status       ?? 'confirmed',
+          notes:         r.notes        ?? '',
+          items_count:   cntMap.get(r.id) ?? 0,
+        }
+      }))
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load purchase returns')
     } finally {
