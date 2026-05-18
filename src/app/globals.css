@@ -46,8 +46,8 @@
 
   /* Nav links */
   .sidebar-link {
-    @apply flex items-center gap-2.5 mx-2 px-3 py-2 rounded-lg text-[13px] font-medium
-           text-slate-300 cursor-pointer transition-colors duration-100 select-none;
+    @apply flex items-center gap-2.5 mx-2 px-3 py-2.5 md:py-2 rounded-lg text-[13px] font-medium
+           text-slate-300 cursor-pointer transition-all duration-100 select-none active:scale-[0.98] active:opacity-80;
   }
   .sidebar-link:hover { background: 
     rgba(18, 6, 185, 0.08); @apply text-white; }
@@ -127,6 +127,56 @@
   .table-auto-ift { @apply w-full text-sm text-left min-w-[600px] md:min-w-full; }
   .table-auto-ift thead tr { @apply bg-gray-50 text-gray-500 text-xs uppercase tracking-wide; }
   .table-auto-ift thead th { @apply px-4 py-3 font-medium whitespace-nowrap; }
-  .table-auto-ift tbody tr { @apply border-t border-gray-100 hover:bg-gray-50 transition-colors; }
+  .table-auto-ift tbody tr { @apply border-t border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors; }
   .table-auto-ift tbody td { @apply px-4 py-3; }
+
+  /* ─── Forms & Billing Layout ─────────────────────── */
+  .form-group { @apply flex flex-col gap-1.5; }
+  .form-row { @apply flex flex-col md:flex-row gap-3 md:gap-4 mb-4 md:mb-5; }
+  .form-row .form-group { @apply flex-1 mb-0; }
+  .flex-2 { @apply flex-[2] !important; }
+
+  /* Billing Shell */
+  .billing-layout {
+    @apply flex flex-col lg:flex-row gap-4 lg:gap-6 h-auto lg:h-[calc(100vh-[var(--header-h)]-2rem)];
+  }
+
+  .billing-left {
+    @apply flex-none w-full lg:flex-1 lg:w-auto flex flex-col lg:overflow-y-auto;
+  }
+
+  .billing-right {
+    @apply flex-none w-full lg:flex-[1.2] lg:w-auto flex flex-col;
+  }
+
+  .bill-card {
+    @apply card flex flex-col h-full mb-0;
+  }
+
+  .bill-table-wrap {
+    @apply flex-1 overflow-auto min-h-[200px];
+  }
+
+  /* Mobile Specific Billing Overrides */
+  @media (max-width: 768px) {
+    .billing-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+    }
+    .billing-left { width: 100%; }
+    .billing-right { width: 100%; }
+    .payment-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .summary-values { text-align: right; }
+    .section-card {
+      width: 100%;
+      border-radius: 16px;
+      box-sizing: border-box;
+    }
+  }
 }

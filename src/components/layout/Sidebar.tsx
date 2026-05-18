@@ -102,7 +102,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
   return (
     <aside className={clsx(
-      'sidebar w-[var(--sidebar-w)] h-screen shrink-0',
+      'sidebar w-[var(--sidebar-w)] max-w-[85vw] h-screen shrink-0 overflow-x-hidden',
       // Mobile: fixed overlay with slide transition
       'fixed inset-y-0 left-0 z-50',
       'transform transition-transform duration-300 ease-in-out',
@@ -125,7 +125,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto py-3 space-y-0.5">
+      <nav className="flex-1 overflow-y-auto overscroll-contain py-3 space-y-0.5">
         {NAV.map((group) => (
           <div key={group.section}>
             <p className="sidebar-section">{group.section}</p>

@@ -25,7 +25,7 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
             aria-label="Open navigation"
             aria-expanded={open}
             onClick={() => setOpen(true)}
-            className="p-1 rounded focus:outline-none"
+            className="p-2 -ml-1 rounded-md active:bg-white/20 transition-colors focus:outline-none"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="3" y1="6" x2="21" y2="6"/>
