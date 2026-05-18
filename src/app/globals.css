@@ -49,7 +49,8 @@
     @apply flex items-center gap-2.5 mx-2 px-3 py-2 rounded-lg text-[13px] font-medium
            text-slate-300 cursor-pointer transition-colors duration-100 select-none;
   }
-  .sidebar-link:hover { background: rgba(255,255,255,0.08); @apply text-white; }
+  .sidebar-link:hover { background: 
+    rgba(18, 6, 185, 0.08); @apply text-white; }
   .sidebar-link.active {
     background-color: var(--ift-gold);
     @apply text-white shadow-sm;
@@ -119,10 +120,13 @@
   .page-title { @apply text-xl font-semibold text-gray-900; }
   .page-sub   { @apply text-sm text-gray-500; }
 
+  /* Table Wrapper for horizontal scrolling */
+  .table-responsive { @apply w-full overflow-x-auto; }
+
   /* Table */
-  .table-auto-ift { @apply w-full text-sm text-left; }
+  .table-auto-ift { @apply w-full text-sm text-left min-w-[600px] md:min-w-full; }
   .table-auto-ift thead tr { @apply bg-gray-50 text-gray-500 text-xs uppercase tracking-wide; }
-  .table-auto-ift thead th { @apply px-4 py-3 font-medium; }
+  .table-auto-ift thead th { @apply px-4 py-3 font-medium whitespace-nowrap; }
   .table-auto-ift tbody tr { @apply border-t border-gray-100 hover:bg-gray-50 transition-colors; }
   .table-auto-ift tbody td { @apply px-4 py-3; }
 }
