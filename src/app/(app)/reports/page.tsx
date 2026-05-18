@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import {
   Download, Loader2, ShoppingCart, PackageOpen,

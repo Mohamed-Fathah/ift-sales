@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import {
   IndianRupee, ShoppingCart, BookOpen,
   AlertTriangle, TrendingDown, TrendingUp,
