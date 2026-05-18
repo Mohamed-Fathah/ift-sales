@@ -460,7 +460,7 @@ export default function MaterialsPage() {
           stock(qty_in_hand, location_id)
         `)
         .eq('is_active', true)
-        .order('title')
+        .order('item_code')
 
       console.log('Materials query result:', data, error)
       if (error) console.error('Materials error:', error)
