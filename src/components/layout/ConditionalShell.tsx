@@ -64,22 +64,15 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
   const [open, setOpen] = useState(false)
   useEffect(() => { setOpen(false) }, [pathname])
   if (pathname.startsWith('/auth')) return <>{children}</>
-
   return (
     <div style={{ display:'flex', height:'100vh', overflow:'hidden' }}>
-      
-      {/* Desktop sidebar */}
       <div className="hidden md:block" style={{ flexShrink:0 }}>
         <SidebarContent />
       </div>
-
-      {/* Mobile overlay */}
       {open && (
         <div className="md:hidden" onClick={() => setOpen(false)}
           style={{ position:'fixed', inset:0, backgroundColor:'rgba(0,0,0,0.5)', zIndex:40 }} />
       )}
-
-      {/* Mobile drawer */}
       <div className="md:hidden" style={{
         position:'fixed', top:0, bottom:0, left:0, zIndex:50,
         transform: open ? 'translateX(0)' : 'translateX(-100%)',
@@ -87,8 +80,6 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
       }}>
         <SidebarContent onClose={() => setOpen(false)} />
       </div>
-
-      {/* Main */}
       <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden', minWidth:0 }}>
         <div className="md:hidden" style={{
           display:'flex', alignItems:'center', gap:'12px',
