@@ -85,7 +85,13 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
           display:'flex', alignItems:'center', gap:'12px',
           padding:'12px 16px', backgroundColor:'#1B2A6B', color:'white', flexShrink:0
         }}>
-          <button onClick={() => setOpen(true)} style={{ background:'none', border:'none', color:'white', fontSize:'22px', cursor:'pointer' }}>☰</button>
+          <button onClick={() => setOpen(true)} style={{ background:'none', border:'none', color:'white', cursor:'pointer', padding:'4px' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
           <span style={{ fontWeight:600, fontSize:'15px' }}>IFT ERP</span>
         </div>
         <div style={{ flex:1, overflow:'auto' }}>{children}</div>
