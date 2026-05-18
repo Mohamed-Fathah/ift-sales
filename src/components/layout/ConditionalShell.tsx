@@ -16,7 +16,17 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Mobile overlay */}
+      {/* Desktop sidebar — hidden on mobile, always visible on md+ */}
+      <div className="hidden md:flex md:flex-shrink-0 md:w-52">
+        <Sidebar />
+      </div>
+
+      {/* Mobile drawer — only exists on mobile, slides in on demand */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 md:hidden transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <Sidebar />
+      </div>
+
+      {/* Mobile overlay backdrop */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
@@ -24,19 +34,10 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
         />
       )}
 
-      {/* Sidebar */}
-      <div className={`
-        fixed inset-y-0 left-0 z-50 w-52 transition-transform duration-300
-        md:relative md:translate-x-0 md:flex md:flex-shrink-0
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
-        <Sidebar />
-      </div>
-
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-auto">
         {/* Mobile header with hamburger */}
-        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-200">
+        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-200 shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
             className="p-1 rounded text-gray-600"
@@ -51,7 +52,7 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
         </div>
 
         {/* Page content */}
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto p-4 md:p-6">
           {children}
         </main>
       </div>
