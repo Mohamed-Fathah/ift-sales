@@ -632,7 +632,7 @@ export default function BillingPage() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col md:h-full">
 
       {/* Page heading */}
       <div className="flex items-center justify-between mb-5">
@@ -649,10 +649,10 @@ export default function BillingPage() {
       </div>
 
       {/* Main two-column layout */}
-      <div className="flex gap-5 flex-1 min-h-0">
+      <div className="flex flex-col gap-4 md:flex-row md:gap-5 md:flex-1 md:min-h-0">
 
         {/* ── Left panel ─────────────────────────────────────────────────── */}
-        <div className="flex flex-col gap-4 flex-1 min-w-0">
+        <div className="flex flex-col gap-4 md:flex-1 md:min-w-0">
 
           {/* Search + scan */}
           <div className="card p-4">
@@ -736,7 +736,7 @@ export default function BillingPage() {
           </div>
 
           {/* Cart */}
-          <div className="card flex-1 p-0 overflow-hidden flex flex-col min-h-0">
+          <div className="card p-0 overflow-hidden flex flex-col md:flex-1 md:min-h-0">
             {/* Cart header */}
             <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2">
@@ -851,7 +851,7 @@ export default function BillingPage() {
         </div>
 
         {/* ── Right panel ────────────────────────────────────────────────── */}
-        <div className="w-72 shrink-0 flex flex-col gap-4">
+        <div className="w-full md:w-72 md:shrink-0 flex flex-col gap-4">
 
           {/* Customer details */}
           <div className="card space-y-3">
