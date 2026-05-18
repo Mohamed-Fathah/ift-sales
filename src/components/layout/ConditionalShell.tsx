@@ -63,17 +63,24 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
   useEffect(() => { setOpen(false) }, [pathname])
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
   if (pathname.startsWith('/auth')) return <>{children}</>
   return (
     <div style={{ display:'flex', height:'100vh', overflow:'hidden' }}>
-      <div className="hidden md:block" style={{ flexShrink:0 }}>
+      <div style={{ display: isMobile ? 'none' : 'block', flexShrink:0 }}>
         <SidebarContent />
       </div>
       {open && (
-        <div className="md:hidden" onClick={() => setOpen(false)}
-          style={{ position:'fixed', inset:0, backgroundColor:'rgba(0,0,0,0.5)', zIndex:40 }} />
+        <div style={{ display: isMobile ? 'block' : 'none', position:'fixed', inset:0, backgroundColor:'rgba(0,0,0,0.5)', zIndex:40 }} onClick={() => setOpen(false)} />
       )}
-      <div className="md:hidden" style={{
+      <div style={{
+        display: isMobile ? 'block' : 'none',
         position:'fixed', top:0, bottom:0, left:0, zIndex:50,
         transform: open ? 'translateX(0)' : 'translateX(-100%)',
         transition:'transform 0.3s ease'
@@ -81,8 +88,8 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
         <SidebarContent onClose={() => setOpen(false)} />
       </div>
       <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden', minWidth:0 }}>
-        <div className="md:hidden" style={{
-          display:'flex', alignItems:'center', gap:'12px',
+        <div style={{
+          display: isMobile ? 'flex' : 'none', alignItems:'center', gap:'12px',
           padding:'12px 16px', backgroundColor:'#1B2A6B', color:'white', flexShrink:0
         }}>
           <button onClick={() => setOpen(true)} style={{ background:'none', border:'none', color:'white', cursor:'pointer', padding:'4px' }}>
