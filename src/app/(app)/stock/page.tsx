@@ -10,9 +10,8 @@ import {
 import toast from 'react-hot-toast'
 import { useAuthStore } from '@/store/auth.store'
 import { exportStockReport } from '@/lib/excel-export'
+import { createClient } from '@/lib/supabase/client'
 import {
-  getStockSummaryAction,
-  getLocationsAction,
   updateStockAction,
   transferStockAction,
   type StockRow,
@@ -393,12 +392,28 @@ export default function StockPage() {
   const load = async () => {
     setLoading(true)
     try {
-      const [data, locs] = await Promise.all([
-        getStockSummaryAction(),
-        getLocationsAction(),
+      const supabase = createClient()
+      const [{ data: stockData, error: stockErr }, { data: locs, error: locsErr }] = await Promise.all([
+        supabase.from('v_stock_summary').select('*').order('title'),
+        supabase.from('locations').select('id, name').order('name'),
       ])
-      setRows(data)
-      setLocations(locs)
+      if (stockErr) throw new Error(stockErr.message)
+      if (locsErr) throw new Error(locsErr.message)
+      setRows(((stockData ?? []) as any[]).map(r => ({
+        material_id:   r.material_id   ?? '',
+        location_id:   r.location_id   ?? '',
+        item_code:     r.item_code     ?? '',
+        isbn:          r.isbn          ?? '',
+        title:         r.title         ?? '',
+        author:        r.author        ?? '',
+        category:      r.category      ?? '',
+        location:      r.location      ?? '',
+        qty_available: Number(r.qty_available ?? r.qty_in_hand ?? 0),
+        mrp:           Number(r.mrp           ?? 0),
+        purchase_rate: Number(r.purchase_rate  ?? 0),
+        stock_value:   Number(r.stock_value   ?? 0),
+      })))
+      setLocations(((locs ?? []) as any[]).map(l => ({ id: l.id as string, name: l.name as string })))
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load stock data')
     } finally {

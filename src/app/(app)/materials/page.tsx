@@ -13,9 +13,8 @@ import * as XLSX from 'xlsx'
 import { useAuthStore } from '@/store/auth.store'
 import { logChange } from '@/lib/audit'
 import { exportStockReport } from '@/lib/excel-export'
+import { createClient } from '@/lib/supabase/client'
 import {
-  getMaterialsAction,
-  getCategoriesAction,
   getStockReportDataAction,
   saveMaterialAction,
   updateMaterialAction,
@@ -451,9 +450,34 @@ export default function MaterialsPage() {
   const load = useCallback(async () => {
     setIsLoading(true)
     try {
-      const [mats, cats] = await Promise.all([getMaterialsAction(), getCategoriesAction()])
-      setRows(mats)
-      setCategories(cats)
+      const supabase = createClient()
+      const [{ data: mats, error: matsErr }, { data: stocks }, { data: cats, error: catsErr }] = await Promise.all([
+        supabase.from('materials').select('id, item_code, isbn, title, author, category_id, mrp, purchase_rate, discount_pct, is_active, categories(name)').order('item_code'),
+        supabase.from('stock').select('material_id, qty_in_hand'),
+        supabase.from('categories').select('id, name').order('name'),
+      ])
+      if (matsErr) throw new Error(matsErr.message)
+      if (catsErr) throw new Error(catsErr.message)
+      const stockMap = new Map<string, number>()
+      for (const s of (stocks ?? []) as any[]) {
+        const prev = stockMap.get(s.material_id) ?? 0
+        stockMap.set(s.material_id, prev + Number(s.qty_in_hand ?? 0))
+      }
+      setRows(((mats ?? []) as any[]).map(m => ({
+        id:            m.id,
+        item_code:     m.item_code    ?? '',
+        isbn:          m.isbn         ?? '',
+        title:         m.title        ?? '',
+        author:        m.author       ?? '',
+        category_id:   m.category_id  ?? '',
+        category:      (m.categories as any)?.name ?? '',
+        mrp:           Number(m.mrp           ?? 0),
+        purchase_rate: Number(m.purchase_rate  ?? 0),
+        discount_pct:  Number(m.discount_pct   ?? 0),
+        is_active:     Boolean(m.is_active     ?? true),
+        stock:         stockMap.get(m.id)       ?? 0,
+      })))
+      setCategories((cats ?? []) as CategoryOption[])
     } catch (err: any) {
       toast.error(err.message)
     } finally {

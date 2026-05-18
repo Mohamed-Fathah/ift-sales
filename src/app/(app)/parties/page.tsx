@@ -7,8 +7,8 @@ import {
   Phone, Mail, MapPin, CreditCard, FileText,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { createClient } from '@/lib/supabase/client'
 import {
-  getPartiesAction,
   savePartyAction,
   updatePartyAction,
   deletePartyAction,
@@ -457,7 +457,26 @@ export default function PartiesPage() {
   const load = async () => {
     setLoading(true)
     try {
-      setRows(await getPartiesAction())
+      const supabase = createClient()
+      const { data, error } = await supabase.from('parties').select('*').order('name')
+      if (error) throw new Error(error.message)
+      setRows(((data ?? []) as any[]).map(r => ({
+        id:              r.id,
+        name:            r.name            ?? '',
+        party_type:      r.party_type      ?? 'customer',
+        contact_person:  r.contact_person  ?? '',
+        phone:           r.phone           ?? '',
+        whatsapp:        r.whatsapp        ?? '',
+        email:           r.email           ?? '',
+        address:         r.address         ?? '',
+        city:            r.city            ?? '',
+        gstin:           r.gstin           ?? '',
+        credit_limit:    Number(r.credit_limit    ?? 0),
+        credit_days:     Number(r.credit_days     ?? 0),
+        opening_balance: Number(r.opening_balance ?? 0),
+        notes:           r.notes           ?? '',
+        is_active:       Boolean(r.is_active ?? true),
+      })))
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load parties')
     } finally {
