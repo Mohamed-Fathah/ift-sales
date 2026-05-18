@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Bell } from 'lucide-react'
+import { Bell, Menu } from 'lucide-react'
 import { useAuthStore } from '@/store/auth.store'
 
 const ROUTE_TITLES: Record<string, string> = {
@@ -30,17 +30,30 @@ function getTitle(pathname: string): string {
   return 'IFT ERP'
 }
 
-export default function Header() {
+interface HeaderProps {
+  onMenuClick: () => void
+}
+
+export default function Header({ onMenuClick }: HeaderProps) {
   const pathname = usePathname()
   const { user } = useAuthStore()
   const title = getTitle(pathname)
 
   return (
     <header
-      className="sticky top-0 z-10 flex items-center justify-between px-6 bg-white border-b border-gray-200"
-      style={{ height: 'var(--header-height)' }}
+      className="sticky top-0 z-10 flex items-center justify-between px-4 md:px-6 bg-white border-b border-gray-200 shrink-0"
+      style={{ height: 'var(--header-h)' }}
     >
-      <h1 className="text-base font-semibold text-gray-900">{title}</h1>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onMenuClick}
+          className="md:hidden p-2 -ml-1 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+          aria-label="Open navigation"
+        >
+          <Menu size={20} />
+        </button>
+        <h1 className="text-base font-semibold text-gray-900">{title}</h1>
+      </div>
 
       <div className="flex items-center gap-3">
         <button className="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
