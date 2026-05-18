@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { clsx } from 'clsx'
 import { usePathname } from 'next/navigation'
+import { clsx } from 'clsx'
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -81,7 +81,11 @@ const NAV: NavGroup[] = [
   },
 ]
 
-export default function Sidebar({ isOpen }: { isOpen: boolean }) {
+interface SidebarProps {
+  isOpen: boolean
+}
+
+export default function Sidebar({ isOpen }: SidebarProps) {
   const pathname = usePathname()
   const { user, logout } = useAuthStore()
   const router = useRouter()
@@ -97,12 +101,15 @@ export default function Sidebar({ isOpen }: { isOpen: boolean }) {
   }
 
   return (
-    <aside className={`
-      fixed inset-y-0 left-0 z-50 w-52 flex flex-col
-      bg-[#1B2A6B] transition-transform duration-300
-      md:relative md:translate-x-0 md:flex
-      ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-    `}>
+    <aside className={clsx(
+      'sidebar w-[var(--sidebar-w)] h-screen shrink-0',
+      // Mobile: fixed overlay with slide transition
+      'fixed inset-y-0 left-0 z-50',
+      'transform transition-transform duration-300 ease-in-out',
+      isOpen ? 'translate-x-0' : '-translate-x-full',
+      // Desktop: in-flow, always visible
+      'md:relative md:translate-x-0',
+    )}>
       {/* Logo / Brand */}
       <div className="flex items-center gap-3 px-5 py-4 border-b border-white/10">
         <div
