@@ -1,25 +1,22 @@
 'use client'
-
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Sidebar from './Sidebar'
-import Header from './Header'
 
 export default function ConditionalShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isAuthRoute = pathname.startsWith('/auth')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  // Close sidebar on route change (handles mobile nav-link taps)
-  useEffect(() => { setSidebarOpen(false) }, [pathname])
+  useEffect(() => {
+    setSidebarOpen(false)
+  }, [pathname])
 
-  if (isAuthRoute) {
-    return <>{children}</>
-  }
+  const isAuth = pathname.startsWith('/auth')
+  if (isAuth) return <>{children}</>
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
-      {/* Mobile backdrop */}
+    <div className="flex h-screen overflow-hidden">
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
@@ -27,11 +24,34 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
         />
       )}
 
-      <Sidebar isOpen={sidebarOpen} />
+      {/* Sidebar */}
+      <div className={`
+        fixed inset-y-0 left-0 z-50 w-52 transition-transform duration-300
+        md:relative md:translate-x-0 md:flex md:flex-shrink-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <Sidebar />
+      </div>
 
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        <Header onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-auto">
+        {/* Mobile header with hamburger */}
+        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-200">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-1 rounded text-gray-600"
+          >
+            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <span className="font-semibold text-gray-800">IFT ERP</span>
+        </div>
+
+        {/* Page content */}
+        <main className="flex-1 overflow-auto">
           {children}
         </main>
       </div>
