@@ -288,7 +288,7 @@ function ReceiptModal({
 
           {/* Footer */}
           <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #eee', fontSize: '12px', color: '#9CA3AF' }}>
-            <p>Jazakumullahu Khayran</p>
+            <p>May Almighty increase us in knowledge</p>
             <p>Thank you for purchasing IFT Publications</p>
           </div>
         </div>

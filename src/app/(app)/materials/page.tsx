@@ -146,6 +146,7 @@ function AddBookModal({
   const [form, setForm] = useState<SaveMaterialInput>({
     item_code: '', isbn: '', title: '', author: '',
     category_id: '', mrp: 0, purchase_rate: 0, discount_pct: 0,
+    publication: 'Islamic Foundation Trust', initial_stock: 0,
   })
   const [saving, setSaving] = useState(false)
   const [errs, setErrs] = useState<Record<string, string>>({})
@@ -250,7 +251,7 @@ function AddBookModal({
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">MRP (Rs.) *</label>
+              <label className="block text-xs font-medium text-gray-500 mb-1">MRP (₹) *</label>
               <input
                 type="number" min={0} step={0.01}
                 className={`input ${errs.mrp ? 'input-error' : ''}`}
@@ -277,6 +278,28 @@ function AddBookModal({
                 onChange={e => f('discount_pct', parseFloat(e.target.value) || 0)}
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">Publication</label>
+            <input
+              className="input"
+              value={form.publication ?? ''}
+              onChange={e => f('publication', e.target.value)}
+              placeholder="Islamic Foundation Trust"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">Initial Stock</label>
+            <input
+              type="number" min={0} step={1}
+              className="input"
+              value={form.initial_stock || ''}
+              onChange={e => f('initial_stock', parseInt(e.target.value) || 0)}
+              placeholder="0"
+            />
+            <p className="text-xs text-gray-400 mt-1">Added to default location on save</p>
           </div>
         </div>
 
@@ -379,8 +402,8 @@ function ImportModal({
                   <td className="font-mono text-xs">{r.isbn || '—'}</td>
                   <td className="max-w-xs truncate font-medium">{r.title}</td>
                   <td className="truncate">{r.author || '—'}</td>
-                  <td className="text-right tabular-nums">Rs.{r.mrp.toFixed(2)}</td>
-                  <td className="text-right tabular-nums">Rs.{r.purchase_rate.toFixed(2)}</td>
+                  <td className="text-right tabular-nums">₹{r.mrp.toFixed(2)}</td>
+                  <td className="text-right tabular-nums">₹{r.purchase_rate.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>

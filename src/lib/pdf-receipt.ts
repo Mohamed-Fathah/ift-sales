@@ -39,7 +39,7 @@ export function generateReceiptPDF(data: ReceiptData) {
 
   // ── Header ────────────────────────────────────────────────────────────────
   doc.setFillColor(...navy)
-  doc.rect(0, 0, W, 28, 'F')
+  doc.rect(0, 0, W, 26, 'F')
 
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(13)
@@ -47,15 +47,11 @@ export function generateReceiptPDF(data: ReceiptData) {
   doc.text('ISLAMIC FOUNDATION TRUST', W / 2, y + 4, { align: 'center' })
 
   doc.setFont('helvetica', 'normal')
-  doc.setFontSize(8)
-  doc.setTextColor(...gold as unknown as [number, number, number])
-  doc.text('Publishers & Exporters of Islamic Literature', W / 2, y + 10, { align: 'center' })
-
+  doc.setFontSize(7.5)
   doc.setTextColor(...white)
-  doc.setFontSize(7)
-  doc.text('138, Perambur High Road, Chennai – 600012', W / 2, y + 15, { align: 'center' })
-  doc.text('Tel: +91-44-2662 4401  |  iftchennai12@gmail.com  |  www.iftchennai.in', W / 2, y + 20, { align: 'center' })
-  y = 32
+  doc.text('138, Perambur High Road, Chennai – 600012', W / 2, y + 11, { align: 'center' })
+  doc.text('WhatsApp: +91 86680 57596  |  www.iftchennai.in', W / 2, y + 17, { align: 'center' })
+  y = 30
 
   // ── Gold title bar ────────────────────────────────────────────────────────
   doc.setFillColor(...gold)
@@ -84,11 +80,6 @@ export function generateReceiptPDF(data: ReceiptData) {
   }
   doc.text(`Payment: ${data.paymentMode.toUpperCase()}`, 10, y)
   y += 5
-
-  // Divider before table
-  doc.setDrawColor(220, 220, 220)
-  doc.line(10, y, W - 10, y)
-  y += 4
 
   // ── Table header ──────────────────────────────────────────────────────────
   doc.setFillColor(...light)
@@ -128,14 +119,8 @@ export function generateReceiptPDF(data: ReceiptData) {
     doc.text(`₹${item.total.toFixed(2)}`, W - 10,  y, { align: 'right' })
 
     y += Math.max(titleLines.length * 4 + (item.isbn ? 4 : 0), 6) + 1
-    doc.setDrawColor(235, 235, 235)
-    doc.line(10, y - 1, W - 10, y - 1)
   }
 
-  // ── Separator after items ─────────────────────────────────────────────────
-  y += 4
-  doc.setDrawColor(200, 200, 200)
-  doc.line(10, y, W - 10, y)
   y += 6
 
   // ── Totals — right-side block only ────────────────────────────────────────
@@ -163,11 +148,6 @@ export function generateReceiptPDF(data: ReceiptData) {
   doc.text(`-₹${data.totalDiscount.toFixed(2)}`, valueX, y, { align: 'right' })
   y += 5
 
-  // Solid navy line above TOTAL PAID
-  doc.setDrawColor(...navy)
-  doc.line(labelX, y, valueX, y)
-  y += 4
-
   // TOTAL PAID
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(11)
@@ -185,7 +165,7 @@ export function generateReceiptPDF(data: ReceiptData) {
   doc.setFont('helvetica', 'italic')
   doc.setFontSize(8)
   doc.setTextColor(...gray)
-  doc.text('Jazakumullahu Khayran', W / 2, y, { align: 'center' })
+  doc.text('May Almighty increase us in knowledge', W / 2, y, { align: 'center' })
   y += 5
 
   doc.setFont('helvetica', 'normal')
