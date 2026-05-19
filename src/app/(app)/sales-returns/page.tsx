@@ -70,11 +70,25 @@ export default function SalesReturnsPage() {
       const supabase = createClient()
       const { data, error } = await supabase
         .from('sales_returns')
-        .select('id, return_no, return_date, total_amount, status, notes, sales_invoice_id, sales_invoices!sales_invoice_id(invoice_no, customer_name, customer_phone)')
+        .select('id, return_no, return_date, total_amount, status, notes, sales_invoice_id')
         .order('return_date', { ascending: false })
       if (error) throw new Error(error.message)
 
-      const ids = ((data ?? []) as any[]).map(r => r.id as string)
+      const returns = (data ?? []) as any[]
+
+      // Batch fetch related invoices separately
+      const invoiceIds = [...new Set(returns.map(r => r.sales_invoice_id).filter(Boolean))]
+      const invMap = new Map<string, any>()
+      if (invoiceIds.length > 0) {
+        const { data: invData } = await supabase
+          .from('sales_invoices')
+          .select('id, invoice_no, customer_name, customer_phone')
+          .in('id', invoiceIds)
+        for (const inv of (invData ?? []) as any[])
+          invMap.set(inv.id, inv)
+      }
+
+      const ids = returns.map(r => r.id as string)
       const cntMap = new Map<string, number>()
       if (ids.length > 0) {
         const { data: items } = await supabase
@@ -83,18 +97,21 @@ export default function SalesReturnsPage() {
           cntMap.set(i.return_id, (cntMap.get(i.return_id) ?? 0) + 1)
       }
 
-      setRows(((data ?? []) as any[]).map(r => ({
-        id:             r.id,
-        return_no:      r.return_no    ?? '',
-        return_date:    r.return_date  ?? '',
-        invoice_no:     (r.sales_invoices as any)?.invoice_no    ?? '',
-        customer_name:  (r.sales_invoices as any)?.customer_name ?? 'Walk-in',
-        customer_phone: (r.sales_invoices as any)?.customer_phone ?? '',
-        total_amount:   Number(r.total_amount ?? 0),
-        status:         r.status ?? 'confirmed',
-        notes:          r.notes  ?? '',
-        items_count:    cntMap.get(r.id) ?? 0,
-      })))
+      setRows(returns.map(r => {
+        const inv = invMap.get(r.sales_invoice_id)
+        return {
+          id:             r.id,
+          return_no:      r.return_no   ?? '',
+          return_date:    r.return_date ?? '',
+          invoice_no:     inv?.invoice_no    ?? '',
+          customer_name:  inv?.customer_name ?? 'Walk-in',
+          customer_phone: inv?.customer_phone ?? '',
+          total_amount:   Number(r.total_amount ?? 0),
+          status:         r.status ?? 'confirmed',
+          notes:          r.notes  ?? '',
+          items_count:    cntMap.get(r.id) ?? 0,
+        }
+      }))
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load sales returns')
     } finally {

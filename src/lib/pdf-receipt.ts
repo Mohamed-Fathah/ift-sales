@@ -123,9 +123,9 @@ export function generateReceiptPDF(data: ReceiptData) {
 
     doc.setTextColor(...black)
     doc.text(String(item.qty),              95,      y, { align: 'right' })
-    doc.text(`Rs.${item.mrp}`,              110,     y, { align: 'right' })
-    doc.text(`Rs.${item.rate}`,             124,     y, { align: 'right' })
-    doc.text(`Rs.${item.total.toFixed(2)}`, W - 10,  y, { align: 'right' })
+    doc.text(`₹${item.mrp}`,              110,     y, { align: 'right' })
+    doc.text(`₹${item.rate}`,             124,     y, { align: 'right' })
+    doc.text(`₹${item.total.toFixed(2)}`, W - 10,  y, { align: 'right' })
 
     y += Math.max(titleLines.length * 4 + (item.isbn ? 4 : 0), 6) + 1
     doc.setDrawColor(235, 235, 235)
@@ -149,7 +149,7 @@ export function generateReceiptPDF(data: ReceiptData) {
   doc.setTextColor(...gray)
   doc.text('Subtotal (MRP)', labelX, y)
   doc.setTextColor(...black)
-  doc.text(`Rs.${data.subtotalMrp.toFixed(2)}`, valueX, y, { align: 'right' })
+  doc.text(`₹${data.subtotalMrp.toFixed(2)}`, valueX, y, { align: 'right' })
   y += 5
 
   // Discount row (green when > 0)
@@ -160,7 +160,7 @@ export function generateReceiptPDF(data: ReceiptData) {
   } else {
     doc.setTextColor(...black)
   }
-  doc.text(`-Rs.${data.totalDiscount.toFixed(2)}`, valueX, y, { align: 'right' })
+  doc.text(`-₹${data.totalDiscount.toFixed(2)}`, valueX, y, { align: 'right' })
   y += 5
 
   // Solid navy line above TOTAL PAID
@@ -173,7 +173,7 @@ export function generateReceiptPDF(data: ReceiptData) {
   doc.setFontSize(11)
   doc.setTextColor(...navy)
   doc.text('TOTAL PAID', labelX, y)
-  doc.text(`Rs.${data.grandTotal.toFixed(2)}`, valueX, y, { align: 'right' })
+  doc.text(`₹${data.grandTotal.toFixed(2)}`, valueX, y, { align: 'right' })
   y += 8
 
   // ── Footer (8mm gap from totals) ──────────────────────────────────────────

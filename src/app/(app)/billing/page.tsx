@@ -3,11 +3,12 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import Link from 'next/link'
 import {
   Search, Camera, X, Plus, Minus, Trash2,
   ShoppingCart, User, Phone, Loader2, Clock,
   CheckCircle, Printer, MessageCircle,
-  Banknote, Smartphone, CreditCard, FileText, Receipt,
+  Banknote, Smartphone, CreditCard, FileText, Receipt, History,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
@@ -154,7 +155,7 @@ function ReceiptModal({
   const openWhatsApp = () => {
     const lines = receipt.items
       .map(i =>
-        `  • ${i.title}${i.isbn ? ` (${i.isbn})` : ''}\n    ${i.qty} x Rs.${i.rate.toFixed(2)} = Rs.${i.total.toFixed(2)}`
+        `  • ${i.title}${i.isbn ? ` (${i.isbn})` : ''}\n    ${i.qty} x ₹${i.rate.toFixed(2)} = ₹${i.total.toFixed(2)}`
       )
       .join('\n')
 
@@ -168,9 +169,9 @@ function ReceiptModal({
       '*Items Purchased:*',
       lines,
       '',
-      `Subtotal MRP : Rs.${receipt.subtotalMrp.toFixed(2)}`,
-      `Discount      : -Rs.${receipt.totalDiscount.toFixed(2)}`,
-      `*Grand Total  : Rs.${receipt.grandTotal.toFixed(2)}*`,
+      `Subtotal MRP : ₹${receipt.subtotalMrp.toFixed(2)}`,
+      `Discount      : -₹${receipt.totalDiscount.toFixed(2)}`,
+      `*Grand Total  : ₹${receipt.grandTotal.toFixed(2)}*`,
       '',
       '_Jazakumullahu Khayran — Thank you for purchasing IFT Publications_',
       '_Islamic Foundation Trust, Chennai — www.iftchennai.in_',
@@ -250,16 +251,16 @@ function ReceiptModal({
                     )}
                     {item.discountPct > 0 && (
                       <p className="text-emerald-600 text-xs">
-                        {item.discountPct}% off  ·  MRP Rs.{item.mrp}
+                        {item.discountPct}% off  ·  MRP ₹{item.mrp}
                       </p>
                     )}
                   </div>
                   <div className="text-right shrink-0" style={{ fontVariantNumeric: 'tabular-nums', fontFeatureSettings: '"tnum"' }}>
                     <p className="text-gray-400 text-xs">
-                      {item.qty} × Rs.{item.rate.toFixed(2)}
+                      {item.qty} × ₹{item.rate.toFixed(2)}
                     </p>
                     <p className="font-bold text-sm" style={{ color: 'var(--ift-navy)' }}>
-                      Rs.{item.total.toFixed(2)}
+                      ₹{item.total.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -272,15 +273,15 @@ function ReceiptModal({
             <div style={{ width: 'fit-content', minWidth: '320px', background: 'var(--ift-gold-pale)', borderRadius: '12px', padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '48px', padding: '4px 0', fontSize: '14px', color: '#4B5563' }}>
                 <span>Subtotal MRP</span>
-                <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontFeatureSettings: '"tnum"' }}>Rs.{receipt.subtotalMrp.toFixed(2)}</span>
+                <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontFeatureSettings: '"tnum"' }}>₹{receipt.subtotalMrp.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '48px', padding: '4px 0', fontSize: '14px', color: '#059669' }}>
                 <span>Total Discount</span>
-                <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontFeatureSettings: '"tnum"' }}>− Rs.{receipt.totalDiscount.toFixed(2)}</span>
+                <span style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontFeatureSettings: '"tnum"' }}>− ₹{receipt.totalDiscount.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '48px', borderTop: '2px solid #1B2A6B', paddingTop: '8px', marginTop: '4px', fontWeight: 'bold', fontSize: '18px', color: 'var(--ift-navy)', fontVariantNumeric: 'tabular-nums', fontFeatureSettings: '"tnum"' }}>
                 <span>Grand Total</span>
-                <span style={{ textAlign: 'right' }}>Rs.{receipt.grandTotal.toFixed(2)}</span>
+                <span style={{ textAlign: 'right' }}>₹{receipt.grandTotal.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -640,12 +641,18 @@ export default function BillingPage() {
           <h2 className="page-title">New Bill</h2>
           <p className="page-sub mt-0.5">Create a new sales invoice</p>
         </div>
-        {lastSaved && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-400">
-            <Clock size={12} />
-            Draft saved {format(lastSaved, 'HH:mm:ss')}
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {lastSaved && (
+            <div className="flex items-center gap-1.5 text-xs text-gray-400">
+              <Clock size={12} />
+              Draft saved {format(lastSaved, 'HH:mm:ss')}
+            </div>
+          )}
+          <Link href="/billing/history" className="btn-outline flex items-center gap-1.5 text-sm">
+            <History size={15} />
+            View Past Bills
+          </Link>
+        </div>
       </div>
 
       {/* Main two-column layout */}

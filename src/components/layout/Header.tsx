@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Bell, Menu } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { useAuthStore } from '@/store/auth.store'
 
 const ROUTE_TITLES: Record<string, string> = {
@@ -56,10 +56,6 @@ export default function Header({ onMenuClick }: HeaderProps) {
       </div>
 
       <div className="flex items-center gap-3">
-        <button className="relative p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
-          <Bell size={18} />
-        </button>
-
         {user && (
           <div className="flex items-center gap-2.5">
             <div
