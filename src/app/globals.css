@@ -178,5 +178,9 @@
       border-radius: 16px;
       box-sizing: border-box;
     }
+    .mobile-hide { display: none !important; }
+    .mobile-only { display: block !important; }
+    .page-action-btn { width: 100%; margin-top: 8px; }
+    .table-auto-ift { min-width: 0; }
   }
 }

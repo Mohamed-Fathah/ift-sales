@@ -635,12 +635,12 @@ export default function BillingPage() {
     <div className="flex flex-col md:h-full">
 
       {/* Page heading */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-5 flex-wrap gap-2">
         <div>
           <h2 className="page-title">New Bill</h2>
           <p className="page-sub mt-0.5">Create a new sales invoice</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           {lastSaved && (
             <div className="flex items-center gap-1.5 text-xs text-gray-400">
               <Clock size={12} />

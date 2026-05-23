@@ -1,7 +1,6 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Menu } from 'lucide-react'
 import { useAuthStore } from '@/store/auth.store'
 
 const ROUTE_TITLES: Record<string, string> = {
@@ -45,13 +44,6 @@ export default function Header({ onMenuClick }: HeaderProps) {
       style={{ height: 'var(--header-h)' }}
     >
       <div className="flex items-center gap-3">
-        <button
-          onClick={onMenuClick}
-          className="md:hidden p-2 -ml-1 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
-          aria-label="Open navigation"
-        >
-          <Menu size={20} />
-        </button>
         <h1 className="text-base font-semibold text-gray-900">{title}</h1>
       </div>
 

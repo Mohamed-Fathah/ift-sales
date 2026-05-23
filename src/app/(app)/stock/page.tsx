@@ -7,7 +7,7 @@ import {
   Search, Download, Package, AlertTriangle,
   TrendingDown, RefreshCw, ArrowLeftRight, X,
   Loader2, IndianRupee, BookOpen,
-  ArrowUp, ArrowDown, RotateCcw,
+  ArrowUp, ArrowDown, RotateCcw, Plus,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuthStore } from '@/store/auth.store'
@@ -16,8 +16,11 @@ import { createClient } from '@/lib/supabase/client'
 import {
   updateStockAction,
   transferStockAction,
+  addStockEntryAction,
+  getActiveMaterialsAction,
   type StockRow,
   type LocationOption,
+  type MaterialOption,
 } from './actions'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -95,6 +98,178 @@ function MovementTypePicker({
           </button>
         )
       })}
+    </div>
+  )
+}
+
+// ─── Add Stock Entry Modal ────────────────────────────────────────────────────
+
+function AddStockEntryModal({
+  locations,
+  userId,
+  onClose,
+  onSaved,
+}: {
+  locations: LocationOption[]
+  userId: string | null
+  onClose: () => void
+  onSaved: () => void
+}) {
+  const [materials,    setMaterials]    = useState<MaterialOption[]>([])
+  const [loadingMats,  setLoadingMats]  = useState(true)
+  const [search,       setSearch]       = useState('')
+  const [materialId,   setMaterialId]   = useState('')
+  const [locationId,   setLocationId]   = useState(locations[0]?.id ?? '')
+  const [qty,          setQty]          = useState('')
+  const [notes,        setNotes]        = useState('')
+  const [saving,       setSaving]       = useState(false)
+
+  useEffect(() => {
+    getActiveMaterialsAction()
+      .then(setMaterials)
+      .catch(err => toast.error(err.message))
+      .finally(() => setLoadingMats(false))
+  }, [])
+
+  const filteredMats = useMemo(() => {
+    const q = search.toLowerCase()
+    if (!q) return materials
+    return materials.filter(m =>
+      m.title.toLowerCase().includes(q) ||
+      m.item_code.toLowerCase().includes(q) ||
+      m.isbn.toLowerCase().includes(q)
+    )
+  }, [materials, search])
+
+  const selected  = materials.find(m => m.id === materialId)
+  const parsedQty = parseInt(qty, 10)
+  const valid     = !!materialId && !!locationId && !isNaN(parsedQty) && parsedQty > 0
+
+  const handleSave = async () => {
+    if (!valid) { toast.error('Select a book and enter a valid quantity'); return }
+    setSaving(true)
+    try {
+      await addStockEntryAction({ materialId, locationId, qty: parsedQty, notes, createdBy: userId })
+      toast.success('Stock entry added')
+      onSaved()
+    } catch (err: any) {
+      toast.error(err.message ?? 'Failed to add stock')
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col overflow-hidden">
+        <div
+          className="flex items-center justify-between px-5 py-4 shrink-0"
+          style={{ background: 'linear-gradient(135deg,#1B2A6B 0%,#2D3F8F 100%)' }}
+        >
+          <p className="font-bold text-white text-sm">Add Stock Entry</p>
+          <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          {/* Book select */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Book *</label>
+            {selected ? (
+              <div className="flex items-center justify-between px-3 py-2 bg-blue-50 rounded-lg border border-blue-200">
+                <span className="text-sm font-medium text-blue-800 line-clamp-1 flex-1">{selected.title}</span>
+                <button
+                  onClick={() => { setMaterialId(''); setSearch('') }}
+                  className="text-blue-400 hover:text-blue-600 ml-2 shrink-0"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  className="input mb-2"
+                  placeholder="Search title, item code, ISBN…"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  autoFocus
+                />
+                <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg divide-y divide-gray-100">
+                  {loadingMats ? (
+                    <div className="flex items-center justify-center gap-2 py-4 text-sm text-gray-400">
+                      <Loader2 size={14} className="animate-spin" /> Loading…
+                    </div>
+                  ) : filteredMats.length === 0 ? (
+                    <p className="text-center text-sm text-gray-400 py-4">No books found</p>
+                  ) : (
+                    filteredMats.slice(0, 60).map(m => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => { setMaterialId(m.id); setSearch(m.title) }}
+                        className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-800 truncate">{m.title}</p>
+                          <p className="text-xs text-gray-400 truncate">
+                            {m.item_code}{m.isbn ? ` · ${m.isbn}` : ''}
+                          </p>
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Location */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Location *</label>
+            <select className="input" value={locationId} onChange={e => setLocationId(e.target.value)}>
+              {locations.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+            </select>
+          </div>
+
+          {/* Qty */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">+ Add Quantity *</label>
+            <input
+              type="number"
+              min={1}
+              className="input"
+              value={qty}
+              onChange={e => setQty(e.target.value)}
+              placeholder="Enter quantity"
+            />
+            <p className="text-xs text-gray-400 mt-1">If a stock entry already exists, this qty will be added to the current quantity.</p>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Notes (optional)</label>
+            <textarea
+              className="input resize-none"
+              rows={2}
+              placeholder="Reason for adding stock…"
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="px-5 pb-5 pt-3 flex gap-3 border-t border-gray-100 shrink-0">
+          <button onClick={onClose} className="btn-outline flex-1">Cancel</button>
+          <button
+            onClick={handleSave}
+            disabled={saving || !valid}
+            className="btn-primary flex-1"
+          >
+            {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : 'Add Stock'}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -408,6 +583,7 @@ export default function StockPage() {
   const [filterStatus, setFilterStatus] = useState('all')
   const [updateRow,    setUpdateRow]    = useState<StockRow | null>(null)
   const [transferRow,  setTransferRow]  = useState<StockRow | null>(null)
+  const [showAddStock, setShowAddStock] = useState(false)
 
   const load = async () => {
     setLoading(true)
@@ -500,19 +676,28 @@ export default function StockPage() {
     <div className="space-y-5">
 
       {/* Page heading */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="page-title">Stock Management</h2>
           <p className="page-sub mt-0.5">Real-time stock levels across all locations</p>
         </div>
-        <button
-          onClick={handleExport}
-          disabled={filtered.length === 0}
-          className="btn-outline"
-        >
-          <Download size={15} />
-          Export Excel
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExport}
+            disabled={filtered.length === 0}
+            className="btn-outline"
+          >
+            <Download size={15} />
+            Export Excel
+          </button>
+          <button
+            onClick={() => setShowAddStock(true)}
+            className="btn-primary"
+          >
+            <Plus size={15} />
+            Add Stock
+          </button>
+        </div>
       </div>
 
       {/* Summary cards */}
@@ -674,14 +859,14 @@ export default function StockPage() {
             <table className="table-auto-ift">
               <thead>
                 <tr>
-                  <th>Item Code</th>
+                  <th className="mobile-hide">Item Code</th>
                   <th>Title</th>
-                  <th>Author</th>
-                  <th>Category</th>
-                  <th>Location</th>
+                  <th className="mobile-hide">Author</th>
+                  <th className="mobile-hide">Category</th>
+                  <th className="mobile-hide">Location</th>
                   <th className="text-right">Qty Available</th>
-                  <th className="text-right">MRP</th>
-                  <th className="text-right">Stock Value</th>
+                  <th className="text-right mobile-hide">MRP</th>
+                  <th className="text-right mobile-hide">Stock Value</th>
                   <th className="text-center">Status</th>
                   <th className="text-center">Actions</th>
                 </tr>
@@ -690,7 +875,7 @@ export default function StockPage() {
               <tbody>
                 {filtered.map((row, idx) => (
                   <tr key={`${row.material_id}-${row.location_id}-${idx}`}>
-                    <td>
+                    <td className="mobile-hide">
                       <span className="text-xs font-mono text-gray-500">
                         {row.item_code || '—'}
                       </span>
@@ -703,14 +888,14 @@ export default function StockPage() {
                         <p className="text-[11px] text-gray-400 mt-0.5">{row.isbn}</p>
                       )}
                     </td>
-                    <td className="text-sm text-gray-600">{row.author || '—'}</td>
-                    <td>
+                    <td className="text-sm text-gray-600 mobile-hide">{row.author || '—'}</td>
+                    <td className="mobile-hide">
                       {row.category
                         ? <span className="badge-blue">{row.category}</span>
                         : <span className="text-gray-400 text-sm">—</span>
                       }
                     </td>
-                    <td className="text-sm text-gray-600">{row.location}</td>
+                    <td className="text-sm text-gray-600 mobile-hide">{row.location}</td>
                     <td className="text-right">
                       <span
                         className="font-bold text-base tabular-nums"
@@ -725,10 +910,10 @@ export default function StockPage() {
                         {row.qty_available}
                       </span>
                     </td>
-                    <td className="text-right text-sm text-gray-600 tabular-nums">
+                    <td className="text-right text-sm text-gray-600 tabular-nums mobile-hide">
                       ₹{row.mrp.toLocaleString('en-IN')}
                     </td>
-                    <td className="text-right text-sm font-medium tabular-nums" style={{ color: 'var(--ift-navy)' }}>
+                    <td className="text-right text-sm font-medium tabular-nums mobile-hide" style={{ color: 'var(--ift-navy)' }}>
                       {fmtRupee(row.stock_value)}
                     </td>
                     <td className="text-center">
@@ -756,7 +941,7 @@ export default function StockPage() {
                 ))}
               </tbody>
 
-              <tfoot className="border-t-2 border-gray-200 bg-gray-50">
+              <tfoot className="border-t-2 border-gray-200 bg-gray-50 mobile-hide">
                 <tr>
                   <td
                     colSpan={7}
@@ -776,6 +961,15 @@ export default function StockPage() {
       </div>
 
       {/* Modals */}
+      {showAddStock && (
+        <AddStockEntryModal
+          locations={locations}
+          userId={user?.id ?? null}
+          onClose={() => setShowAddStock(false)}
+          onSaved={() => { setShowAddStock(false); void load() }}
+        />
+      )}
+
       {updateRow && (
         <UpdateStockModal
           row={updateRow}

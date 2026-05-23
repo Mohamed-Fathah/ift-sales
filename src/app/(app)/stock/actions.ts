@@ -46,6 +46,76 @@ export interface TransferStockPayload {
   createdBy: string | null
 }
 
+export interface AddStockEntryPayload {
+  materialId: string
+  locationId: string
+  qty: number
+  notes?: string
+  createdBy: string | null
+}
+
+export interface MaterialOption {
+  id: string
+  title: string
+  item_code: string
+  isbn: string
+}
+
+// ─── Queries ──────────────────────────────────────────────────────────────────
+
+export async function getActiveMaterialsAction(): Promise<MaterialOption[]> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase
+    .from('materials')
+    .select('id, title, item_code, isbn')
+    .eq('is_active', true)
+    .order('title')
+  if (error) throw new Error(error.message)
+  return ((data ?? []) as any[]).map(m => ({
+    id:        m.id,
+    title:     m.title     ?? '',
+    item_code: m.item_code ?? '',
+    isbn:      m.isbn      ?? '',
+  }))
+}
+
+// ─── Add stock entry (insert or add to existing) ──────────────────────────────
+
+export async function addStockEntryAction(payload: AddStockEntryPayload): Promise<void> {
+  if (payload.qty <= 0) throw new Error('Quantity must be positive')
+  const supabase = createAdminClient()
+
+  const { data: existing } = await supabase
+    .from('stock')
+    .select('id, qty_in_hand')
+    .eq('material_id', payload.materialId)
+    .eq('location_id', payload.locationId)
+    .maybeSingle()
+
+  if (existing) {
+    const newQty = Number((existing as any).qty_in_hand) + payload.qty
+    const { error } = await supabase
+      .from('stock')
+      .update({ qty_in_hand: newQty })
+      .eq('id', (existing as any).id)
+    if (error) throw new Error(error.message)
+  } else {
+    const { error } = await supabase
+      .from('stock')
+      .insert({ material_id: payload.materialId, location_id: payload.locationId, qty_in_hand: payload.qty })
+    if (error) throw new Error(error.message)
+  }
+
+  await supabase.from('stock_movements').insert({
+    material_id:   payload.materialId,
+    location_id:   payload.locationId,
+    movement_type: 'opening',
+    qty:           payload.qty,
+    notes:         payload.notes || null,
+    created_by:    payload.createdBy || null,
+  })
+}
+
 // ─── Git auto-commit (best-effort) ───────────────────────────────────────────
 
 function gitAutoCommit(msg: string) {

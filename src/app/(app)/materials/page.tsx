@@ -857,14 +857,14 @@ export default function MaterialsPage() {
               <table className="table-auto-ift">
                 <thead className="sticky top-0 z-10 bg-gray-50">
                   <tr>
-                    <th className="w-24">Item Code</th>
-                    <th className="w-32">ISBN</th>
+                    <th className="w-24 mobile-hide">Item Code</th>
+                    <th className="w-32 mobile-hide">ISBN</th>
                     <th>Title</th>
-                    <th className="w-36">Author</th>
-                    <th className="w-28">Category</th>
-                    <th className="w-20 text-right">MRP</th>
-                    <th className="w-24 text-right">Purch. Rate</th>
-                    <th className="w-16 text-center">Disc%</th>
+                    <th className="w-36 mobile-hide">Author</th>
+                    <th className="w-28 mobile-hide">Category</th>
+                    <th className="w-20 text-right mobile-hide">MRP</th>
+                    <th className="w-24 text-right mobile-hide">Purch. Rate</th>
+                    <th className="w-16 text-center mobile-hide">Disc%</th>
                     <th className="w-20 text-center">Stock</th>
                     <th className="w-20 text-center">Status</th>
                     {can('manage_materials') && <th className="w-10" />}
@@ -877,14 +877,14 @@ export default function MaterialsPage() {
                       className={`group ${!row.is_active ? 'opacity-50' : ''}`}
                     >
                       {/* Item Code — read-only */}
-                      <td>
+                      <td className="mobile-hide">
                         <span className="font-mono text-xs text-gray-500">
                           {row.item_code || '—'}
                         </span>
                       </td>
 
                       {/* ISBN */}
-                      <td>
+                      <td className="mobile-hide">
                         <EC rowId={row.id} field="isbn" value={row.isbn} className="font-mono text-xs" />
                       </td>
 
@@ -894,12 +894,12 @@ export default function MaterialsPage() {
                       </td>
 
                       {/* Author */}
-                      <td>
+                      <td className="mobile-hide">
                         <EC rowId={row.id} field="author" value={row.author} />
                       </td>
 
                       {/* Category */}
-                      <td>
+                      <td className="mobile-hide">
                         <SC
                           rowId={row.id}
                           field="category_id"
@@ -909,17 +909,17 @@ export default function MaterialsPage() {
                       </td>
 
                       {/* MRP */}
-                      <td>
+                      <td className="mobile-hide">
                         <EC rowId={row.id} field="mrp" value={row.mrp} type="number" align="right" />
                       </td>
 
                       {/* Purchase Rate */}
-                      <td>
+                      <td className="mobile-hide">
                         <EC rowId={row.id} field="purchase_rate" value={row.purchase_rate} type="number" align="right" />
                       </td>
 
                       {/* Discount % */}
-                      <td className="text-center">
+                      <td className="text-center mobile-hide">
                         <EC rowId={row.id} field="discount_pct" value={row.discount_pct} type="number" align="right" />
                       </td>
 
