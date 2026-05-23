@@ -33,6 +33,8 @@ export interface SaveMaterialInput {
   mrp: number
   purchase_rate: number
   discount_pct?: number
+  publication?: string
+  initial_stock?: number
 }
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
@@ -147,7 +149,34 @@ export async function saveMaterialAction(input: SaveMaterialInput): Promise<{ id
     .single()
 
   if (error) throw new Error(error.message)
-  return { id: (data as any).id }
+  const materialId = (data as any).id
+
+  // Save initial stock to default location if provided
+  if (input.initial_stock && input.initial_stock > 0) {
+    const { data: locs } = await supabase
+      .from('locations')
+      .select('id')
+      .order('name')
+      .limit(1)
+    const locationId = (locs?.[0] as any)?.id
+    if (locationId) {
+      await supabase.from('stock').insert({
+        material_id: materialId,
+        location_id: locationId,
+        qty_in_hand: input.initial_stock,
+      })
+      await supabase.from('stock_movements').insert({
+        material_id:   materialId,
+        location_id:   locationId,
+        movement_type: 'opening',
+        qty:           input.initial_stock,
+        notes:         'Initial stock on book creation',
+        created_by:    null,
+      })
+    }
+  }
+
+  return { id: materialId }
 }
 
 export async function updateMaterialAction(

@@ -166,14 +166,6 @@ export function generateReceiptPDF(data: ReceiptData) {
   doc.setFontSize(8)
   doc.setTextColor(...gray)
   doc.text('May Almighty increase us in knowledge', W / 2, y, { align: 'center' })
-  y += 5
-
-  doc.setFont('helvetica', 'normal')
-  doc.text('Thank you for purchasing IFT Publications', W / 2, y, { align: 'center' })
-  y += 4
-
-  doc.setFontSize(7)
-  doc.text(`Billed by: ${data.createdBy}  |  Ref: ${data.invoiceNo}`, W / 2, y, { align: 'center' })
 
   doc.save(`IFT_Receipt_${data.invoiceNo}.pdf`)
 }

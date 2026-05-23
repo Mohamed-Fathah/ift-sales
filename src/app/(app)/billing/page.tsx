@@ -173,7 +173,7 @@ function ReceiptModal({
       `Discount      : -₹${receipt.totalDiscount.toFixed(2)}`,
       `*Grand Total  : ₹${receipt.grandTotal.toFixed(2)}*`,
       '',
-      '_Jazakumullahu Khayran — Thank you for purchasing IFT Publications_',
+      '_May Almighty increase us in knowledge_',
       '_Islamic Foundation Trust, Chennai — www.iftchennai.in_',
     ]
       .filter(l => l !== null)
@@ -287,9 +287,8 @@ function ReceiptModal({
           </div>
 
           {/* Footer */}
-          <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #eee', fontSize: '12px', color: '#9CA3AF' }}>
+          <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #eee', fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>
             <p>May Almighty increase us in knowledge</p>
-            <p>Thank you for purchasing IFT Publications</p>
           </div>
         </div>
 

@@ -112,23 +112,32 @@ function UpdateStockModal({
   onClose: () => void
   onSaved: () => void
 }) {
-  const [newQty,       setNewQty]       = useState(String(row.qty_available))
+  const [addQty,       setAddQty]       = useState('')
   const [movementType, setMovementType] = useState('purchase')
   const [notes,        setNotes]        = useState('')
   const [saving,       setSaving]       = useState(false)
 
-  const parsedQty = parseInt(newQty, 10)
-  const delta     = isNaN(parsedQty) ? null : parsedQty - row.qty_available
+  const selectedKind = MOVEMENT_TYPES.find(t => t.value === movementType)?.kind ?? 'add'
+  const isReduce     = selectedKind === 'reduce'
+  const parsedAdd    = parseInt(addQty, 10)
+  const newTotal     = isNaN(parsedAdd) || parsedAdd <= 0
+    ? null
+    : isReduce
+      ? row.qty_available - parsedAdd
+      : row.qty_available + parsedAdd
 
   const handleSave = async () => {
-    if (isNaN(parsedQty) || parsedQty < 0) { toast.error('Enter a valid quantity'); return }
+    if (isNaN(parsedAdd) || parsedAdd <= 0) { toast.error('Enter a valid quantity'); return }
+    if (isReduce && parsedAdd > row.qty_available) {
+      toast.error(`Cannot remove more than current stock (${row.qty_available})`); return
+    }
     setSaving(true)
     try {
       await updateStockAction({
         materialId:   row.material_id,
         locationId:   row.location_id,
         currentQty:   row.qty_available,
-        newQty:       parsedQty,
+        newQty:       newTotal!,
         movementType,
         notes,
         createdBy:    userId,
@@ -160,6 +169,7 @@ function UpdateStockModal({
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
+          {/* Current qty display */}
           <div className="grid grid-cols-3 gap-3 text-sm">
             <div>
               <p className="text-xs text-gray-400">Item Code</p>
@@ -177,23 +187,42 @@ function UpdateStockModal({
             </div>
           </div>
 
+          {/* Add Qty input */}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">
-              New Total Quantity in Hand
+              {isReduce ? '− Remove Quantity' : '+ Add Quantity'}
             </label>
             <input
               type="number"
-              min={0}
+              min={1}
+              max={isReduce ? row.qty_available : undefined}
               className="input"
-              value={newQty}
-              onChange={e => setNewQty(e.target.value)}
-              placeholder="Enter new qty"
+              value={addQty}
+              onChange={e => setAddQty(e.target.value)}
+              placeholder={isReduce ? `Max: ${row.qty_available}` : 'Enter qty to add'}
               autoFocus
             />
-            <p className="text-[11px] text-gray-400 mt-1.5">
-              Enter the final total count, not the amount to add/subtract
-            </p>
           </div>
+
+          {/* New total preview */}
+          {newTotal !== null && (
+            <div
+              className="flex items-center justify-center gap-3 py-3 rounded-xl text-sm font-medium"
+              style={{ background: 'var(--ift-gold-pale)' }}
+            >
+              <span className="text-gray-500">{row.qty_available}</span>
+              <span className={isReduce ? 'text-red-500 font-bold' : 'text-emerald-600 font-bold'}>
+                {isReduce ? `− ${parsedAdd}` : `+ ${parsedAdd}`}
+              </span>
+              <span className="text-gray-400">=</span>
+              <span className="text-lg font-bold" style={{ color: 'var(--ift-navy)' }}>
+                {newTotal}
+              </span>
+              {newTotal < 0 && (
+                <span className="text-red-500 text-xs">Cannot go below 0</span>
+              )}
+            </div>
+          )}
 
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-2">Reason for Change</label>
@@ -210,26 +239,15 @@ function UpdateStockModal({
               onChange={e => setNotes(e.target.value)}
             />
           </div>
-
-          {delta !== null && delta !== 0 && (
-            <div
-              className="text-sm text-center py-2.5 rounded-xl"
-              style={{ background: 'var(--ift-gold-pale)' }}
-            >
-              Change:{' '}
-              <span className="font-bold" style={{ color: 'var(--ift-navy)' }}>
-                {row.qty_available} → {parsedQty}
-              </span>{' '}
-              <span className={delta > 0 ? 'text-emerald-600' : 'text-red-500'}>
-                ({delta > 0 ? '+' : ''}{delta})
-              </span>
-            </div>
-          )}
         </div>
 
         <div className="px-5 pb-5 pt-3 flex gap-3 border-t border-gray-100 shrink-0">
           <button onClick={onClose} className="btn-outline flex-1">Cancel</button>
-          <button onClick={handleSave} disabled={saving} className="btn-primary flex-1">
+          <button
+            onClick={handleSave}
+            disabled={saving || newTotal === null || newTotal < 0}
+            className="btn-primary flex-1"
+          >
             {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : 'Save'}
           </button>
         </div>
