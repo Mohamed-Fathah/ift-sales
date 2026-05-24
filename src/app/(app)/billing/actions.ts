@@ -264,6 +264,92 @@ export async function saveBillAction(payload: SaveBillPayload): Promise<SaveBill
   return { invoiceId }
 }
 
+// ─── Billing history ─────────────────────────────────────────────────────────
+
+export interface InvoiceListRow {
+  id: string
+  invoice_no: string
+  invoice_date: string
+  customer_name: string | null
+  customer_phone: string | null
+  payment_mode: string
+  subtotal_mrp: number
+  discount_amount: number
+  total_amount: number
+  status: string
+  items_count: number
+}
+
+export interface InvoiceDetailItem {
+  title: string
+  isbn: string | null
+  qty: number
+  mrp: number
+  discount_pct: number
+  rate: number
+  total_amount: number
+}
+
+export async function getInvoicesAction(filters: {
+  from?: string
+  to?: string
+  search?: string
+  paymentMode?: string
+}): Promise<InvoiceListRow[]> {
+  const supabase = createAdminClient()
+
+  let q = supabase
+    .from('sales_invoices')
+    .select('id, invoice_no, invoice_date, customer_name, customer_phone, payment_mode, subtotal_mrp, discount_amount, total_amount, status, sales_invoice_items(count)')
+    .order('invoice_date', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(300)
+
+  if (filters.from) q = q.gte('invoice_date', filters.from)
+  if (filters.to)   q = q.lte('invoice_date', filters.to)
+  if (filters.paymentMode && filters.paymentMode !== 'all')
+    q = q.eq('payment_mode', filters.paymentMode)
+  if (filters.search?.trim()) {
+    const s = filters.search.trim()
+    q = q.or(`invoice_no.ilike.%${s}%,customer_name.ilike.%${s}%`)
+  }
+
+  const { data, error } = await q
+  if (error) throw new Error(error.message)
+
+  return ((data ?? []) as any[]).map(inv => ({
+    id:              inv.id,
+    invoice_no:      inv.invoice_no,
+    invoice_date:    inv.invoice_date,
+    customer_name:   inv.customer_name  ?? null,
+    customer_phone:  inv.customer_phone ?? null,
+    payment_mode:    inv.payment_mode,
+    subtotal_mrp:    Number(inv.subtotal_mrp    ?? 0),
+    discount_amount: Number(inv.discount_amount ?? 0),
+    total_amount:    Number(inv.total_amount    ?? 0),
+    status:          inv.status,
+    items_count:     Number(inv.sales_invoice_items?.[0]?.count ?? 0),
+  }))
+}
+
+export async function getInvoiceItemsAction(invoiceId: string): Promise<InvoiceDetailItem[]> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase
+    .from('sales_invoice_items')
+    .select('title, isbn, qty, mrp, discount_pct, rate, total_amount')
+    .eq('invoice_id', invoiceId)
+  if (error) throw new Error(error.message)
+  return ((data ?? []) as any[]).map(item => ({
+    title:        item.title        ?? '',
+    isbn:         item.isbn         ?? null,
+    qty:          Number(item.qty          ?? 0),
+    mrp:          Number(item.mrp          ?? 0),
+    discount_pct: Number(item.discount_pct ?? 0),
+    rate:         Number(item.rate         ?? 0),
+    total_amount: Number(item.total_amount ?? 0),
+  }))
+}
+
 export interface StockDeductItem {
   materialId: string
   qty: number
