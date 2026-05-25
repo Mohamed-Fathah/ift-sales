@@ -37,12 +37,14 @@ export default function LoginPage() {
       })
       if (error) throw error
 
-      const { data: profile } = await supabase
+      const { data: profile, error: profileErr } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', auth.user.id)
         .single()
 
+      console.log('[Login] auth.user.id:', auth.user.id)
+      console.log('[Login] profile:', profile, '| error:', profileErr)
       if (profile) setUser(profile)
       router.push('/dashboard')
     } catch (err: unknown) {

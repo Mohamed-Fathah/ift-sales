@@ -125,6 +125,10 @@ export default function SettingsPage() {
 
   const canEdit = user?.role === 'superadmin' || user?.role === 'admin' || firstRun
 
+  useEffect(() => {
+    console.log('[Settings] user?.role:', user?.role, '| canEdit:', canEdit, '| firstRun:', firstRun)
+  }, [user?.role, canEdit, firstRun])
+
   const Field = ({
     label, field, type = 'text', placeholder,
   }: {
