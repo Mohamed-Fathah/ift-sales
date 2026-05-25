@@ -5,6 +5,7 @@ import Sidebar from './Sidebar'
 import Header from './Header'
 import { useAuthStore } from '@/store/auth.store'
 import { createClient } from '@/lib/supabase/client'
+import { fetchProfileById } from '@/lib/profile-actions'
 
 export default function ConditionalShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -13,25 +14,28 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
 
   useEffect(() => { setOpen(false) }, [pathname])
 
-  // If the Zustand store has no user but a Supabase session exists (e.g. after
-  // a page refresh, or after migration 005 ran post-login), re-load the profile
-  // so role-gated pages work without requiring a full logout/login cycle.
+  // On every mount: if the Zustand store has no user, validate the Supabase
+  // session via getUser() (server-side JWT check, not stale cookie cache) then
+  // load the profile through the admin client so RLS cannot block it.
   useEffect(() => {
     if (user) return
     ;(async () => {
       try {
         const supabase = createClient()
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session) return
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
-        console.log('[Auth] session profile load:', profile, error ?? 'ok')
-        if (profile && !error) setUser(profile as any)
+
+        // getUser() hits Supabase Auth server — validates & refreshes JWT.
+        // getSession() only reads the local cookie cache and can return stale/null.
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser()
+        console.log('[Auth] getUser:', authUser?.id ?? 'null', '|', authError?.message ?? 'ok')
+        if (!authUser) return
+
+        // Server action uses admin client → bypasses profiles RLS entirely.
+        const profile = await fetchProfileById(authUser.id)
+        console.log('[Auth] fetched profile: role =', profile?.role ?? 'null')
+
+        if (profile) setUser(profile as any)
       } catch (e) {
-        console.error('[Auth] session profile load failed:', e)
+        console.error('[Auth] profile load failed:', e)
       }
     })()
   }, [user, setUser])
