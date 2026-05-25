@@ -1,4 +1,4 @@
-// middleware.ts — Route protection
+// middleware.ts — Route protection + session refresh
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
@@ -24,7 +24,10 @@ export async function middleware(request: NextRequest) {
     }
   )
 
+  // getUser() validates JWT with Supabase Auth server and refreshes the session
+  // cookie if needed. Must be called before any redirects so setAll() can run.
   const { data: { user } } = await supabase.auth.getUser()
+
   const pathname = request.nextUrl.pathname
   const isPublic = PUBLIC_ROUTES.some(r => pathname.startsWith(r))
 
@@ -33,9 +36,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
-  // Logged in + visiting login → redirect to dashboard
+  // Logged in + visiting login → redirect to dashboard.
+  // Copy refreshed session cookies onto the redirect response so the browser
+  // receives the updated token even through the redirect.
   if (user && isPublic) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    const redirectRes = NextResponse.redirect(new URL('/dashboard', request.url))
+    response.cookies.getAll().forEach(({ name, value }) =>
+      redirectRes.cookies.set(name, value)
+    )
+    return redirectRes
   }
 
   return response
