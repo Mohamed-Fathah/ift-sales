@@ -901,6 +901,7 @@ export default function BillingPage() {
               {PAYMENT_MODES.map(({ mode, label, icon }) => (
                 <button
                   key={mode}
+                  type="button"
                   onClick={() => setPaymentMode(mode)}
                   className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-sm font-semibold transition-all ${
                     paymentMode === mode
@@ -948,6 +949,7 @@ export default function BillingPage() {
 
           {/* Generate bill button */}
           <button
+            type="button"
             onClick={generateBill}
             disabled={isGenerating || cartItems.length === 0}
             className="btn-gold w-full py-3.5 text-[15px] font-bold rounded-xl shadow-md"

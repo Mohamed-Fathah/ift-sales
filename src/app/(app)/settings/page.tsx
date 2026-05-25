@@ -42,7 +42,8 @@ export default function SettingsPage() {
   const [orgId,    setOrgId]      = useState<string | null>(null)
 
   useEffect(() => {
-    (async () => {
+    const timer = setTimeout(() => setLoading(false), 10_000)
+    ;(async () => {
       try {
         const supabase = createClient()
         const { data, error } = await supabase
@@ -69,6 +70,7 @@ export default function SettingsPage() {
       } catch (err: any) {
         // settings table may not exist yet — use defaults silently
       } finally {
+        clearTimeout(timer)
         setLoading(false)
       }
     })()

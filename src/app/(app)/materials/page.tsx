@@ -452,6 +452,7 @@ export default function MaterialsPage() {
   const [rows,         setRows]         = useState<MaterialRow[]>([])
   const [categories,   setCategories]   = useState<CategoryOption[]>([])
   const [isLoading,    setIsLoading]    = useState(true)
+  const [loadError,    setLoadError]    = useState(false)
   const [search,       setSearch]       = useState('')
   const [showInactive, setShowInactive] = useState(false)
 

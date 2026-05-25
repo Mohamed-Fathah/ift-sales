@@ -75,7 +75,7 @@ const NAV: NavGroup[] = [
     section: 'Admin',
     items: [
       { label: 'Users',       href: '/admin/users', icon: <Shield size={18} /> },
-      { label: 'Audit Trail', href: '/audit-trail', icon: <ClipboardList size={18} /> },
+      { label: 'Audit Trail', href: '/audit',       icon: <ClipboardList size={18} /> },
       { label: 'Settings',    href: '/settings',    icon: <Settings size={18} /> },
     ],
   },

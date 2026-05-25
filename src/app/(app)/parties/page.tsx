@@ -448,6 +448,7 @@ function ConfirmDelete({
 export default function PartiesPage() {
   const [rows,         setRows]         = useState<PartyRow[]>([])
   const [loading,      setLoading]      = useState(true)
+  const [loadError,    setLoadError]    = useState(false)
   const [searchQuery,  setSearchQuery]  = useState('')
   const [filterType,   setFilterType]   = useState<'all' | PartyType>('all')
   const [modalParty,   setModalParty]   = useState<PartyRow | null | 'new'>('new' as any)
@@ -458,6 +459,8 @@ export default function PartiesPage() {
   // ── Load ──────────────────────────────────────────────────────────────────
   const load = async () => {
     setLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
       const supabase = createClient()
       const { data, error } = await supabase.from('parties').select('*').order('name')

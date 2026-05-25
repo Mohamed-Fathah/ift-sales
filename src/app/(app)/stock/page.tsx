@@ -578,6 +578,7 @@ export default function StockPage() {
   const [rows,         setRows]         = useState<StockRow[]>([])
   const [locations,    setLocations]    = useState<LocationOption[]>([])
   const [loading,      setLoading]      = useState(true)
+  const [loadError,    setLoadError]    = useState(false)
   const [searchQuery,  setSearchQuery]  = useState('')
   const [filterLoc,    setFilterLoc]    = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
@@ -587,6 +588,8 @@ export default function StockPage() {
 
   const load = async () => {
     setLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
       const supabase = createClient()
       const [{ data: stockData, error: stockErr }, { data: locs, error: locsErr }] = await Promise.all([
