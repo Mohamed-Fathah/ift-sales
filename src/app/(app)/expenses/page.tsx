@@ -12,6 +12,7 @@ import toast from 'react-hot-toast'
 import { format, isToday, isThisWeek, isThisMonth, parseISO } from 'date-fns'
 import { createClient } from '@/lib/supabase/client'
 import { exportToExcel } from '@/lib/excel-export'
+import { getExpenseCategoriesAction } from './actions'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -377,20 +378,16 @@ export default function ExpensesPage() {
       const supabase = createClient()
       const [
         { data: expenses, error: expErr },
-        { data: cats,     error: catErr },
+        cats,
       ] = await Promise.all([
         supabase
           .from('expenses')
           .select('*, expense_categories(name)')
           .order('expense_date', { ascending: false })
           .order('created_at',   { ascending: false }),
-        supabase
-          .from('expense_categories')
-          .select('id, name')
-          .order('name'),
+        getExpenseCategoriesAction(),
       ])
       if (expErr) throw new Error(expErr.message)
-      if (catErr) throw new Error(catErr.message)
 
       setRows(((expenses ?? []) as any[]).map(r => ({
         id:            r.id,
@@ -405,7 +402,7 @@ export default function ExpensesPage() {
         notes:         r.notes         ?? '',
         created_at:    r.created_at    ?? '',
       })))
-      setCategories((cats ?? []) as ExpenseCategory[])
+      setCategories(cats)
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load expenses')
     } finally {
