@@ -200,7 +200,7 @@ export default function PurchaseReturnsPage() {
           total_amount:        totalReturn,
           notes,
           status:              'confirmed',
-          created_by:          user?.full_name ?? 'System',
+          created_by:          user?.id ?? null,
         })
         .select('id').single()
       if (retErr) throw new Error(retErr.message)

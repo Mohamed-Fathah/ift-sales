@@ -3,11 +3,12 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Shield, Search, X, Loader2, UserCheck, Check } from 'lucide-react'
+import { Shield, Search, X, Loader2, UserCheck, Check, Plus, Eye, EyeOff } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
 import { createClient } from '@/lib/supabase/client'
 import { useAuthStore, type UserRole } from '@/store/auth.store'
+import { createUserAction } from './actions'
 
 interface UserRow {
   id: string
@@ -47,6 +48,15 @@ export default function UsersPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editRole,  setEditRole]  = useState<UserRole>('viewer')
   const [saving,    setSaving]    = useState(false)
+
+  // Add user modal
+  const [showAdd,      setShowAdd]      = useState(false)
+  const [addName,      setAddName]      = useState('')
+  const [addEmail,     setAddEmail]     = useState('')
+  const [addPassword,  setAddPassword]  = useState('')
+  const [addRole,      setAddRole]      = useState<UserRole>('viewer')
+  const [showPassword, setShowPassword] = useState(false)
+  const [addSaving,    setAddSaving]    = useState(false)
 
   const load = async () => {
     setLoading(true)
@@ -118,6 +128,25 @@ export default function UsersPage() {
     }
   }
 
+  const handleAddUser = async () => {
+    if (!addName.trim())     return toast.error('Name is required')
+    if (!addEmail.trim())    return toast.error('Email is required')
+    if (!addPassword.trim()) return toast.error('Password is required')
+    if (addPassword.length < 6) return toast.error('Password must be at least 6 characters')
+    setAddSaving(true)
+    try {
+      await createUserAction({ fullName: addName.trim(), email: addEmail.trim(), password: addPassword, role: addRole })
+      toast.success(`User ${addName} created`)
+      setShowAdd(false)
+      setAddName(''); setAddEmail(''); setAddPassword(''); setAddRole('viewer')
+      load()
+    } catch (err: any) {
+      toast.error(err.message ?? 'Failed to create user')
+    } finally {
+      setAddSaving(false)
+    }
+  }
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase()
     return q
@@ -141,7 +170,11 @@ export default function UsersPage() {
           <h2 className="page-title">User Management</h2>
           <p className="page-sub mt-0.5">Manage staff accounts and permissions</p>
         </div>
-        {!canManage && (
+        {canManage ? (
+          <button className="btn-primary" onClick={() => setShowAdd(true)}>
+            <Plus size={15} /> Add User
+          </button>
+        ) : (
           <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
             <Shield size={13} />
             Admin access required to edit
@@ -194,6 +227,80 @@ export default function UsersPage() {
         </div>
         <span className="text-xs text-gray-400 ml-auto">{filtered.length} of {users.length}</span>
       </div>
+
+      {/* Add User Modal */}
+      {showAdd && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <h3 className="font-semibold text-gray-900">Add New User</h3>
+              <button onClick={() => setShowAdd(false)} className="text-gray-400 hover:text-gray-600">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="px-6 py-5 space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Full Name</label>
+                <input
+                  className="input w-full"
+                  placeholder="e.g. Mohamed Ali"
+                  value={addName}
+                  onChange={e => setAddName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Email Address</label>
+                <input
+                  type="email"
+                  className="input w-full"
+                  placeholder="user@example.com"
+                  value={addEmail}
+                  onChange={e => setAddEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Temporary Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    className="input w-full pr-10"
+                    placeholder="Min. 6 characters"
+                    value={addPassword}
+                    onChange={e => setAddPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(p => !p)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Role</label>
+                <select
+                  className="input w-full"
+                  value={addRole}
+                  onChange={e => setAddRole(e.target.value as UserRole)}
+                >
+                  {ROLES.map(r => (
+                    <option key={r.value} value={r.value}>{r.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100">
+              <button className="btn-outline" onClick={() => setShowAdd(false)} disabled={addSaving}>
+                Cancel
+              </button>
+              <button className="btn-primary" onClick={handleAddUser} disabled={addSaving}>
+                {addSaving ? <><Loader2 size={14} className="animate-spin" /> Creating…</> : 'Create User'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Table */}
       <div className="card p-0 overflow-hidden">
