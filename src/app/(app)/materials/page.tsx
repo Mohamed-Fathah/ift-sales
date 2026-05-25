@@ -449,6 +449,13 @@ export default function MaterialsPage() {
   const user = useAuthStore(s => s.user)
   const can  = useAuthStore(s => s.can)
 
+  // Zustand persist reads localStorage synchronously on the client, causing a
+  // server/client mismatch for any can() call that gates structural rendering.
+  // Gate all permission-dependent JSX behind `mounted` so the first client
+  // render matches the server render exactly.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
   const [rows,         setRows]         = useState<MaterialRow[]>([])
   const [categories,   setCategories]   = useState<CategoryOption[]>([])
   const [isLoading,    setIsLoading]    = useState(true)
@@ -466,9 +473,10 @@ export default function MaterialsPage() {
   const [editCell,  setEditCell]  = useState<{ id: string; field: string } | null>(null)
   const [editValue, setEditValue] = useState('')
 
-  // Delete
-  const [deleteId,   setDeleteId]   = useState<string | null>(null)
-  const [isDeleting, setIsDeleting] = useState(false)
+  // Delete / deactivate confirmations
+  const [deleteId,      setDeleteId]      = useState<string | null>(null)
+  const [isDeleting,    setIsDeleting]    = useState(false)
+  const [deactivateRow, setDeactivateRow] = useState<MaterialRow | null>(null)
 
   // Busy flags
   const [isExporting,  setIsExporting]  = useState(false)
@@ -738,13 +746,13 @@ export default function MaterialsPage() {
   const editCtxValue = useMemo<EditCtxType>(() => ({
     editCell,
     editValue,
-    canEdit: can('manage_materials'),
+    canEdit: mounted && can('manage_materials'),
     categories,
     onStartEdit: startEdit,
     onSetValue:  setEditValue,
     onKeyDown:   handleKeyDown,
     onCommit:    commitEdit,
-  }), [editCell, editValue, can, categories, startEdit, handleKeyDown, commitEdit])
+  }), [editCell, editValue, mounted, can, categories, startEdit, handleKeyDown, commitEdit])
 
   // ── Derived counts ──────────────────────────────────────────────────────
   const activeCount = rows.filter(r => r.is_active).length
@@ -776,7 +784,7 @@ export default function MaterialsPage() {
               Stock Report
             </button>
 
-            {can('manage_materials') && (
+            {mounted && can('manage_materials') && (
               <>
                 {/* Import Excel */}
                 <label className="btn-outline cursor-pointer">
@@ -871,7 +879,7 @@ export default function MaterialsPage() {
               <p className="text-sm font-medium text-gray-400">
                 {search ? 'No books match your search' : 'No materials yet'}
               </p>
-              {can('manage_materials') && !search && (
+              {mounted && can('manage_materials') && !search && (
                 <button onClick={() => setShowAdd(true)} className="btn-primary mt-2">
                   <Plus size={15} /> Add First Book
                 </button>
@@ -892,7 +900,7 @@ export default function MaterialsPage() {
                     <th className="w-16 text-center mobile-hide">Disc%</th>
                     <th className="w-20 text-center">Stock</th>
                     <th className="w-20 text-center">Status</th>
-                    {can('manage_materials') && <th className="w-10" />}
+                    {mounted && can('manage_materials') && <th className="w-10" />}
                   </tr>
                 </thead>
                 <tbody>
@@ -956,9 +964,12 @@ export default function MaterialsPage() {
                       {/* Status toggle */}
                       <td className="text-center">
                         <button
-                          onClick={() => toggleActive(row)}
-                          disabled={!can('manage_materials')}
-                          title={row.is_active ? 'Click to archive' : 'Click to activate'}
+                          onClick={() => {
+                            if (!mounted || !can('manage_materials')) return
+                            row.is_active ? setDeactivateRow(row) : toggleActive(row)
+                          }}
+                          disabled={!mounted || !can('manage_materials')}
+                          title={row.is_active ? 'Click to deactivate' : 'Click to activate'}
                           className="disabled:cursor-default"
                         >
                           {row.is_active
@@ -968,7 +979,7 @@ export default function MaterialsPage() {
                       </td>
 
                       {/* Delete */}
-                      {can('manage_materials') && (
+                      {mounted && can('manage_materials') && (
                         <td>
                           <button
                             onClick={() => setDeleteId(row.id)}
@@ -986,6 +997,40 @@ export default function MaterialsPage() {
             </div>
           )}
         </div>
+
+        {/* ── Deactivate confirm dialog ─────────────────────────────────── */}
+        {deactivateRow && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-10 h-10 shrink-0 rounded-full bg-amber-100 flex items-center justify-center">
+                  <AlertTriangle size={20} className="text-amber-600" />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">Deactivate this book?</p>
+                  <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                    {deactivateRow.title}
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mb-5">
+                It will be hidden from billing and the catalog. You can reactivate it at any time.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button onClick={() => setDeactivateRow(null)} className="btn-outline">
+                  Cancel
+                </button>
+                <button
+                  onClick={() => { toggleActive(deactivateRow); setDeactivateRow(null) }}
+                  className="btn text-white focus:ring-amber-400"
+                  style={{ background: '#D97706' }}
+                >
+                  Deactivate
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── Archive confirm dialog ─────────────────────────────────────── */}
         {deleteId && (
