@@ -60,7 +60,9 @@ export default function SalesReturnsPage() {
   const [invoices,        setInvoices]        = useState<SalesInvoiceOption[]>([])
   const [selectedInvoice, setSelectedInvoice] = useState<SalesInvoiceOption | null>(null)
   const [returnItems,     setReturnItems]     = useState<ReturnLineItem[]>([])
-  const [returnDate,      setReturnDate]      = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [returnDate,      setReturnDate]      = useState('')
+
+  useEffect(() => { setReturnDate(format(new Date(), 'yyyy-MM-dd')) }, [])
   const [notes,           setNotes]           = useState('')
   const [loadingItems,    setLoadingItems]    = useState(false)
 

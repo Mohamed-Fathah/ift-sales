@@ -244,9 +244,13 @@ export default function PurchasesPage() {
                   <tr key={row.id}>
                     <td>
                       <div>
-                        <p className="font-semibold text-sm" style={{ color: 'var(--ift-navy)' }}>
+                        <Link
+                          href={`/purchases/${row.id}`}
+                          className="font-semibold text-sm hover:underline"
+                          style={{ color: 'var(--ift-navy)' }}
+                        >
                           {row.invoice_no}
-                        </p>
+                        </Link>
                         {row.supplier_inv_no && (
                           <p className="text-[11px] text-gray-400">Ref: {row.supplier_inv_no}</p>
                         )}

@@ -76,7 +76,9 @@ export default function NewPurchasePage() {
   const [supplierId, setSupplierId] = useState('')
   const [locationId, setLocationId] = useState('')
   const [supplierInvNo, setSupplierInvNo] = useState('')
-  const [invoiceDate, setInvoiceDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [invoiceDate, setInvoiceDate] = useState('')
+
+  useEffect(() => { setInvoiceDate(format(new Date(), 'yyyy-MM-dd')) }, [])
 
   // ── Items ──────────────────────────────────────────────────────────────────
   const [items, setItems] = useState<CartItem[]>([])

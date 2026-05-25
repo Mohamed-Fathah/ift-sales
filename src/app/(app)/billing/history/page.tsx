@@ -245,9 +245,6 @@ function ReceiptModal({ receipt, onClose }: { receipt: ReceiptData; onClose: () 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function BillingHistoryPage() {
-  const todayStr     = format(new Date(), 'yyyy-MM-dd')
-  const monthAgoStr  = format(subDays(new Date(), 30), 'yyyy-MM-dd')
-
   // Data
   const [invoices,     setInvoices]     = useState<InvoiceListRow[]>([])
   const [loading,      setLoading]      = useState(true)
@@ -261,8 +258,13 @@ export default function BillingHistoryPage() {
   // Filters — raw input vs debounced
   const [searchInput,  setSearchInput]  = useState('')
   const [search,       setSearch]       = useState('')
-  const [fromDate,     setFromDate]     = useState(monthAgoStr)
-  const [toDate,       setToDate]       = useState(todayStr)
+  const [fromDate,     setFromDate]     = useState('')
+  const [toDate,       setToDate]       = useState('')
+
+  useEffect(() => {
+    setFromDate(format(subDays(new Date(), 30), 'yyyy-MM-dd'))
+    setToDate(format(new Date(), 'yyyy-MM-dd'))
+  }, [])
   const [paymentMode,  setPaymentMode]  = useState('all')
 
   // Debounce search

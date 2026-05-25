@@ -51,7 +51,7 @@ interface ExpenseForm {
 const PAYMENT_MODES = ['Cash', 'UPI', 'Bank Transfer', 'Cheque']
 
 const EMPTY_FORM: ExpenseForm = {
-  expense_date: new Date().toISOString().slice(0, 10),
+  expense_date: '',
   category_id:  '',
   description:  '',
   amount:       0,
@@ -59,6 +59,10 @@ const EMPTY_FORM: ExpenseForm = {
   paid_to:      '',
   location:     '',
   notes:        '',
+}
+
+function makeEmptyForm(): ExpenseForm {
+  return { ...EMPTY_FORM, expense_date: new Date().toISOString().slice(0, 10) }
 }
 
 const MODE_BADGE: Record<string, string> = {
@@ -109,7 +113,7 @@ function ExpenseModal({
           location:     expense.location,
           notes:        expense.notes,
         }
-      : { ...EMPTY_FORM }
+      : makeEmptyForm()
   )
   const [saving, setSaving] = useState(false)
   const [errs, setErrs] = useState<Record<string, string>>({})

@@ -1051,14 +1051,14 @@ export default function MaterialsPage() {
                   <AlertTriangle size={20} className="text-red-600" />
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900">Archive this book?</p>
+                  <p className="font-semibold text-gray-900">Delete this book?</p>
                   <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
                     {rows.find(r => r.id === deleteId)?.title}
                   </p>
                 </div>
               </div>
               <p className="text-sm text-gray-600 mb-5">
-                The book will be hidden from billing and search. All historical sales records are preserved.
+                Are you sure you want to delete this book? This cannot be undone.
               </p>
               <div className="flex gap-3 justify-end">
                 <button onClick={() => setDeleteId(null)} className="btn-outline">
@@ -1071,8 +1071,8 @@ export default function MaterialsPage() {
                   style={{ background: '#DC2626' }}
                 >
                   {isDeleting
-                    ? <><Loader2 size={14} className="animate-spin" /> Archiving…</>
-                    : 'Archive'}
+                    ? <><Loader2 size={14} className="animate-spin" /> Deleting…</>
+                    : 'Delete'}
                 </button>
               </div>
             </div>

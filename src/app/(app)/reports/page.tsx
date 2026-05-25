@@ -202,10 +202,16 @@ function SalesTab() {
   const [rows,      setRows]      = useState<SalesRow[]>([])
   const [loading,   setLoading]   = useState(true)
   const [loadError, setLoadError] = useState(false)
-  const [from,      setFrom]      = useState(daysAgo(29))
-  const [to,        setTo]        = useState(today())
+  const [from,      setFrom]      = useState('')
+  const [to,        setTo]        = useState('')
+
+  useEffect(() => {
+    setFrom(daysAgo(29))
+    setTo(today())
+  }, [])
 
   const load = useCallback(async () => {
+    if (!from || !to) return
     setLoading(true)
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
@@ -641,10 +647,16 @@ function PurchasesTab() {
   const [rows,      setRows]      = useState<PurchaseRow[]>([])
   const [loading,   setLoading]   = useState(true)
   const [loadError, setLoadError] = useState(false)
-  const [from,      setFrom]      = useState(daysAgo(29))
-  const [to,        setTo]        = useState(today())
+  const [from,      setFrom]      = useState('')
+  const [to,        setTo]        = useState('')
+
+  useEffect(() => {
+    setFrom(daysAgo(29))
+    setTo(today())
+  }, [])
 
   const load = useCallback(async () => {
+    if (!from || !to) return
     setLoading(true)
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
@@ -825,10 +837,16 @@ function ExpensesTab() {
   const [rows,      setRows]      = useState<ExpenseRow[]>([])
   const [loading,   setLoading]   = useState(true)
   const [loadError, setLoadError] = useState(false)
-  const [from,      setFrom]      = useState(daysAgo(29))
-  const [to,        setTo]        = useState(today())
+  const [from,      setFrom]      = useState('')
+  const [to,        setTo]        = useState('')
+
+  useEffect(() => {
+    setFrom(daysAgo(29))
+    setTo(today())
+  }, [])
 
   const load = useCallback(async () => {
+    if (!from || !to) return
     setLoading(true)
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
