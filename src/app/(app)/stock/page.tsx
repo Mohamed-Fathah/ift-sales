@@ -110,12 +110,14 @@ function AddStockEntryModal({
   locations,
   userId,
   preselectedMaterial = null,
+  preselectedLocationId = null,
   onClose,
   onSaved,
 }: {
   locations: LocationOption[]
   userId: string | null
   preselectedMaterial?: { id: string; title: string; item_code: string } | null
+  preselectedLocationId?: string | null
   onClose: () => void
   onSaved: () => void
 }) {
@@ -124,7 +126,7 @@ function AddStockEntryModal({
   const [loadingMats,  setLoadingMats]  = useState(true)
   const [search,       setSearch]       = useState('')
   const [materialId,   setMaterialId]   = useState(preselectedMaterial?.id ?? '')
-  const [locationId,   setLocationId]   = useState(locations[0]?.id ?? '')
+  const [locationId,   setLocationId]   = useState(preselectedLocationId ?? locations[0]?.id ?? '')
   const [qty,          setQty]          = useState('')
   const [purchaseRate, setPurchaseRate] = useState('')
   const [supplierId,   setSupplierId]   = useState('')
@@ -636,7 +638,7 @@ export default function StockPage() {
   const [updateRow,      setUpdateRow]      = useState<StockRow | null>(null)
   const [transferRow,    setTransferRow]    = useState<StockRow | null>(null)
   const [showAddStock,   setShowAddStock]   = useState(false)
-  const [addStockPreset, setAddStockPreset] = useState<{ id: string; title: string; item_code: string } | null>(null)
+  const [addStockPreset, setAddStockPreset] = useState<{ id: string; title: string; item_code: string; location_id?: string } | null>(null)
 
   const load = async () => {
     setLoading(true)
@@ -987,7 +989,7 @@ export default function StockPage() {
                       <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => {
-                            setAddStockPreset({ id: row.material_id, title: row.title, item_code: row.item_code })
+                            setAddStockPreset({ id: row.material_id, title: row.title, item_code: row.item_code, location_id: row.location_id })
                             setShowAddStock(true)
                           }}
                           className="px-2 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-emerald-500 hover:text-emerald-600 transition-colors"
@@ -1040,6 +1042,7 @@ export default function StockPage() {
           locations={locations}
           userId={user?.id ?? null}
           preselectedMaterial={addStockPreset}
+          preselectedLocationId={addStockPreset?.location_id ?? null}
           onClose={() => { setShowAddStock(false); setAddStockPreset(null) }}
           onSaved={() => { setShowAddStock(false); setAddStockPreset(null); void load() }}
         />

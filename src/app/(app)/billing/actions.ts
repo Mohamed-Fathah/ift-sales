@@ -46,6 +46,21 @@ export async function getDefaultLocation(): Promise<LocationResult | null> {
   return data as LocationResult | null
 }
 
+// ─── Fetch org settings (prefix + footer) ────────────────────────────────────
+
+export async function getOrgSettingsAction(): Promise<{ invoice_prefix: string; receipt_footer: string }> {
+  const supabase = createAdminClient()
+  const { data } = await supabase
+    .from('organizations')
+    .select('invoice_prefix, receipt_footer')
+    .limit(1)
+    .maybeSingle()
+  return {
+    invoice_prefix: (data as any)?.invoice_prefix ?? 'IFT-BILL-',
+    receipt_footer: (data as any)?.receipt_footer ?? 'Thank you for your purchase!',
+  }
+}
+
 // ─── Fetch all active materials for local Dexie cache ────────────────────────
 
 export async function getAllMaterialsForCache(): Promise<MaterialCacheRow[]> {

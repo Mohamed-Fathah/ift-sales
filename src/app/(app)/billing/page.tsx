@@ -26,6 +26,7 @@ import {
   searchMaterialsAction,
   lookupBarcodeAction,
   saveBillAction,
+  getOrgSettingsAction,
 } from './actions'
 
 // ─── Local types ──────────────────────────────────────────────────────────────
@@ -68,6 +69,7 @@ interface ReceiptData {
   totalDiscount: number
   grandTotal: number
   createdBy: string
+  footer: string
 }
 
 // ─── Payment mode config (stable reference) ───────────────────────────────────
@@ -288,7 +290,7 @@ function ReceiptModal({
 
           {/* Footer */}
           <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #eee', fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>
-            <p>Thank you for your purchase! | iftchennai.in</p>
+            <p>{receipt.footer}</p>
           </div>
         </div>
 
@@ -345,8 +347,9 @@ export default function BillingPage() {
   const [showReceipt,  setShowReceipt]  = useState(false)
 
   // Draft
-  const [lastSaved, setLastSaved] = useState<Date | null>(null)
-  const [location,  setLocation]  = useState<{ id: string; name: string } | null>(null)
+  const [lastSaved,    setLastSaved]    = useState<Date | null>(null)
+  const [location,     setLocation]     = useState<{ id: string; name: string } | null>(null)
+  const [orgSettings,  setOrgSettings]  = useState({ invoice_prefix: 'IFT-BILL-', receipt_footer: 'Thank you for your purchase!' })
 
   // Computed
   const subtotalMrp   = cartItems.reduce((s, i) => s + i.mrp * i.qty, 0)
@@ -357,12 +360,14 @@ export default function BillingPage() {
   useEffect(() => {
     ;(async () => {
       // Use server actions — bypass RLS with admin client
-      const [loc, mats] = await Promise.all([
+      const [loc, mats, settings] = await Promise.all([
         getDefaultLocation(),
         getAllMaterialsForCache(),
+        getOrgSettingsAction(),
       ])
 
       if (loc) setLocation(loc)
+      setOrgSettings(settings)
 
       if (mats.length > 0) {
         await syncMaterialsToLocal(
@@ -568,7 +573,7 @@ export default function BillingPage() {
 
     setIsGenerating(true)
     try {
-      const invoiceNo = await getNextInvoiceNo('sales')
+      const invoiceNo = await getNextInvoiceNo('sales', orgSettings.invoice_prefix)
       const now       = new Date()
 
       // All three DB writes (invoice + items + stock deduction) happen in one
@@ -622,6 +627,7 @@ export default function BillingPage() {
         totalDiscount,
         grandTotal,
         createdBy: user?.full_name ?? 'Staff',
+        footer: orgSettings.receipt_footer,
       })
       setShowReceipt(true)
 

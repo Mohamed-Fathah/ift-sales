@@ -55,7 +55,7 @@ export async function getNextItemCodeAction(): Promise<string> {
     }
   }
   const next = maxNum + 1
-  return `ift-${String(next).padStart(3, '0')}`
+  return `IFT-${String(next).padStart(3, '0')}`
 }
 
 export async function getMaterialsAction(): Promise<MaterialRow[]> {
@@ -154,7 +154,7 @@ export async function saveMaterialAction(input: SaveMaterialInput): Promise<{ id
   const { data, error } = await supabase
     .from('materials')
     .insert({
-      item_code:     input.item_code,
+      item_code:     input.item_code ? input.item_code.trim().toUpperCase() : null,
       isbn:          input.isbn         || null,
       title:         input.title,
       author:        input.author       || null,
@@ -235,7 +235,7 @@ export async function bulkImportMaterialsAction(
       .from('materials')
       .upsert(
         batch.map(r => ({
-          item_code:     r.item_code    || null,
+          item_code:     r.item_code ? r.item_code.trim().toUpperCase() : null,
           isbn:          r.isbn         || null,
           title:         r.title,
           author:        r.author       || null,

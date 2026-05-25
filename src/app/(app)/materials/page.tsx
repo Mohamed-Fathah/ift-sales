@@ -207,8 +207,8 @@ function AddBookModal({
               <input
                 className={`input ${errs.item_code ? 'input-error' : ''}`}
                 value={form.item_code}
-                onChange={e => f('item_code', e.target.value)}
-                placeholder={codeLoading ? 'Loading…' : 'ift-001'}
+                onChange={e => f('item_code', e.target.value.toUpperCase())}
+                placeholder={codeLoading ? 'Loading…' : 'IFT-001'}
                 disabled={codeLoading}
               />
               {errs.item_code && <p className="text-red-500 text-xs mt-1">{errs.item_code}</p>}

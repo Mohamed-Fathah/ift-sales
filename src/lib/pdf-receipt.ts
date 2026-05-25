@@ -23,6 +23,7 @@ interface ReceiptData {
   totalDiscount: number
   grandTotal: number
   createdBy: string
+  footer?: string
 }
 
 export function generateReceiptPDF(data: ReceiptData) {
@@ -186,7 +187,7 @@ export function generateReceiptPDF(data: ReceiptData) {
   doc.setFont('helvetica', 'italic')
   doc.setFontSize(9)
   doc.setTextColor(...gray)
-  doc.text('Thank you for your purchase!  |  iftchennai.in', W / 2, y, { align: 'center' })
+  doc.text(data.footer ?? 'Thank you for your purchase!  |  iftchennai.in', W / 2, y, { align: 'center' })
 
   doc.save(`IFT_Receipt_${data.invoiceNo}.pdf`)
 }

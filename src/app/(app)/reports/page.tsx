@@ -344,7 +344,7 @@ function SalesTab() {
                 tickFormatter={v => `₹${(v / 1000).toFixed(0)}k`}
               />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="Revenue" fill="#1B2A6B" radius={[4, 4, 0, 0]} maxBarSize={40} />
+              <Bar dataKey="Revenue" fill="#1B2A6B" radius={[4, 4, 0, 0]} maxBarSize={40} minPointSize={3} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -836,7 +836,7 @@ function ExpensesTab() {
       const supabase = createClient()
       const { data, error } = await supabase
         .from('expenses')
-        .select('id, expense_date, description, amount, payment_mode, paid_to, location, expense_categories(name)')
+        .select('id, expense_date, description, amount, payment_mode, paid_to, expense_categories(name)')
         .gte('expense_date', from)
         .lte('expense_date', to)
         .order('expense_date', { ascending: false })
@@ -849,7 +849,7 @@ function ExpensesTab() {
         amount:        Number(r.amount  ?? 0),
         payment_mode:  r.payment_mode  ?? '',
         paid_to:       r.paid_to       ?? '',
-        location:      r.location      ?? '',
+        location:      '',
       })))
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load expenses')
