@@ -39,6 +39,25 @@ export interface SaveMaterialInput {
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
+export async function getNextItemCodeAction(): Promise<string> {
+  const supabase = createAdminClient()
+  const { data } = await supabase
+    .from('materials')
+    .select('item_code')
+    .not('item_code', 'is', null)
+  let maxNum = 0
+  for (const row of (data ?? []) as any[]) {
+    const code = (row.item_code as string) ?? ''
+    const match = code.match(/(\d+)$/)
+    if (match) {
+      const n = parseInt(match[1], 10)
+      if (n > maxNum) maxNum = n
+    }
+  }
+  const next = maxNum + 1
+  return `ift-${String(next).padStart(3, '0')}`
+}
+
 export async function getMaterialsAction(): Promise<MaterialRow[]> {
   const supabase = createAdminClient()
 

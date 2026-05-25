@@ -18,6 +18,7 @@ import { exportStockReport } from '@/lib/excel-export'
 import { createClient } from '@/lib/supabase/client'
 import {
   getStockReportDataAction,
+  getNextItemCodeAction,
   saveMaterialAction,
   updateMaterialAction,
   archiveMaterialAction,
@@ -148,8 +149,16 @@ function AddBookModal({
     category_id: '', mrp: 0, purchase_rate: 0, discount_pct: 0,
     publication: 'Islamic Foundation Trust', initial_stock: 0,
   })
-  const [saving, setSaving] = useState(false)
+  const [saving,       setSaving]       = useState(false)
+  const [codeLoading,  setCodeLoading]  = useState(true)
   const [errs, setErrs] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    getNextItemCodeAction()
+      .then(code => setForm(p => ({ ...p, item_code: code })))
+      .catch(() => {})
+      .finally(() => setCodeLoading(false))
+  }, [])
 
   const f = <K extends keyof SaveMaterialInput>(k: K, v: SaveMaterialInput[K]) =>
     setForm(p => ({ ...p, [k]: v }))
@@ -199,7 +208,8 @@ function AddBookModal({
                 className={`input ${errs.item_code ? 'input-error' : ''}`}
                 value={form.item_code}
                 onChange={e => f('item_code', e.target.value)}
-                placeholder="IFT-001"
+                placeholder={codeLoading ? 'Loading…' : 'ift-001'}
+                disabled={codeLoading}
               />
               {errs.item_code && <p className="text-red-500 text-xs mt-1">{errs.item_code}</p>}
             </div>
