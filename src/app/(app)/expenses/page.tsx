@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 import { useState, useEffect, useMemo } from 'react'
 import {
   Search, Plus, Pencil, Trash2, X,
-  Loader2, AlertTriangle, Download,
+  Loader2, AlertTriangle, Download, RefreshCw,
   IndianRupee, Calendar, Tag,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -357,6 +357,7 @@ export default function ExpensesPage() {
   const [rows,         setRows]         = useState<ExpenseRow[]>([])
   const [categories,   setCategories]   = useState<ExpenseCategory[]>([])
   const [loading,      setLoading]      = useState(true)
+  const [loadError,    setLoadError]    = useState(false)
   const [searchQuery,  setSearchQuery]  = useState('')
   const [filterCat,    setFilterCat]    = useState('all')
   const [filterMode,   setFilterMode]   = useState('all')
@@ -370,6 +371,8 @@ export default function ExpensesPage() {
   // ── Load ──────────────────────────────────────────────────────────────────
   const load = async () => {
     setLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
       const supabase = createClient()
       const [
@@ -406,6 +409,7 @@ export default function ExpensesPage() {
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load expenses')
     } finally {
+      clearTimeout(timer)
       setLoading(false)
     }
   }
@@ -695,6 +699,14 @@ export default function ExpensesPage() {
             <div className="flex items-center justify-center gap-2 py-20 text-gray-400 text-sm">
               <Loader2 size={20} className="animate-spin" />
               Loading expenses…
+            </div>
+          ) : loadError ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-20 text-gray-400">
+              <AlertTriangle size={40} className="text-amber-400" />
+              <p className="font-medium text-sm">Failed to load — connection timed out</p>
+              <button onClick={load} className="btn-outline text-sm flex items-center gap-2">
+                <RefreshCw size={14} /> Retry
+              </button>
             </div>
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-20 text-gray-400">

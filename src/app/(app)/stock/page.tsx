@@ -616,6 +616,7 @@ export default function StockPage() {
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load stock data')
     } finally {
+      clearTimeout(timer)
       setLoading(false)
     }
   }
@@ -849,6 +850,14 @@ export default function StockPage() {
             <div className="flex items-center justify-center gap-2 py-20 text-gray-400 text-sm">
               <Loader2 size={20} className="animate-spin" />
               Loading stock data…
+            </div>
+          ) : loadError ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-20 text-gray-400">
+              <AlertTriangle size={40} className="text-amber-400" />
+              <p className="font-medium text-sm">Failed to load — connection timed out</p>
+              <button onClick={load} className="btn-outline text-sm flex items-center gap-2">
+                <RefreshCw size={14} /> Retry
+              </button>
             </div>
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-20 text-gray-400">

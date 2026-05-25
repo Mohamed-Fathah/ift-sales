@@ -7,7 +7,7 @@ import {
   Download, Loader2, ShoppingCart, PackageOpen,
   IndianRupee, TrendingUp, TrendingDown,
   BookOpen, Boxes, Receipt, X,
-  AlertTriangle,
+  AlertTriangle, RefreshCw,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, subDays, parseISO } from 'date-fns'
@@ -199,13 +199,16 @@ const STATUS_CLASS: Record<string, string> = {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function SalesTab() {
-  const [rows,    setRows]    = useState<SalesRow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [from,    setFrom]    = useState(daysAgo(29))
-  const [to,      setTo]      = useState(today())
+  const [rows,      setRows]      = useState<SalesRow[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [loadError, setLoadError] = useState(false)
+  const [from,      setFrom]      = useState(daysAgo(29))
+  const [to,        setTo]        = useState(today())
 
   const load = useCallback(async () => {
     setLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
       const supabase = createClient()
       const { data, error } = await supabase
@@ -231,6 +234,7 @@ function SalesTab() {
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load sales')
     } finally {
+      clearTimeout(timer)
       setLoading(false)
     }
   }, [from, to])
@@ -353,6 +357,14 @@ function SalesTab() {
             <div className="flex items-center justify-center gap-2 py-16 text-gray-400 text-sm">
               <Loader2 size={18} className="animate-spin" /> Loading sales…
             </div>
+          ) : loadError ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-16 text-gray-400">
+              <AlertTriangle size={36} className="text-amber-400" />
+              <p className="font-medium text-sm">Failed to load — connection timed out</p>
+              <button onClick={load} className="btn-outline text-sm flex items-center gap-2">
+                <RefreshCw size={14} /> Retry
+              </button>
+            </div>
           ) : rows.length === 0 ? (
             <EmptyState icon={<ShoppingCart size={36} />} label="No sales in this period" />
           ) : (
@@ -416,40 +428,45 @@ function SalesTab() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function StockTab() {
-  const [rows,    setRows]    = useState<StockRow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [search,  setSearch]  = useState('')
+  const [rows,      setRows]      = useState<StockRow[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [loadError, setLoadError] = useState(false)
+  const [search,    setSearch]    = useState('')
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const supabase = createClient()
-        const { data, error } = await supabase
-          .from('v_stock_summary')
-          .select('*')
-          .order('title')
-        if (error) throw new Error(error.message)
-        setRows(((data ?? []) as any[]).map(r => ({
-          material_id:  r.material_id  ?? '',
-          location_id:  r.location_id  ?? '',
-          item_code:    r.item_code    ?? '',
-          isbn:         r.isbn         ?? '',
-          title:        r.title        ?? '',
-          author:       r.author       ?? '',
-          category:     r.category     ?? '',
-          location:     r.location     ?? '',
-          qty_available:Number(r.qty_available ?? r.qty_in_hand ?? 0),
-          mrp:          Number(r.mrp           ?? 0),
-          purchase_rate:Number(r.purchase_rate ?? 0),
-          stock_value:  Number(r.stock_value   ?? 0),
-        })))
-      } catch (err: any) {
-        toast.error(err.message ?? 'Failed to load stock')
-      } finally {
-        setLoading(false)
-      }
-    })()
+  const load = useCallback(async () => {
+    setLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('v_stock_summary')
+        .select('*')
+        .order('title')
+      if (error) throw new Error(error.message)
+      setRows(((data ?? []) as any[]).map(r => ({
+        material_id:  r.material_id  ?? '',
+        location_id:  r.location_id  ?? '',
+        item_code:    r.item_code    ?? '',
+        isbn:         r.isbn         ?? '',
+        title:        r.title        ?? '',
+        author:       r.author       ?? '',
+        category:     r.category     ?? '',
+        location:     r.location     ?? '',
+        qty_available:Number(r.qty_available ?? r.qty_in_hand ?? 0),
+        mrp:          Number(r.mrp           ?? 0),
+        purchase_rate:Number(r.purchase_rate ?? 0),
+        stock_value:  Number(r.stock_value   ?? 0),
+      })))
+    } catch (err: any) {
+      toast.error(err.message ?? 'Failed to load stock')
+    } finally {
+      clearTimeout(timer)
+      setLoading(false)
+    }
   }, [])
+
+  useEffect(() => { void load() }, [load])
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase()
@@ -540,6 +557,14 @@ function StockTab() {
             <div className="flex items-center justify-center gap-2 py-16 text-gray-400 text-sm">
               <Loader2 size={18} className="animate-spin" /> Loading stock…
             </div>
+          ) : loadError ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-16 text-gray-400">
+              <AlertTriangle size={36} className="text-amber-400" />
+              <p className="font-medium text-sm">Failed to load — connection timed out</p>
+              <button onClick={load} className="btn-outline text-sm flex items-center gap-2">
+                <RefreshCw size={14} /> Retry
+              </button>
+            </div>
           ) : filtered.length === 0 ? (
             <EmptyState icon={<Boxes size={36} />} label="No stock records" />
           ) : (
@@ -613,13 +638,16 @@ function StockTab() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function PurchasesTab() {
-  const [rows,    setRows]    = useState<PurchaseRow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [from,    setFrom]    = useState(daysAgo(29))
-  const [to,      setTo]      = useState(today())
+  const [rows,      setRows]      = useState<PurchaseRow[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [loadError, setLoadError] = useState(false)
+  const [from,      setFrom]      = useState(daysAgo(29))
+  const [to,        setTo]        = useState(today())
 
   const load = useCallback(async () => {
     setLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
       const supabase = createClient()
       const { data, error } = await supabase
@@ -643,6 +671,7 @@ function PurchasesTab() {
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load purchases')
     } finally {
+      clearTimeout(timer)
       setLoading(false)
     }
   }, [from, to])
@@ -720,6 +749,14 @@ function PurchasesTab() {
             <div className="flex items-center justify-center gap-2 py-16 text-gray-400 text-sm">
               <Loader2 size={18} className="animate-spin" /> Loading purchases…
             </div>
+          ) : loadError ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-16 text-gray-400">
+              <AlertTriangle size={36} className="text-amber-400" />
+              <p className="font-medium text-sm">Failed to load — connection timed out</p>
+              <button onClick={load} className="btn-outline text-sm flex items-center gap-2">
+                <RefreshCw size={14} /> Retry
+              </button>
+            </div>
           ) : rows.length === 0 ? (
             <EmptyState icon={<PackageOpen size={36} />} label="No purchase invoices in this period" />
           ) : (
@@ -785,13 +822,16 @@ function PurchasesTab() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function ExpensesTab() {
-  const [rows,    setRows]    = useState<ExpenseRow[]>([])
-  const [loading, setLoading] = useState(true)
-  const [from,    setFrom]    = useState(daysAgo(29))
-  const [to,      setTo]      = useState(today())
+  const [rows,      setRows]      = useState<ExpenseRow[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [loadError, setLoadError] = useState(false)
+  const [from,      setFrom]      = useState(daysAgo(29))
+  const [to,        setTo]        = useState(today())
 
   const load = useCallback(async () => {
     setLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
       const supabase = createClient()
       const { data, error } = await supabase
@@ -814,6 +854,7 @@ function ExpensesTab() {
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load expenses')
     } finally {
+      clearTimeout(timer)
       setLoading(false)
     }
   }, [from, to])
@@ -928,6 +969,14 @@ function ExpensesTab() {
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-16 text-gray-400 text-sm">
               <Loader2 size={18} className="animate-spin" /> Loading expenses…
+            </div>
+          ) : loadError ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-16 text-gray-400">
+              <AlertTriangle size={36} className="text-amber-400" />
+              <p className="font-medium text-sm">Failed to load — connection timed out</p>
+              <button onClick={load} className="btn-outline text-sm flex items-center gap-2">
+                <RefreshCw size={14} /> Retry
+              </button>
             </div>
           ) : rows.length === 0 ? (
             <EmptyState icon={<Receipt size={36} />} label="No expenses in this period" />

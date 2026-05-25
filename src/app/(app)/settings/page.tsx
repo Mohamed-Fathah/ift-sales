@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
-import { Settings, Building2, MapPin, Printer, Bell, Database, Loader2, Save, Check } from 'lucide-react'
+import { Settings, Building2, MapPin, Printer, Bell, Database, Loader2, Save, Check, AlertTriangle, RefreshCw } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { createClient } from '@/lib/supabase/client'
 import { useAuthStore } from '@/store/auth.store'
@@ -35,46 +35,51 @@ const DEFAULTS: Omit<OrgSettings, 'id'> = {
 
 export default function SettingsPage() {
   const { user } = useAuthStore()
-  const [settings, setSettings]   = useState<OrgSettings>({ id: '', ...DEFAULTS })
-  const [loading,  setLoading]    = useState(true)
-  const [saving,   setSaving]     = useState(false)
-  const [saved,    setSaved]      = useState(false)
-  const [orgId,    setOrgId]      = useState<string | null>(null)
+  const [settings,   setSettings]   = useState<OrgSettings>({ id: '', ...DEFAULTS })
+  const [loading,    setLoading]    = useState(true)
+  const [loadError,  setLoadError]  = useState(false)
+  const [saving,     setSaving]     = useState(false)
+  const [saved,      setSaved]      = useState(false)
+  const [orgId,      setOrgId]      = useState<string | null>(null)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 10_000)
-    ;(async () => {
-      try {
-        const supabase = createClient()
-        const { data, error } = await supabase
-          .from('organizations')
-          .select('*')
-          .limit(1)
-          .maybeSingle()
-        if (error && !error.message.includes('does not exist')) throw new Error(error.message)
-        if (data) {
-          setOrgId((data as any).id)
-          setSettings({
-            id:                  (data as any).id,
-            name:                (data as any).name                ?? DEFAULTS.name,
-            address:             (data as any).address             ?? DEFAULTS.address,
-            gstin:               (data as any).gstin               ?? DEFAULTS.gstin,
-            phone:               (data as any).phone               ?? DEFAULTS.phone,
-            email:               (data as any).email               ?? DEFAULTS.email,
-            invoice_prefix:      (data as any).invoice_prefix      ?? DEFAULTS.invoice_prefix,
-            purchase_prefix:     (data as any).purchase_prefix     ?? DEFAULTS.purchase_prefix,
-            receipt_footer:      (data as any).receipt_footer      ?? DEFAULTS.receipt_footer,
-            low_stock_threshold: Number((data as any).low_stock_threshold ?? DEFAULTS.low_stock_threshold),
-          })
-        }
-      } catch (err: any) {
-        // settings table may not exist yet — use defaults silently
-      } finally {
-        clearTimeout(timer)
-        setLoading(false)
+  const loadSettings = async () => {
+    setLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from('organizations')
+        .select('*')
+        .limit(1)
+        .maybeSingle()
+      if (error && !error.message.includes('does not exist')) throw new Error(error.message)
+      if (data) {
+        setOrgId((data as any).id)
+        setSettings({
+          id:                  (data as any).id,
+          name:                (data as any).name                ?? DEFAULTS.name,
+          address:             (data as any).address             ?? DEFAULTS.address,
+          gstin:               (data as any).gstin               ?? DEFAULTS.gstin,
+          phone:               (data as any).phone               ?? DEFAULTS.phone,
+          email:               (data as any).email               ?? DEFAULTS.email,
+          invoice_prefix:      (data as any).invoice_prefix      ?? DEFAULTS.invoice_prefix,
+          purchase_prefix:     (data as any).purchase_prefix     ?? DEFAULTS.purchase_prefix,
+          receipt_footer:      (data as any).receipt_footer      ?? DEFAULTS.receipt_footer,
+          low_stock_threshold: Number((data as any).low_stock_threshold ?? DEFAULTS.low_stock_threshold),
+        })
       }
-    })()
-  }, [])
+    } catch (err: any) {
+      if (!err.message?.includes('does not exist')) {
+        setLoadError(true)
+      }
+    } finally {
+      clearTimeout(timer)
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { void loadSettings() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSave = async () => {
     setSaving(true)
@@ -146,6 +151,18 @@ export default function SettingsPage() {
     return (
       <div className="flex items-center justify-center py-20 text-gray-400 gap-2">
         <Loader2 size={20} className="animate-spin" /> Loading settings…
+      </div>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-gray-400 gap-3">
+        <AlertTriangle size={40} className="text-amber-400" />
+        <p className="font-medium text-sm">Failed to load settings — connection timed out</p>
+        <button onClick={loadSettings} className="btn-outline text-sm flex items-center gap-2">
+          <RefreshCw size={14} /> Retry
+        </button>
       </div>
     )
   }

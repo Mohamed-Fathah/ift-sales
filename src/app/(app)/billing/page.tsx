@@ -625,7 +625,6 @@ export default function BillingPage() {
       toast.success(`Bill ${invoiceNo} saved!`)
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to generate bill')
-    } finally {
       setIsGenerating(false)
     }
   }

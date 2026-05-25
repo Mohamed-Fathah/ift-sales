@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import {
-  Search, Plus, Download, Loader2, X, ShoppingBag, AlertTriangle,
+  Search, Plus, Download, Loader2, X, ShoppingBag, AlertTriangle, RefreshCw,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
@@ -42,11 +42,14 @@ function fmtDate(d: string) {
 export default function PurchasesPage() {
   const [rows,         setRows]         = useState<PurchaseListRow[]>([])
   const [loading,      setLoading]      = useState(true)
+  const [loadError,    setLoadError]    = useState(false)
   const [searchQuery,  setSearchQuery]  = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
 
   const load = async () => {
     setLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
       const supabase = createClient()
       const { data: invoices, error } = await supabase
@@ -82,6 +85,7 @@ export default function PurchasesPage() {
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load purchase invoices')
     } finally {
+      clearTimeout(timer)
       setLoading(false)
     }
   }
@@ -197,6 +201,14 @@ export default function PurchasesPage() {
             <div className="flex items-center justify-center gap-2 py-20 text-gray-400 text-sm">
               <Loader2 size={20} className="animate-spin" />
               Loading purchase invoices…
+            </div>
+          ) : loadError ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-20 text-gray-400">
+              <AlertTriangle size={40} className="text-amber-400" />
+              <p className="font-medium text-sm">Failed to load — connection timed out</p>
+              <button onClick={load} className="btn-outline text-sm flex items-center gap-2">
+                <RefreshCw size={14} /> Retry
+              </button>
             </div>
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-20 text-gray-400">

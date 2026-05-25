@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 import {
   Search, Plus, Upload, Download, Trash2, X,
-  Loader2, FileSpreadsheet, AlertTriangle,
+  Loader2, FileSpreadsheet, AlertTriangle, RefreshCw,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import * as XLSX from 'xlsx'
@@ -475,6 +475,8 @@ export default function MaterialsPage() {
   // ── Load ────────────────────────────────────────────────────────────────
   const load = useCallback(async () => {
     setIsLoading(true)
+    setLoadError(false)
+    const timer = setTimeout(() => { setIsLoading(false); setLoadError(true) }, 10_000)
     try {
       const supabase = createClient()
 
@@ -518,6 +520,7 @@ export default function MaterialsPage() {
     } catch (err: any) {
       toast.error(err.message)
     } finally {
+      clearTimeout(timer)
       setIsLoading(false)
     }
   }, [])
@@ -840,6 +843,14 @@ export default function MaterialsPage() {
             <div className="flex-1 flex items-center justify-center gap-2 text-gray-400">
               <Loader2 size={20} className="animate-spin" />
               Loading materials…
+            </div>
+          ) : loadError ? (
+            <div className="flex-1 flex flex-col items-center justify-center gap-3 py-20 text-gray-400">
+              <AlertTriangle size={40} className="text-amber-400" />
+              <p className="font-medium text-sm">Failed to load — connection timed out</p>
+              <button onClick={load} className="btn-outline text-sm flex items-center gap-2">
+                <RefreshCw size={14} /> Retry
+              </button>
             </div>
           ) : filtered.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center gap-2 text-gray-300 py-20">
