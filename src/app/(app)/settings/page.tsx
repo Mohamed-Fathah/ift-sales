@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react'
 import { Settings, Building2, Printer, Bell, Database, Loader2, Save, Check, AlertTriangle, RefreshCw, Wrench } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { createClient } from '@/lib/supabase/client'
-import { useAuthStore } from '@/store/auth.store'
 
 interface OrgSettings {
   id: string
@@ -34,7 +33,7 @@ const DEFAULTS: Omit<OrgSettings, 'id'> = {
 }
 
 export default function SettingsPage() {
-  const { user } = useAuthStore()
+  const [currentProfile, setCurrentProfile] = useState<{ role: string } | null>(null)
   const [settings,   setSettings]   = useState<OrgSettings>({ id: '', ...DEFAULTS })
   const [loading,    setLoading]    = useState(true)
   const [loadError,  setLoadError]  = useState(false)
@@ -42,6 +41,24 @@ export default function SettingsPage() {
   const [saved,      setSaved]      = useState(false)
   const [orgId,      setOrgId]      = useState<string | null>(null)
   const [firstRun,   setFirstRun]   = useState(false)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const supabase = createClient()
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+        if (!authUser) return
+        const { data } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', authUser.id)
+          .single()
+        if (data) setCurrentProfile(data)
+      } catch (e) {
+        console.error('[Settings] profile fetch failed:', e)
+      }
+    })()
+  }, [])
 
   const loadSettings = async () => {
     setLoading(true)
@@ -123,11 +140,7 @@ export default function SettingsPage() {
     }
   }
 
-  const canEdit = user?.role === 'superadmin' || user?.role === 'admin' || firstRun
-
-  useEffect(() => {
-    console.log('[Settings] user?.role:', user?.role, '| canEdit:', canEdit, '| firstRun:', firstRun)
-  }, [user?.role, canEdit, firstRun])
+  const canEdit = currentProfile?.role === 'superadmin' || currentProfile?.role === 'admin' || firstRun
 
   const Field = ({
     label, field, type = 'text', placeholder,

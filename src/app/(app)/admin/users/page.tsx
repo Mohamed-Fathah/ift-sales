@@ -7,7 +7,7 @@ import { Shield, Search, X, Loader2, Check, Plus, Eye, EyeOff, Wrench } from 'lu
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
 import { createClient } from '@/lib/supabase/client'
-import { useAuthStore, type UserRole } from '@/store/auth.store'
+import { type UserRole } from '@/store/auth.store'
 import { createUserAction } from './actions'
 
 interface UserRow {
@@ -41,7 +41,7 @@ function fmtDate(d: string) {
 }
 
 export default function UsersPage() {
-  const { user: currentUser } = useAuthStore()
+  const [currentProfile, setCurrentProfile] = useState<{ id: string; role: string } | null>(null)
   const [users,     setUsers]     = useState<UserRow[]>([])
   const [loading,   setLoading]   = useState(true)
   const [search,    setSearch]    = useState('')
@@ -58,6 +58,24 @@ export default function UsersPage() {
   const [addRole,      setAddRole]      = useState<UserRole>('viewer')
   const [showPassword, setShowPassword] = useState(false)
   const [addSaving,    setAddSaving]    = useState(false)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const supabase = createClient()
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+        if (!authUser) return
+        const { data } = await supabase
+          .from('profiles')
+          .select('id, role')
+          .eq('id', authUser.id)
+          .single()
+        if (data) setCurrentProfile(data)
+      } catch (e) {
+        console.error('[Users] profile fetch failed:', e)
+      }
+    })()
+  }, [])
 
   const load = async () => {
     setLoading(true)
@@ -168,7 +186,7 @@ export default function UsersPage() {
   const activeCount   = useMemo(() => users.filter(u => u.status === 'active').length,   [users])
   const inactiveCount = useMemo(() => users.filter(u => u.status !== 'active').length, [users])
 
-  const canManage = currentUser?.role === 'superadmin' || currentUser?.role === 'admin' || firstRun
+  const canManage = currentProfile?.role === 'superadmin' || currentProfile?.role === 'admin' || firstRun
 
   return (
     <div className="space-y-5">
@@ -351,7 +369,7 @@ export default function UsersPage() {
                           {u.full_name.charAt(0).toUpperCase()}
                         </div>
                         <span className="font-medium text-sm text-gray-800">{u.full_name}</span>
-                        {u.id === currentUser?.id && (
+                        {u.id === currentProfile?.id && (
                           <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 font-medium">you</span>
                         )}
                       </div>
@@ -404,7 +422,7 @@ export default function UsersPage() {
                             >
                               Edit Role
                             </button>
-                            {u.id !== currentUser?.id && (
+                            {u.id !== currentProfile?.id && (
                               <button
                                 className={`text-xs font-medium ${u.status === 'active' ? 'text-red-400 hover:text-red-600' : 'text-emerald-500 hover:text-emerald-700'}`}
                                 onClick={() => toggleStatus(u)}
