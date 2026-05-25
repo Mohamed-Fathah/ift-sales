@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
-import { Settings, Building2, MapPin, Printer, Bell, Database, Loader2, Save, Check, AlertTriangle, RefreshCw } from 'lucide-react'
+import { Settings, Building2, Printer, Bell, Database, Loader2, Save, Check, AlertTriangle, RefreshCw, Wrench } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { createClient } from '@/lib/supabase/client'
 import { useAuthStore } from '@/store/auth.store'
@@ -41,6 +41,7 @@ export default function SettingsPage() {
   const [saving,     setSaving]     = useState(false)
   const [saved,      setSaved]      = useState(false)
   const [orgId,      setOrgId]      = useState<string | null>(null)
+  const [firstRun,   setFirstRun]   = useState(false)
 
   const loadSettings = async () => {
     setLoading(true)
@@ -53,6 +54,12 @@ export default function SettingsPage() {
         .select('*')
         .limit(1)
         .maybeSingle()
+      // Detect first-run: no profile row for current user means no admin exists yet
+      const { count: profileCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+      setFirstRun((profileCount ?? 0) === 0)
+
       if (error && !error.message.includes('does not exist')) throw new Error(error.message)
       if (data) {
         setOrgId((data as any).id)
@@ -116,7 +123,7 @@ export default function SettingsPage() {
     }
   }
 
-  const canEdit = user?.role === 'superadmin' || user?.role === 'admin'
+  const canEdit = user?.role === 'superadmin' || user?.role === 'admin' || firstRun
 
   const Field = ({
     label, field, type = 'text', placeholder,
@@ -174,25 +181,33 @@ export default function SettingsPage() {
           <h2 className="page-title">Settings</h2>
           <p className="page-sub mt-0.5">Application configuration and preferences</p>
         </div>
-        {canEdit ? (
-          <button
-            className="btn-primary"
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving
-              ? <><Loader2 size={14} className="animate-spin" /> Saving…</>
-              : saved
-                ? <><Check size={14} /> Saved</>
-                : <><Save size={14} /> Save Changes</>
-            }
-          </button>
-        ) : (
-          <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-            <Settings size={13} />
-            Admin access required to edit
-          </div>
-        )}
+        <div className="flex items-center gap-3 flex-wrap justify-end">
+          {firstRun && (
+            <div className="flex items-center gap-2 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+              <Wrench size={13} />
+              First-run setup mode — run <a href="/admin/users" className="font-semibold underline">migration 005</a> then re-login to lock down access
+            </div>
+          )}
+          {canEdit ? (
+            <button
+              className="btn-primary"
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving
+                ? <><Loader2 size={14} className="animate-spin" /> Saving…</>
+                : saved
+                  ? <><Check size={14} /> Saved</>
+                  : <><Save size={14} /> Save Changes</>
+              }
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+              <Settings size={13} />
+              Admin access required to edit
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="space-y-4 max-w-2xl">

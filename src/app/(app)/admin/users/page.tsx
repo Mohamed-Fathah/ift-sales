@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Shield, Search, X, Loader2, UserCheck, Check, Plus, Eye, EyeOff } from 'lucide-react'
+import { Shield, Search, X, Loader2, Check, Plus, Eye, EyeOff, Wrench } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
 import { createClient } from '@/lib/supabase/client'
@@ -48,6 +48,7 @@ export default function UsersPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editRole,  setEditRole]  = useState<UserRole>('viewer')
   const [saving,    setSaving]    = useState(false)
+  const [firstRun,  setFirstRun]  = useState(false)
 
   // Add user modal
   const [showAdd,      setShowAdd]      = useState(false)
@@ -62,6 +63,12 @@ export default function UsersPage() {
     setLoading(true)
     try {
       const supabase = createClient()
+      // Detect first-run: RLS means count=0 when current user has no profile
+      const { count: profileCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+      setFirstRun((profileCount ?? 0) === 0)
+
       const { data, error } = await supabase
         .from('profiles')
         .select('id, full_name, email, role, status, created_at')
@@ -161,25 +168,33 @@ export default function UsersPage() {
   const activeCount   = useMemo(() => users.filter(u => u.status === 'active').length,   [users])
   const inactiveCount = useMemo(() => users.filter(u => u.status !== 'active').length, [users])
 
-  const canManage = currentUser?.role === 'superadmin' || currentUser?.role === 'admin'
+  const canManage = currentUser?.role === 'superadmin' || currentUser?.role === 'admin' || firstRun
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h2 className="page-title">User Management</h2>
           <p className="page-sub mt-0.5">Manage staff accounts and permissions</p>
         </div>
-        {canManage ? (
-          <button className="btn-primary" onClick={() => setShowAdd(true)}>
-            <Plus size={15} /> Add User
-          </button>
-        ) : (
-          <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-            <Shield size={13} />
-            Admin access required to edit
-          </div>
-        )}
+        <div className="flex items-center gap-3 flex-wrap">
+          {firstRun && (
+            <div className="flex items-center gap-2 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+              <Wrench size={13} />
+              First-run setup — create an admin user, then run migration 005 and re-login
+            </div>
+          )}
+          {canManage ? (
+            <button className="btn-primary" onClick={() => setShowAdd(true)}>
+              <Plus size={15} /> Add User
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+              <Shield size={13} />
+              Admin access required to edit
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Stats */}
