@@ -44,7 +44,7 @@ export default function TransfersPage() {
         ] = await Promise.all([
           supabase
             .from('stock_movements')
-            .select('id, material_id, location_id, qty, notes, created_by, created_at, reference_id')
+            .select('id, material_id, location_id, qty, notes, created_by, created_at, ref_id')
             .eq('movement_type', 'transfer_out')
             .order('created_at', { ascending: false })
             .limit(500),
@@ -63,7 +63,7 @@ export default function TransfersPage() {
         // We approximate "to_location" by finding the matching transfer_in
         const inMoves = await supabase
           .from('stock_movements')
-          .select('material_id, location_id, created_at, reference_id')
+          .select('material_id, location_id, created_at, ref_id')
           .eq('movement_type', 'transfer_in')
           .order('created_at', { ascending: false })
           .limit(500)

@@ -239,7 +239,7 @@ export default function SalesReturnsPage() {
             location_id:   selectedInvoice.location_id,
             movement_type: 'sale_return',
             qty:           item.qty,
-            reference_id:  ret.id,
+            ref_id:        ret.id,
             notes:         `Sales Return ${returnNo}`,
             created_by:    user?.full_name ?? 'System',
           })

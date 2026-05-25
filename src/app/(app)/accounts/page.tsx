@@ -53,14 +53,14 @@ export default function AccountsPage() {
         const supabase = createClient()
         const { data, error } = await supabase
           .from('parties')
-          .select('id, name, type, phone')
+          .select('id, name, party_type, phone')
           .eq('is_active', true)
           .order('name')
         if (error) throw new Error(error.message)
         setParties(((data ?? []) as any[]).map(r => ({
           id:    r.id,
           name:  r.name  ?? '',
-          type:  r.type  ?? 'supplier',
+          type:  r.party_type  ?? 'supplier',
           phone: r.phone ?? '',
         })))
       } catch (err: any) {

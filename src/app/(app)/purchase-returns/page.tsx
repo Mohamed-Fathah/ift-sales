@@ -235,7 +235,7 @@ export default function PurchaseReturnsPage() {
             location_id:   selectedInvoice.location_id,
             movement_type: 'purchase_return',
             qty:           -item.qty,
-            reference_id:  ret.id,
+            ref_id:        ret.id,
             notes:         `Purchase Return ${returnNo}`,
             created_by:    user?.full_name ?? 'System',
           })
