@@ -26,10 +26,11 @@ interface ReceiptData {
 }
 
 export function generateReceiptPDF(data: ReceiptData) {
-  const doc = new jsPDF({ unit: 'mm', format: 'a5', orientation: 'portrait' })
-  const W = 148
+  // A4 portrait: 210 × 297 mm — gives enough room for all columns
+  const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
+  const W = 210
   const L = 10   // left margin
-  const R = 138  // right margin (W - 10)
+  const R = 195  // right margin  (W - 15)
 
   const navy  = [27,  42,  107] as const
   const gold  = [200, 146, 42]  as const
@@ -38,66 +39,71 @@ export function generateReceiptPDF(data: ReceiptData) {
   const black = [30,  30,  30]  as const
   const light = [242, 243, 246] as const
 
-  // ── Header background (navy, 34 mm tall to fit 3 text lines) ──────────────
+  // ── Header background ──────────────────────────────────────────────────────
   doc.setFillColor(...navy)
-  doc.rect(0, 0, W, 34, 'F')
+  doc.rect(0, 0, W, 36, 'F')
 
   doc.setFont('helvetica', 'bold')
-  doc.setFontSize(13)
+  doc.setFontSize(15)
   doc.setTextColor(...white)
-  doc.text('ISLAMIC FOUNDATION TRUST', W / 2, 10, { align: 'center' })
+  doc.text('ISLAMIC FOUNDATION TRUST', W / 2, 12, { align: 'center' })
 
   doc.setFont('helvetica', 'normal')
-  doc.setFontSize(8)
-  doc.setTextColor(...white)
-  doc.text('138, Perambur High Road, Chennai - 600012', W / 2, 19, { align: 'center' })
-  doc.text('Phone: +91-44-2662 4401  |  www.iftchennai.in', W / 2, 27, { align: 'center' })
-
-  // ── Gold title bar (starts 2 mm below navy rect) ──────────────────────────
-  let y = 36
-  doc.setFillColor(...gold)
-  doc.rect(0, y, W, 8, 'F')
-  doc.setFont('helvetica', 'bold')
   doc.setFontSize(9)
   doc.setTextColor(...white)
-  doc.text('SALES RECEIPT', W / 2, y + 5.5, { align: 'center' })
-  y += 13
+  doc.text('138, Perambur High Road, Chennai - 600012', W / 2, 21, { align: 'center' })
+  doc.text('Phone: +91-44-2662 4401  |  www.iftchennai.in',  W / 2, 29, { align: 'center' })
+
+  // ── Gold title bar ────────────────────────────────────────────────────────
+  let y = 38
+  doc.setFillColor(...gold)
+  doc.rect(0, y, W, 9, 'F')
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(10)
+  doc.setTextColor(...white)
+  doc.text('SALES RECEIPT', W / 2, y + 6, { align: 'center' })
+  y += 15
 
   // ── Bill meta ─────────────────────────────────────────────────────────────
-  doc.setFontSize(8)
+  doc.setFontSize(9)
   doc.setFont('helvetica', 'bold')
   doc.setTextColor(...black)
   doc.text(`Bill No: ${data.invoiceNo}`, L, y)
   doc.text(`Date: ${data.date}`, R, y, { align: 'right' })
-  y += 6
+  y += 7
 
   doc.setFont('helvetica', 'normal')
   doc.setTextColor(...gray)
   doc.text(`Customer: ${data.customerName || 'Walk-in Customer'}`, L, y)
   doc.text(`Location: ${data.location}`, R, y, { align: 'right' })
-  y += 5
+  y += 6
 
   if (data.customerPhone) {
     doc.text(`Phone: ${data.customerPhone}`, L, y)
-    y += 5
+    y += 6
   }
   doc.text(`Payment: ${data.paymentMode.toUpperCase()}`, L, y)
-  y += 8
+  y += 10
 
-  // ── Table columns ─────────────────────────────────────────────────────────
-  // #(10) | Title(17→82) | Qty(90) | MRP(107) | Rate(124) | Total(138)
-  const COL_TITLE = L + 7   // 17
-  const COL_QTY   = 90      // right-aligned
-  const COL_MRP   = 108     // right-aligned  (+18 from Qty)
-  const COL_RATE  = 123     // right-aligned  (+15 from MRP)
-  const COL_TOTAL = R       // 138            (+15 from Rate)
-  const TITLE_W   = COL_QTY - COL_TITLE - 3  // ~70 mm
+  // ── Column positions (all numeric columns are right-aligned) ───────────────
+  //
+  //   #   | Title            | Qty  | MRP  | Rate | Total
+  //  x=10 | x=18 (width ~78) | x=100| x=122| x=150| x=195
+  //
+  // Gap between Rate→Total: 45 mm — safe for "Rs.85500.00" (≈18 mm wide)
+  //
+  const COL_TITLE = 18
+  const COL_QTY   = 100  // right-aligned
+  const COL_MRP   = 122  // right-aligned (+22 from Qty)
+  const COL_RATE  = 150  // right-aligned (+28 from MRP)
+  const COL_TOTAL = R    // right-aligned (+45 from Rate)
+  const TITLE_W   = COL_QTY - COL_TITLE - 3  // 79 mm
 
   // ── Table header row ──────────────────────────────────────────────────────
   doc.setFillColor(...light)
-  doc.rect(L, y - 1, W - 20, 7, 'F')
+  doc.rect(L, y - 2, R - L, 8, 'F')
   doc.setFont('helvetica', 'bold')
-  doc.setFontSize(7)
+  doc.setFontSize(8)
   doc.setTextColor(...navy)
   doc.text('#',      L,         y + 4)
   doc.text('Title',  COL_TITLE, y + 4)
@@ -105,16 +111,16 @@ export function generateReceiptPDF(data: ReceiptData) {
   doc.text('MRP',    COL_MRP,   y + 4, { align: 'right' })
   doc.text('Rate',   COL_RATE,  y + 4, { align: 'right' })
   doc.text('Total',  COL_TOTAL, y + 4, { align: 'right' })
-  y += 9
+  y += 10
 
   // ── Items ─────────────────────────────────────────────────────────────────
   doc.setFont('helvetica', 'normal')
-  doc.setFontSize(7.5)
+  doc.setFontSize(8)
 
   for (const item of data.items) {
     const titleLines = doc.splitTextToSize(item.title, TITLE_W)
-    const textH = titleLines.length * 4
-    const rowH  = Math.max(textH + (item.isbn ? 4 : 0), 7)
+    const textH = titleLines.length * 4.5
+    const rowH  = Math.max(textH + (item.isbn ? 4.5 : 0), 7)
 
     doc.setTextColor(...black)
     doc.text(String(item.sno), L, y)
@@ -122,35 +128,35 @@ export function generateReceiptPDF(data: ReceiptData) {
 
     if (item.isbn) {
       doc.setTextColor(...gray)
-      doc.setFontSize(6)
+      doc.setFontSize(6.5)
       doc.text(`ISBN: ${item.isbn}`, COL_TITLE, y + textH)
-      doc.setFontSize(7.5)
+      doc.setFontSize(8)
     }
 
     doc.setTextColor(...black)
-    doc.text(String(item.qty),               COL_QTY,   y, { align: 'right' })
-    doc.text(`Rs.${item.mrp}`,               COL_MRP,   y, { align: 'right' })
-    doc.text(`Rs.${item.rate}`,              COL_RATE,  y, { align: 'right' })
-    doc.text(`Rs.${item.total.toFixed(2)}`,  COL_TOTAL, y, { align: 'right' })
+    doc.text(String(item.qty),              COL_QTY,   y, { align: 'right' })
+    doc.text(`Rs.${item.mrp}`,              COL_MRP,   y, { align: 'right' })
+    doc.text(`Rs.${item.rate}`,             COL_RATE,  y, { align: 'right' })
+    doc.text(`Rs.${item.total.toFixed(2)}`, COL_TOTAL, y, { align: 'right' })
 
-    y += rowH + 2
+    y += rowH + 3
   }
 
   // ── Divider ───────────────────────────────────────────────────────────────
   doc.setDrawColor(210, 210, 210)
   doc.line(L, y, R, y)
-  y += 6
+  y += 8
 
-  // ── Totals (right-aligned block) ──────────────────────────────────────────
-  const TLABEL = 92  // left edge of label text
-  doc.setFontSize(8)
+  // ── Totals (right block) ──────────────────────────────────────────────────
+  const TLABEL = R - 95  // left edge of totals label, 95 mm wide block
+  doc.setFontSize(9)
 
   doc.setFont('helvetica', 'normal')
   doc.setTextColor(...gray)
   doc.text('Subtotal (MRP)', TLABEL, y)
   doc.setTextColor(...black)
   doc.text(`Rs.${data.subtotalMrp.toFixed(2)}`, R, y, { align: 'right' })
-  y += 5
+  y += 6
 
   doc.setTextColor(...gray)
   doc.text('Discount', TLABEL, y)
@@ -160,25 +166,25 @@ export function generateReceiptPDF(data: ReceiptData) {
     doc.setTextColor(...black)
   }
   doc.text(`-Rs.${data.totalDiscount.toFixed(2)}`, R, y, { align: 'right' })
-  y += 6
+  y += 7
 
-  // Total paid highlight box
+  // Total paid highlight
   doc.setFillColor(...light)
-  doc.rect(L, y - 2, W - 20, 9, 'F')
+  doc.rect(L, y - 2, R - L, 10, 'F')
   doc.setFont('helvetica', 'bold')
-  doc.setFontSize(10)
+  doc.setFontSize(11)
   doc.setTextColor(...navy)
-  doc.text('TOTAL PAID', TLABEL, y + 5)
-  doc.text(`Rs.${data.grandTotal.toFixed(2)}`, R, y + 5, { align: 'right' })
-  y += 15
+  doc.text('TOTAL PAID', TLABEL, y + 6)
+  doc.text(`Rs.${data.grandTotal.toFixed(2)}`, R, y + 6, { align: 'right' })
+  y += 18
 
   // ── Footer ────────────────────────────────────────────────────────────────
   doc.setDrawColor(220, 220, 220)
   doc.line(L, y, R, y)
-  y += 5
+  y += 6
 
   doc.setFont('helvetica', 'italic')
-  doc.setFontSize(8)
+  doc.setFontSize(9)
   doc.setTextColor(...gray)
   doc.text('Thank you for your purchase!  |  iftchennai.in', W / 2, y, { align: 'center' })
 
