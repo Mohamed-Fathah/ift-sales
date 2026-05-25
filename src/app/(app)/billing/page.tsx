@@ -741,7 +741,7 @@ export default function BillingPage() {
           </div>
 
           {/* Cart */}
-          <div className="card p-0 overflow-hidden flex flex-col md:flex-1 md:min-h-0">
+          <div className="card p-0 overflow-hidden flex flex-col max-h-72 sm:max-h-96 md:max-h-none md:flex-1 md:min-h-0">
             {/* Cart header */}
             <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2">
@@ -777,9 +777,9 @@ export default function BillingPage() {
                       <th className="w-8">#</th>
                       <th>Title / ISBN</th>
                       <th className="w-32 text-center">Qty</th>
-                      <th className="w-20 text-right">MRP</th>
-                      <th className="w-28 text-center">Disc %</th>
-                      <th className="w-24 text-right">Rate</th>
+                      <th className="hidden md:table-cell w-20 text-right">MRP</th>
+                      <th className="hidden md:table-cell w-28 text-center">Disc %</th>
+                      <th className="hidden md:table-cell w-24 text-right">Rate</th>
                       <th className="w-24 text-right">Total</th>
                       <th className="w-10"></th>
                     </tr>
@@ -795,6 +795,10 @@ export default function BillingPage() {
                           {item.isbn && (
                             <p className="text-xs text-gray-400 mt-0.5">{item.isbn}</p>
                           )}
+                          {/* Show rate on mobile since MRP/Disc% columns are hidden */}
+                          <p className="text-xs text-gray-400 mt-0.5 md:hidden">
+                            ₹{item.mrp}{item.discountPct > 0 ? ` · ${item.discountPct}% off · ₹${item.rate.toFixed(2)}` : ''}
+                          </p>
                         </td>
                         <td>
                           <div className="flex items-center justify-center gap-1">
@@ -818,8 +822,8 @@ export default function BillingPage() {
                             </button>
                           </div>
                         </td>
-                        <td className="text-right text-gray-500 text-sm">₹{item.mrp}</td>
-                        <td>
+                        <td className="hidden md:table-cell text-right text-gray-500 text-sm">₹{item.mrp}</td>
+                        <td className="hidden md:table-cell">
                           <div className="flex items-center justify-center gap-0.5">
                             <input
                               type="number"
@@ -832,7 +836,7 @@ export default function BillingPage() {
                             <span className="text-gray-400 text-xs">%</span>
                           </div>
                         </td>
-                        <td className="text-right text-sm font-medium" style={{ color: 'var(--ift-navy)' }}>
+                        <td className="hidden md:table-cell text-right text-sm font-medium" style={{ color: 'var(--ift-navy)' }}>
                           ₹{item.rate.toFixed(2)}
                         </td>
                         <td className="text-right text-sm font-bold" style={{ color: 'var(--ift-navy)' }}>
@@ -856,7 +860,7 @@ export default function BillingPage() {
         </div>
 
         {/* ── Right panel ────────────────────────────────────────────────── */}
-        <div className="w-full md:w-72 md:shrink-0 flex flex-col gap-4">
+        <div className="w-full md:w-72 md:shrink-0 flex flex-col gap-4 md:overflow-y-auto md:min-h-0">
 
           {/* Customer details */}
           <div className="card space-y-3">
