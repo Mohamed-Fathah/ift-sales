@@ -532,7 +532,7 @@ export default function BillingPage() {
     setCartItems(prev =>
       prev.map(i => {
         if (i.materialId !== materialId) return i
-        const qty = Math.max(1, Math.min(i.stock, i.qty + delta))
+        const qty = Math.max(1, Math.min(9999, i.qty + delta))
         return { ...i, qty, total: parseFloat((i.rate * qty).toFixed(2)) }
       })
     )
@@ -542,7 +542,7 @@ export default function BillingPage() {
       prev.map(i => {
         if (i.materialId !== materialId) return i
         const parsed = parseInt(raw, 10)
-        const qty = isNaN(parsed) ? i.qty : Math.max(1, Math.min(i.stock, parsed))
+        const qty = isNaN(parsed) ? i.qty : Math.max(1, Math.min(9999, parsed))
         return { ...i, qty, total: parseFloat((i.rate * qty).toFixed(2)) }
       })
     )
@@ -822,15 +822,16 @@ export default function BillingPage() {
                             <input
                               type="number"
                               min={1}
-                              max={item.stock}
+                              max={9999}
                               value={item.qty}
                               onChange={e => setQty(item.materialId, e.target.value)}
+                              onFocus={e => e.target.select()}
                               className="w-12 text-center font-bold text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 tabular-nums py-1"
                               style={{ color: 'var(--ift-navy)' }}
                             />
                             <button
                               onClick={() => updateQty(item.materialId, +1)}
-                              disabled={item.qty >= item.stock}
+                              disabled={item.qty >= 9999}
                               className="w-7 h-7 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 transition-colors shrink-0"
                               style={{ color: 'var(--ift-navy)' }}
                             >
