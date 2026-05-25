@@ -90,8 +90,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   const { user, logout } = useAuthStore()
   const router = useRouter()
 
-  const isActive = (href: string) =>
-    href === '/dashboard' ? pathname === href : pathname.startsWith(href)
+  const isActive = (href: string) => pathname === href
 
   async function handleLogout() {
     const supabase = createClient()
