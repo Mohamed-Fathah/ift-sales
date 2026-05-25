@@ -453,8 +453,9 @@ export default function MaterialsPage() {
   const [categories,   setCategories]   = useState<CategoryOption[]>([])
   const [isLoading,    setIsLoading]    = useState(true)
   const [loadError,    setLoadError]    = useState(false)
-  const [search,       setSearch]       = useState('')
-  const [showInactive, setShowInactive] = useState(false)
+  const [search,          setSearch]          = useState('')
+  const [showInactive,    setShowInactive]    = useState(false)
+  const [filterCategory,  setFilterCategory]  = useState('')
 
   // Modals
   const [showAdd,    setShowAdd]    = useState(false)
@@ -532,6 +533,7 @@ export default function MaterialsPage() {
     const q = search.trim().toLowerCase()
     return rows.filter(r => {
       if (!showInactive && !r.is_active) return false
+      if (filterCategory && r.category_id !== filterCategory) return false
       if (!q) return true
       return (
         r.title.toLowerCase().includes(q)     ||
@@ -541,7 +543,7 @@ export default function MaterialsPage() {
         r.category.toLowerCase().includes(q)
       )
     })
-  }, [rows, search, showInactive])
+  }, [rows, search, showInactive, filterCategory])
 
   // ── Inline edit handlers ────────────────────────────────────────────────
   const startEdit = useCallback((id: string, field: string, value: string | number) => {
@@ -821,6 +823,17 @@ export default function MaterialsPage() {
               </button>
             )}
           </div>
+
+          <select
+            className="input w-auto min-w-[160px]"
+            value={filterCategory}
+            onChange={e => setFilterCategory(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            {categories.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
 
           <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
             <input

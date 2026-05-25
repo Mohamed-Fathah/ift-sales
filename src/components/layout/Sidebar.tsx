@@ -25,6 +25,8 @@ import {
 import { useAuthStore } from '@/store/auth.store'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { getLowStockCountAction } from '@/app/(app)/stock/actions'
 
 interface NavItem {
   label: string
@@ -89,6 +91,11 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   const pathname = usePathname()
   const { user, logout } = useAuthStore()
   const router = useRouter()
+  const [lowStockBadge, setLowStockBadge] = useState(0)
+
+  useEffect(() => {
+    getLowStockCountAction().then(setLowStockBadge).catch(() => {})
+  }, [])
 
   const isActive = (href: string) => pathname === href
 
@@ -136,6 +143,11 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               >
                 {item.icon}
                 <span>{item.label}</span>
+                {item.href === '/stock' && lowStockBadge > 0 && (
+                  <span className="ml-auto min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                    {lowStockBadge > 99 ? '99+' : lowStockBadge}
+                  </span>
+                )}
               </Link>
             ))}
           </div>

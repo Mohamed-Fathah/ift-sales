@@ -18,9 +18,11 @@ import {
   transferStockAction,
   addStockEntryAction,
   getActiveMaterialsAction,
+  getActiveSuppliersAction,
   type StockRow,
   type LocationOption,
   type MaterialOption,
+  type PartyOption,
 } from './actions'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -107,28 +109,38 @@ function MovementTypePicker({
 function AddStockEntryModal({
   locations,
   userId,
+  preselectedMaterial = null,
   onClose,
   onSaved,
 }: {
   locations: LocationOption[]
   userId: string | null
+  preselectedMaterial?: { id: string; title: string; item_code: string } | null
   onClose: () => void
   onSaved: () => void
 }) {
   const [materials,    setMaterials]    = useState<MaterialOption[]>([])
+  const [suppliers,    setSuppliers]    = useState<PartyOption[]>([])
   const [loadingMats,  setLoadingMats]  = useState(true)
   const [search,       setSearch]       = useState('')
-  const [materialId,   setMaterialId]   = useState('')
+  const [materialId,   setMaterialId]   = useState(preselectedMaterial?.id ?? '')
   const [locationId,   setLocationId]   = useState(locations[0]?.id ?? '')
   const [qty,          setQty]          = useState('')
+  const [purchaseRate, setPurchaseRate] = useState('')
+  const [supplierId,   setSupplierId]   = useState('')
   const [notes,        setNotes]        = useState('')
   const [saving,       setSaving]       = useState(false)
 
   useEffect(() => {
-    getActiveMaterialsAction()
-      .then(setMaterials)
-      .catch(err => toast.error(err.message))
-      .finally(() => setLoadingMats(false))
+    Promise.all([
+      getActiveMaterialsAction()
+        .then(setMaterials)
+        .catch(err => toast.error(err.message))
+        .finally(() => setLoadingMats(false)),
+      getActiveSuppliersAction()
+        .then(setSuppliers)
+        .catch(() => {}),
+    ])
   }, [])
 
   const filteredMats = useMemo(() => {
@@ -141,7 +153,13 @@ function AddStockEntryModal({
     )
   }, [materials, search])
 
-  const selected  = materials.find(m => m.id === materialId)
+  const selected = materialId
+    ? (materials.find(m => m.id === materialId)
+        ?? (preselectedMaterial?.id === materialId
+            ? { ...preselectedMaterial, isbn: '' }
+            : undefined))
+    : undefined
+
   const parsedQty = parseInt(qty, 10)
   const valid     = !!materialId && !!locationId && !isNaN(parsedQty) && parsedQty > 0
 
@@ -149,7 +167,15 @@ function AddStockEntryModal({
     if (!valid) { toast.error('Select a book and enter a valid quantity'); return }
     setSaving(true)
     try {
-      await addStockEntryAction({ materialId, locationId, qty: parsedQty, notes, createdBy: userId })
+      await addStockEntryAction({
+        materialId,
+        locationId,
+        qty:          parsedQty,
+        purchaseRate: purchaseRate ? parseFloat(purchaseRate) : undefined,
+        supplierId:   supplierId || null,
+        notes,
+        createdBy:    userId,
+      })
       toast.success('Stock entry added')
       onSaved()
     } catch (err: any) {
@@ -195,7 +221,7 @@ function AddStockEntryModal({
                   onChange={e => setSearch(e.target.value)}
                   autoFocus
                 />
-                <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg divide-y divide-gray-100">
+                <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-lg divide-y divide-gray-100">
                   {loadingMats ? (
                     <div className="flex items-center justify-center gap-2 py-4 text-sm text-gray-400">
                       <Loader2 size={14} className="animate-spin" /> Loading…
@@ -207,7 +233,7 @@ function AddStockEntryModal({
                       <button
                         key={m.id}
                         type="button"
-                        onClick={() => { setMaterialId(m.id); setSearch(m.title) }}
+                        onClick={() => setMaterialId(m.id)}
                         className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex-1 min-w-0">
@@ -234,7 +260,7 @@ function AddStockEntryModal({
 
           {/* Qty */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">+ Add Quantity *</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Quantity Received *</label>
             <input
               type="number"
               min={1}
@@ -243,7 +269,32 @@ function AddStockEntryModal({
               onChange={e => setQty(e.target.value)}
               placeholder="Enter quantity"
             />
-            <p className="text-xs text-gray-400 mt-1">If a stock entry already exists, this qty will be added to the current quantity.</p>
+            <p className="text-xs text-gray-400 mt-1">Added to current stock at selected location.</p>
+          </div>
+
+          {/* Purchase Rate */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Purchase Rate ₹ (optional)</label>
+            <input
+              type="number"
+              min={0}
+              step={0.01}
+              className="input"
+              value={purchaseRate}
+              onChange={e => setPurchaseRate(e.target.value)}
+              placeholder="Cost per unit"
+            />
+          </div>
+
+          {/* Supplier */}
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Supplier (optional)</label>
+            <select className="input" value={supplierId} onChange={e => setSupplierId(e.target.value)}>
+              <option value="">— None —</option>
+              {suppliers.map(s => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
           </div>
 
           {/* Notes */}
@@ -252,7 +303,7 @@ function AddStockEntryModal({
             <textarea
               className="input resize-none"
               rows={2}
-              placeholder="Reason for adding stock…"
+              placeholder="Batch number, invoice ref…"
               value={notes}
               onChange={e => setNotes(e.target.value)}
             />
@@ -582,9 +633,10 @@ export default function StockPage() {
   const [searchQuery,  setSearchQuery]  = useState('')
   const [filterLoc,    setFilterLoc]    = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
-  const [updateRow,    setUpdateRow]    = useState<StockRow | null>(null)
-  const [transferRow,  setTransferRow]  = useState<StockRow | null>(null)
-  const [showAddStock, setShowAddStock] = useState(false)
+  const [updateRow,      setUpdateRow]      = useState<StockRow | null>(null)
+  const [transferRow,    setTransferRow]    = useState<StockRow | null>(null)
+  const [showAddStock,   setShowAddStock]   = useState(false)
+  const [addStockPreset, setAddStockPreset] = useState<{ id: string; title: string; item_code: string } | null>(null)
 
   const load = async () => {
     setLoading(true)
@@ -695,7 +747,7 @@ export default function StockPage() {
             Export Excel
           </button>
           <button
-            onClick={() => setShowAddStock(true)}
+            onClick={() => { setAddStockPreset(null); setShowAddStock(true) }}
             className="btn-primary"
           >
             <Plus size={15} />
@@ -934,9 +986,19 @@ export default function StockPage() {
                     <td>
                       <div className="flex items-center justify-center gap-1.5">
                         <button
+                          onClick={() => {
+                            setAddStockPreset({ id: row.material_id, title: row.title, item_code: row.item_code })
+                            setShowAddStock(true)
+                          }}
+                          className="px-2 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-emerald-500 hover:text-emerald-600 transition-colors"
+                          title="Add Stock"
+                        >
+                          <Plus size={13} />
+                        </button>
+                        <button
                           onClick={() => setUpdateRow(row)}
                           className="px-2 py-1 rounded-lg border border-gray-200 text-gray-500 hover:border-[#1B2A6B] hover:text-[#1B2A6B] transition-colors"
-                          title="Update Stock"
+                          title="Adjust Stock"
                         >
                           <RefreshCw size={13} />
                         </button>
@@ -977,8 +1039,9 @@ export default function StockPage() {
         <AddStockEntryModal
           locations={locations}
           userId={user?.id ?? null}
-          onClose={() => setShowAddStock(false)}
-          onSaved={() => { setShowAddStock(false); void load() }}
+          preselectedMaterial={addStockPreset}
+          onClose={() => { setShowAddStock(false); setAddStockPreset(null) }}
+          onSaved={() => { setShowAddStock(false); setAddStockPreset(null); void load() }}
         />
       )}
 

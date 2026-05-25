@@ -50,6 +50,8 @@ export interface AddStockEntryPayload {
   materialId: string
   locationId: string
   qty: number
+  purchaseRate?: number
+  supplierId?: string | null
   notes?: string
   createdBy: string | null
 }
@@ -59,6 +61,11 @@ export interface MaterialOption {
   title: string
   item_code: string
   isbn: string
+}
+
+export interface PartyOption {
+  id: string
+  name: string
 }
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
@@ -77,6 +84,40 @@ export async function getActiveMaterialsAction(): Promise<MaterialOption[]> {
     item_code: m.item_code ?? '',
     isbn:      m.isbn      ?? '',
   }))
+}
+
+// ─── Fetch active suppliers ────────────────────────────────────────────────────
+
+export async function getActiveSuppliersAction(): Promise<PartyOption[]> {
+  const supabase = createAdminClient()
+  const { data } = await supabase
+    .from('parties')
+    .select('id, name')
+    .in('party_type', ['supplier', 'both'])
+    .eq('is_active', true)
+    .order('name')
+  return ((data ?? []) as any[]).map(p => ({ id: p.id as string, name: p.name as string }))
+}
+
+// ─── Low-stock title count (for sidebar badge / dashboard) ────────────────────
+
+export async function getLowStockCountAction(): Promise<number> {
+  try {
+    const supabase = createAdminClient()
+    const [{ data: org }, { data: stockRows }] = await Promise.all([
+      supabase.from('organizations').select('low_stock_threshold').limit(1).maybeSingle(),
+      supabase.from('v_stock_summary').select('material_id, qty_available'),
+    ])
+    const threshold = Number((org as any)?.low_stock_threshold ?? 10)
+    const matQty = new Map<string, number>()
+    for (const r of (stockRows ?? [])) {
+      const id = (r as any).material_id as string
+      matQty.set(id, (matQty.get(id) ?? 0) + Number((r as any).qty_available ?? 0))
+    }
+    return [...matQty.values()].filter(q => q > 0 && q < threshold).length
+  } catch {
+    return 0
+  }
 }
 
 // ─── Add stock entry (insert or add to existing) ──────────────────────────────
@@ -109,8 +150,11 @@ export async function addStockEntryAction(payload: AddStockEntryPayload): Promis
   await supabase.from('stock_movements').insert({
     material_id:   payload.materialId,
     location_id:   payload.locationId,
-    movement_type: 'opening',
+    movement_type: 'purchase',
     qty:           payload.qty,
+    rate:          payload.purchaseRate ?? null,
+    ref_id:        payload.supplierId   ?? null,
+    ref_type:      payload.supplierId ? 'supplier' : null,
     notes:         payload.notes || null,
     created_by:    payload.createdBy || null,
   })
