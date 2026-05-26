@@ -81,61 +81,28 @@ const PAYMENT_MODES: { mode: PaymentMode; label: string; icon: React.ReactNode }
   { mode: 'cheque', label: 'Cheque', icon: <FileText size={14} /> },
 ]
 
-// ─── Barcode Scanner overlay ──────────────────────────────────────────────────
+// ─── Manual barcode / ISBN input overlay ─────────────────────────────────────
+// Replaces the camera scanner — works on all devices without camera permissions.
 
-function BarcodeScanner({
+function ManualBarcodeInput({
   onScan,
   onClose,
 }: {
   onScan: (code: string) => void
   onClose: () => void
 }) {
-  const [camError, setCamError] = useState<string | null>(null)
-  const [starting, setStarting] = useState(true)
+  const [value, setValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    let qr: { stop: () => Promise<void> } | null = null
+  useEffect(() => { inputRef.current?.focus() }, [])
 
-    // Pre-flight: check camera API exists (requires HTTPS + supported browser)
-    if (
-      typeof navigator === 'undefined' ||
-      !navigator.mediaDevices ||
-      typeof navigator.mediaDevices.getUserMedia !== 'function'
-    ) {
-      setCamError('Camera not available. Please search by title or ISBN instead.')
-      setStarting(false)
-      return
-    }
-
-    ;(async () => {
-      try {
-        const { Html5Qrcode } = await import('html5-qrcode')
-        qr = new Html5Qrcode('ift-barcode-cam') as unknown as typeof qr
-        await (qr as any).start(
-          { facingMode: 'environment' },
-          { fps: 10, qrbox: { width: 260, height: 120 }, aspectRatio: 1.7 },
-          (code: string) => {
-            qr?.stop().catch(() => {})
-            onScan(code)
-          },
-          () => {},
-        )
-        setStarting(false)
-      } catch (err: any) {
-        const name = err?.name ?? ''
-        const msg =
-          name === 'NotAllowedError'
-            ? 'Camera permission denied. Please allow camera access and try again.'
-            : name === 'NotFoundError'
-            ? 'No camera found on this device.'
-            : 'Camera not available. Please search by title or ISBN instead.'
-        setCamError(msg)
-        setStarting(false)
-      }
-    })()
-
-    return () => { qr?.stop().catch(() => {}) }
-  }, [onScan, onClose])
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const code = value.trim()
+    if (!code) return
+    setValue('')
+    onScan(code)
+  }
 
   return (
     <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
@@ -146,41 +113,39 @@ function BarcodeScanner({
         >
           <div className="flex items-center gap-2 text-white text-sm font-semibold">
             <Camera size={16} />
-            Scan Barcode / ISBN
+            Enter Barcode / ISBN
           </div>
           <button onClick={onClose} className="text-white/70 hover:text-white transition-colors">
             <X size={18} />
           </button>
         </div>
-        <div className="p-4">
-          {camError ? (
-            <div className="flex flex-col items-center gap-3 py-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
-                <Camera size={22} className="text-amber-500" />
-              </div>
-              <p className="text-sm font-medium text-gray-700">{camError}</p>
-              <button onClick={onClose} className="btn-primary text-sm mt-1">
-                OK, I&apos;ll search instead
-              </button>
-            </div>
-          ) : (
-            <>
-              <div
-                id="ift-barcode-cam"
-                className="w-full rounded-xl overflow-hidden bg-gray-900"
-                style={{ minHeight: 200 }}
-              />
-              {starting && (
-                <div className="flex items-center justify-center gap-2 mt-2 text-gray-400 text-xs">
-                  <Loader2 size={12} className="animate-spin" /> Starting camera…
-                </div>
-              )}
-              <p className="text-xs text-gray-400 text-center mt-3">
-                Point camera at barcode, QR code, or ISBN
-              </p>
-            </>
-          )}
-        </div>
+        <form onSubmit={handleSubmit} className="p-4 space-y-3">
+          <p className="text-sm text-gray-500">
+            Type or scan the barcode / ISBN into the field below:
+          </p>
+          <input
+            ref={inputRef}
+            type="text"
+            inputMode="numeric"
+            className="input w-full font-mono tracking-wider"
+            placeholder="e.g. 9788171011234"
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            autoComplete="off"
+          />
+          <div className="flex gap-2 pt-1">
+            <button type="button" onClick={onClose} className="btn-outline flex-1">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!value.trim()}
+              className="btn-primary flex-1"
+            >
+              Look up
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )
@@ -379,8 +344,8 @@ export default function BillingPage() {
   // Payment
   const [paymentMode, setPaymentMode] = useState<PaymentMode>('cash')
 
-  // Scanner
-  const [showScanner, setShowScanner] = useState(false)
+  // Manual barcode input overlay
+  const [showManualInput, setShowManualInput] = useState(false)
 
   // Bill generation
   const [isGenerating, setIsGenerating] = useState(false)
@@ -542,10 +507,10 @@ export default function BillingPage() {
     setShowDropdown(false)
   }, [])
 
-  // ── Barcode scan handler (server action — bypasses RLS) ──────────────────
+  // ── Barcode / ISBN lookup (called from manual input overlay) ─────────────
   const handleScan = useCallback(
     async (code: string) => {
-      setShowScanner(false)
+      setShowManualInput(false)
       const tid = toast.loading(`Looking up: ${code}…`)
 
       try {
@@ -788,9 +753,9 @@ export default function BillingPage() {
               </div>
 
               <button
-                onClick={() => setShowScanner(true)}
+                onClick={() => setShowManualInput(true)}
                 className="btn-primary px-3 shrink-0"
-                title="Scan barcode"
+                title="Enter barcode / ISBN"
               >
                 <Camera size={18} />
               </button>
@@ -1044,10 +1009,10 @@ export default function BillingPage() {
       </div>
 
       {/* ── Overlays ──────────────────────────────────────────────────────── */}
-      {showScanner && (
-        <BarcodeScanner
+      {showManualInput && (
+        <ManualBarcodeInput
           onScan={handleScan}
-          onClose={() => setShowScanner(false)}
+          onClose={() => setShowManualInput(false)}
         />
       )}
 
