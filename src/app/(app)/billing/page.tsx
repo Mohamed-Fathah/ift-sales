@@ -90,8 +90,22 @@ function BarcodeScanner({
   onScan: (code: string) => void
   onClose: () => void
 }) {
+  const [camError, setCamError] = useState<string | null>(null)
+  const [starting, setStarting] = useState(true)
+
   useEffect(() => {
     let qr: { stop: () => Promise<void> } | null = null
+
+    // Pre-flight: check camera API exists (requires HTTPS + supported browser)
+    if (
+      typeof navigator === 'undefined' ||
+      !navigator.mediaDevices ||
+      typeof navigator.mediaDevices.getUserMedia !== 'function'
+    ) {
+      setCamError('Camera not available. Please search by title or ISBN instead.')
+      setStarting(false)
+      return
+    }
 
     ;(async () => {
       try {
@@ -106,9 +120,17 @@ function BarcodeScanner({
           },
           () => {},
         )
-      } catch {
-        toast.error('Camera unavailable or permission denied')
-        onClose()
+        setStarting(false)
+      } catch (err: any) {
+        const name = err?.name ?? ''
+        const msg =
+          name === 'NotAllowedError'
+            ? 'Camera permission denied. Please allow camera access and try again.'
+            : name === 'NotFoundError'
+            ? 'No camera found on this device.'
+            : 'Camera not available. Please search by title or ISBN instead.'
+        setCamError(msg)
+        setStarting(false)
       }
     })()
 
@@ -131,14 +153,33 @@ function BarcodeScanner({
           </button>
         </div>
         <div className="p-4">
-          <div
-            id="ift-barcode-cam"
-            className="w-full rounded-xl overflow-hidden bg-gray-900"
-            style={{ minHeight: 200 }}
-          />
-          <p className="text-xs text-gray-400 text-center mt-3">
-            Point camera at barcode, QR code, or ISBN
-          </p>
+          {camError ? (
+            <div className="flex flex-col items-center gap-3 py-6 text-center">
+              <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                <Camera size={22} className="text-amber-500" />
+              </div>
+              <p className="text-sm font-medium text-gray-700">{camError}</p>
+              <button onClick={onClose} className="btn-primary text-sm mt-1">
+                OK, I&apos;ll search instead
+              </button>
+            </div>
+          ) : (
+            <>
+              <div
+                id="ift-barcode-cam"
+                className="w-full rounded-xl overflow-hidden bg-gray-900"
+                style={{ minHeight: 200 }}
+              />
+              {starting && (
+                <div className="flex items-center justify-center gap-2 mt-2 text-gray-400 text-xs">
+                  <Loader2 size={12} className="animate-spin" /> Starting camera…
+                </div>
+              )}
+              <p className="text-xs text-gray-400 text-center mt-3">
+                Point camera at barcode, QR code, or ISBN
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>
