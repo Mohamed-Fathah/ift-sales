@@ -119,7 +119,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
       {/* Logo / Brand */}
       <div className="flex items-center gap-3 px-5 py-4 border-b border-white/10">
         <Link href="/dashboard" className="shrink-0">
-          <img src="/ift-logo.png" alt="IFT" style={{ height: '40px', width: 'auto', filter: 'invert(1)' }} />
+          <img src="/ift-logo.png" alt="IFT" style={{ height: '40px', width: 'auto', filter: 'brightness(0) invert(1)' }} />
         </Link>
         <div className="overflow-hidden">
           <p className="text-white font-semibold text-sm leading-tight truncate">Islamic Foundation</p>
