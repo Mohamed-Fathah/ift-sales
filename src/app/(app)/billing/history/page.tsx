@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import {
   Search, Download, ArrowLeft, ChevronDown, ChevronRight,
@@ -16,6 +16,7 @@ import { exportSalesReport } from '@/lib/excel-export'
 import {
   getInvoicesAction,
   getInvoiceItemsAction,
+  getOrgSettingsAction,
   type InvoiceListRow,
   type InvoiceDetailItem,
 } from '../actions'
@@ -37,11 +38,12 @@ interface ReceiptData {
   totalDiscount: number
   grandTotal: number
   createdBy: string
+  footer: string
 }
 
 // ─── Helper: build receipt data ───────────────────────────────────────────────
 
-function buildReceipt(inv: InvoiceListRow, items: InvoiceDetailItem[]): ReceiptData {
+function buildReceipt(inv: InvoiceListRow, items: InvoiceDetailItem[], footer: string): ReceiptData {
   return {
     invoiceNo:    inv.invoice_no,
     date:         format(parseISO(inv.invoice_date), 'dd/MM/yyyy'),
@@ -63,21 +65,8 @@ function buildReceipt(inv: InvoiceListRow, items: InvoiceDetailItem[]): ReceiptD
     totalDiscount: inv.discount_amount,
     grandTotal:   inv.total_amount,
     createdBy:    'Staff',
+    footer,
   }
-}
-
-// ─── Helper: fetch + cache items ─────────────────────────────────────────────
-
-async function fetchItems(
-  invoiceId: string,
-  cache: Map<string, InvoiceDetailItem[]>,
-  setCache: React.Dispatch<React.SetStateAction<Map<string, InvoiceDetailItem[]>>>
-): Promise<InvoiceDetailItem[]> {
-  const cached = cache.get(invoiceId)
-  if (cached) return cached
-  const items = await getInvoiceItemsAction(invoiceId)
-  setCache(prev => new Map(prev).set(invoiceId, items))
-  return items
 }
 
 // ─── Payment badge ────────────────────────────────────────────────────────────
@@ -130,7 +119,7 @@ function ReceiptModal({ receipt, onClose }: { receipt: ReceiptData; onClose: () 
       `Discount      : -₹${receipt.totalDiscount.toFixed(2)}`,
       `*Grand Total  : ₹${receipt.grandTotal.toFixed(2)}*`,
       '',
-      '_May Almighty increase us in knowledge_',
+      `_${receipt.footer}_`,
       '_Islamic Foundation Trust, Chennai — www.iftchennai.in_',
     ].filter(Boolean).join('\n')
     const digits = receipt.customerPhone.replace(/\D/g, '')
@@ -220,7 +209,7 @@ function ReceiptModal({ receipt, onClose }: { receipt: ReceiptData; onClose: () 
           </div>
 
           <div style={{ textAlign: 'center', paddingTop: '12px', borderTop: '1px solid #eee', fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>
-            <p>May Almighty increase us in knowledge</p>
+            <p>{receipt.footer}</p>
           </div>
         </div>
 
@@ -248,9 +237,12 @@ export default function BillingHistoryPage() {
   // Data
   const [invoices,     setInvoices]     = useState<InvoiceListRow[]>([])
   const [loading,      setLoading]      = useState(true)
-  const [itemsCache,   setItemsCache]   = useState<Map<string, InvoiceDetailItem[]>>(new Map())
+  // Cache stored in ref — updates don't trigger full table re-render
+  const itemsCacheRef  = useRef<Map<string, InvoiceDetailItem[]>>(new Map())
+  const [fetchedIds,   setFetchedIds]   = useState<Set<string>>(new Set())
   const [loadingItems, setLoadingItems] = useState<Set<string>>(new Set())
   const [expanded,     setExpanded]     = useState<Set<string>>(new Set())
+  const [orgSettings,  setOrgSettings]  = useState({ receipt_footer: 'Thank you for your purchase!' })
 
   // Receipt modal
   const [receipt, setReceipt] = useState<ReceiptData | null>(null)
@@ -267,11 +259,16 @@ export default function BillingHistoryPage() {
   }, [])
   const [paymentMode,  setPaymentMode]  = useState('all')
 
-  // Debounce search
+  // Debounce search — 300ms max
   useEffect(() => {
-    const t = setTimeout(() => setSearch(searchInput), 400)
+    const t = setTimeout(() => setSearch(searchInput), 300)
     return () => clearTimeout(t)
   }, [searchInput])
+
+  // Fetch org settings once for receipt footer
+  useEffect(() => {
+    getOrgSettingsAction().then(s => setOrgSettings(s)).catch(() => {})
+  }, [])
 
   // ── Load invoices ──────────────────────────────────────────────────────────
   const loadInvoices = useCallback(async () => {
@@ -293,56 +290,78 @@ export default function BillingHistoryPage() {
 
   useEffect(() => { loadInvoices() }, [loadInvoices])
 
+  // Pre-compute expensive date-fns operations once per invoices change
+  const processedInvoices = useMemo(() =>
+    invoices.map(inv => ({
+      ...inv,
+      formattedDate: format(parseISO(inv.invoice_date), 'dd/MM/yyyy'),
+      isTodayFlag:   isToday(parseISO(inv.invoice_date)),
+    })),
+    [invoices]
+  )
+
+  // ── Helper: get cached items or fetch from server ──────────────────────────
+  const getItems = useCallback(async (invoiceId: string): Promise<InvoiceDetailItem[]> => {
+    const cached = itemsCacheRef.current.get(invoiceId)
+    if (cached) return cached
+    const items = await getInvoiceItemsAction(invoiceId)
+    itemsCacheRef.current.set(invoiceId, items)
+    setFetchedIds(prev => new Set(prev).add(invoiceId))
+    return items
+  }, [])
+
   // ── Expand row ─────────────────────────────────────────────────────────────
-  const toggleRow = async (invoiceId: string) => {
+  const toggleRow = useCallback(async (invoiceId: string) => {
     if (expanded.has(invoiceId)) {
       setExpanded(prev => { const s = new Set(prev); s.delete(invoiceId); return s })
       return
     }
     setExpanded(prev => new Set(prev).add(invoiceId))
-    if (!itemsCache.has(invoiceId)) {
+    if (!itemsCacheRef.current.has(invoiceId)) {
       setLoadingItems(prev => new Set(prev).add(invoiceId))
       try {
-        await fetchItems(invoiceId, itemsCache, setItemsCache)
+        const items = await getInvoiceItemsAction(invoiceId)
+        itemsCacheRef.current.set(invoiceId, items)
+        setFetchedIds(prev => new Set(prev).add(invoiceId))
       } catch {
         toast.error('Failed to load items')
       } finally {
         setLoadingItems(prev => { const s = new Set(prev); s.delete(invoiceId); return s })
       }
     }
-  }
+  }, [expanded])
 
   // ── Open receipt ───────────────────────────────────────────────────────────
-  const openReceipt = async (inv: InvoiceListRow) => {
+  const openReceipt = useCallback(async (inv: InvoiceListRow) => {
     const tid = toast.loading('Loading receipt…')
     try {
-      const items = await fetchItems(inv.id, itemsCache, setItemsCache)
+      const items = await getItems(inv.id)
       toast.dismiss(tid)
-      setReceipt(buildReceipt(inv, items))
+      setReceipt(buildReceipt(inv, items, orgSettings.receipt_footer))
     } catch {
       toast.error('Failed to load receipt', { id: tid })
     }
-  }
+  }, [getItems, orgSettings.receipt_footer])
 
   // ── Print PDF directly ─────────────────────────────────────────────────────
-  const printPDF = async (inv: InvoiceListRow) => {
+  const printPDF = useCallback(async (inv: InvoiceListRow) => {
     const tid = toast.loading('Generating PDF…')
     try {
-      const items = await fetchItems(inv.id, itemsCache, setItemsCache)
+      const items = await getItems(inv.id)
       toast.dismiss(tid)
-      generateReceiptPDF(buildReceipt(inv, items))
+      generateReceiptPDF(buildReceipt(inv, items, orgSettings.receipt_footer))
     } catch {
       toast.error('Failed', { id: tid })
     }
-  }
+  }, [getItems, orgSettings.receipt_footer])
 
   // ── WhatsApp direct ────────────────────────────────────────────────────────
-  const sendWhatsApp = async (inv: InvoiceListRow) => {
+  const sendWhatsApp = useCallback(async (inv: InvoiceListRow) => {
     const tid = toast.loading('Loading…')
     try {
-      const items = await fetchItems(inv.id, itemsCache, setItemsCache)
+      const items = await getItems(inv.id)
       toast.dismiss(tid)
-      const r = buildReceipt(inv, items)
+      const r = buildReceipt(inv, items, orgSettings.receipt_footer)
       const lines = r.items
         .map(i => `  • ${i.title}${i.isbn ? ` (${i.isbn})` : ''}\n    ${i.qty} x ₹${i.rate.toFixed(2)} = ₹${i.total.toFixed(2)}`)
         .join('\n')
@@ -360,7 +379,7 @@ export default function BillingHistoryPage() {
         `Discount      : -₹${r.totalDiscount.toFixed(2)}`,
         `*Grand Total  : ₹${r.grandTotal.toFixed(2)}*`,
         '',
-        '_May Almighty increase us in knowledge_',
+        `_${r.footer}_`,
         '_Islamic Foundation Trust, Chennai — www.iftchennai.in_',
       ].filter(Boolean).join('\n')
       const digits = r.customerPhone.replace(/\D/g, '')
@@ -370,7 +389,7 @@ export default function BillingHistoryPage() {
     } catch {
       toast.error('Failed', { id: tid })
     }
-  }
+  }, [getItems, orgSettings.receipt_footer])
 
   // ── Export ─────────────────────────────────────────────────────────────────
   const handleExport = () => {
@@ -393,7 +412,7 @@ export default function BillingHistoryPage() {
 
   // ── Summary ────────────────────────────────────────────────────────────────
   const totalRevenue = useMemo(() => invoices.reduce((s, i) => s + i.total_amount, 0), [invoices])
-  const todayCount   = useMemo(() => invoices.filter(i => isToday(parseISO(i.invoice_date))).length, [invoices])
+  const todayCount   = useMemo(() => processedInvoices.filter(i => i.isTodayFlag).length, [processedInvoices])
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
@@ -512,10 +531,11 @@ export default function BillingHistoryPage() {
                 </tr>
               </thead>
               <tbody>
-                {invoices.map(inv => {
+                {processedInvoices.map(inv => {
                   const isExpanded    = expanded.has(inv.id)
                   const isLoadingRow  = loadingItems.has(inv.id)
-                  const items         = itemsCache.get(inv.id)
+                  // Read directly from ref — no state dependency
+                  const items         = itemsCacheRef.current.get(inv.id)
                   const displayCount  = items ? items.length : inv.items_count
 
                   return (
@@ -541,9 +561,9 @@ export default function BillingHistoryPage() {
                         </td>
                         <td className="whitespace-nowrap">
                           <span className="text-gray-700 text-sm">
-                            {format(parseISO(inv.invoice_date), 'dd/MM/yyyy')}
+                            {inv.formattedDate}
                           </span>
-                          {isToday(parseISO(inv.invoice_date)) && (
+                          {inv.isTodayFlag && (
                             <span className="ml-1.5 badge-green" style={{ fontSize: 10 }}>Today</span>
                           )}
                         </td>

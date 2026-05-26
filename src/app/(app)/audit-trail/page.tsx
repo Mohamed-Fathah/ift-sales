@@ -225,21 +225,52 @@ export default function AuditTrailPage() {
                         </div>
 
                         {isOpen && (
-                          <div className="mt-3 pt-3 border-t border-gray-100 grid grid-cols-2 gap-3 text-xs">
-                            {r.old_data && (
-                              <div>
-                                <p className="font-semibold text-gray-400 mb-1 uppercase tracking-wide text-[10px]">Before</p>
-                                <pre className="bg-gray-50 border border-gray-200 rounded-lg p-2 overflow-auto max-h-32 text-gray-600 text-[11px]">
-                                  {JSON.stringify(r.old_data, null, 2)}
-                                </pre>
-                              </div>
-                            )}
-                            {r.new_data && (
-                              <div>
-                                <p className="font-semibold text-gray-400 mb-1 uppercase tracking-wide text-[10px]">After</p>
-                                <pre className="bg-blue-50 border border-blue-200 rounded-lg p-2 overflow-auto max-h-32 text-gray-700 text-[11px]">
-                                  {JSON.stringify(r.new_data, null, 2)}
-                                </pre>
+                          <div className="mt-3 pt-3 border-t border-gray-100 text-xs">
+                            {r.action === 'UPDATE' && r.changed_fields.length > 0 ? (
+                              <table className="w-full">
+                                <thead>
+                                  <tr>
+                                    <th className="text-left text-[10px] uppercase tracking-wide text-gray-400 pb-1.5 pr-4 w-32">Field</th>
+                                    <th className="text-left text-[10px] uppercase tracking-wide text-red-400 pb-1.5 pr-4">Before</th>
+                                    <th className="text-left text-[10px] uppercase tracking-wide text-emerald-500 pb-1.5">After</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {r.changed_fields.map(field => (
+                                    <tr key={field} className="border-t border-gray-50">
+                                      <td className="py-1 pr-4 font-mono text-gray-500 font-medium align-top">{field}</td>
+                                      <td className="py-1 pr-4 align-top">
+                                        <span className="inline-block bg-red-50 text-red-700 px-1.5 py-0.5 rounded font-mono break-all">
+                                          {r.old_data ? String(r.old_data[field] ?? '—') : '—'}
+                                        </span>
+                                      </td>
+                                      <td className="py-1 align-top">
+                                        <span className="inline-block bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded font-mono break-all">
+                                          {r.new_data ? String(r.new_data[field] ?? '—') : '—'}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            ) : (
+                              <div className="grid grid-cols-2 gap-3">
+                                {r.old_data && (
+                                  <div>
+                                    <p className="font-semibold text-gray-400 mb-1 uppercase tracking-wide text-[10px]">Before</p>
+                                    <pre className="bg-gray-50 border border-gray-200 rounded-lg p-2 overflow-auto max-h-32 text-gray-600 text-[11px]">
+                                      {JSON.stringify(r.old_data, null, 2)}
+                                    </pre>
+                                  </div>
+                                )}
+                                {r.new_data && (
+                                  <div>
+                                    <p className="font-semibold text-gray-400 mb-1 uppercase tracking-wide text-[10px]">After</p>
+                                    <pre className="bg-blue-50 border border-blue-200 rounded-lg p-2 overflow-auto max-h-32 text-gray-700 text-[11px]">
+                                      {JSON.stringify(r.new_data, null, 2)}
+                                    </pre>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>

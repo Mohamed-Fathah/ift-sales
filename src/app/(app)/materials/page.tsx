@@ -519,6 +519,9 @@ export default function MaterialsPage() {
         .order('name')
       if (catsErr) throw new Error(catsErr.message)
 
+      // Build a lookup map so category name resolves even if the join fails (RLS)
+      const catMap = new Map<string, string>(((cats ?? []) as any[]).map((c: any) => [c.id as string, c.name as string]))
+
       setRows(((data ?? []) as any[]).map(m => ({
         id:            m.id,
         item_code:     m.item_code    ?? '',
@@ -526,7 +529,7 @@ export default function MaterialsPage() {
         title:         m.title        ?? '',
         author:        m.author       ?? '',
         category_id:   m.category_id  ?? '',
-        category:      (m.categories as any)?.name ?? '',
+        category:      catMap.get(m.category_id) ?? (m.categories as any)?.name ?? '',
         mrp:           Number(m.mrp           ?? 0),
         purchase_rate: Number(m.purchase_rate  ?? 0),
         discount_pct:  Number(m.discount_pct   ?? 0),
