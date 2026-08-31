@@ -1,6 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { requireUser } from '@/lib/auth-guard'
 import { execFileSync } from 'child_process'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -71,6 +72,7 @@ export interface PartyOption {
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
 export async function getActiveMaterialsAction(): Promise<MaterialOption[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('materials')
@@ -89,6 +91,7 @@ export async function getActiveMaterialsAction(): Promise<MaterialOption[]> {
 // ─── Fetch active suppliers ────────────────────────────────────────────────────
 
 export async function getActiveSuppliersAction(): Promise<PartyOption[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('parties')
@@ -102,6 +105,7 @@ export async function getActiveSuppliersAction(): Promise<PartyOption[]> {
 // ─── Low-stock title count (for sidebar badge / dashboard) ────────────────────
 
 export async function getLowStockCountAction(): Promise<number> {
+  await requireUser()
   try {
     const supabase = createAdminClient()
     const [{ data: org }, { data: stockRows }] = await Promise.all([
@@ -123,6 +127,7 @@ export async function getLowStockCountAction(): Promise<number> {
 // ─── Add stock entry (insert or add to existing) ──────────────────────────────
 
 export async function addStockEntryAction(payload: AddStockEntryPayload): Promise<void> {
+  await requireUser()
   if (payload.qty <= 0) throw new Error('Quantity must be positive')
   const supabase = createAdminClient()
 
@@ -176,6 +181,7 @@ function gitAutoCommit(msg: string) {
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
 export async function getStockSummaryAction(): Promise<StockRow[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('v_stock_summary')
@@ -199,6 +205,7 @@ export async function getStockSummaryAction(): Promise<StockRow[]> {
 }
 
 export async function getLocationsAction(): Promise<LocationOption[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('locations')
@@ -210,6 +217,7 @@ export async function getLocationsAction(): Promise<LocationOption[]> {
 // ─── Update stock quantity ────────────────────────────────────────────────────
 
 export async function updateStockAction(payload: UpdateStockPayload): Promise<void> {
+  await requireUser()
   const supabase = createAdminClient()
 
   const { data: row } = await supabase
@@ -255,6 +263,7 @@ export async function updateStockAction(payload: UpdateStockPayload): Promise<vo
 // ─── Transfer stock between locations ────────────────────────────────────────
 
 export async function transferStockAction(payload: TransferStockPayload): Promise<void> {
+  await requireUser()
   if (payload.qty <= 0) throw new Error('Transfer qty must be positive')
 
   const supabase = createAdminClient()

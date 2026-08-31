@@ -1,6 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { requireUser } from '@/lib/auth-guard'
 
 export async function createUserAction(input: {
   fullName: string
@@ -8,6 +9,7 @@ export async function createUserAction(input: {
   password: string
   role: string
 }): Promise<void> {
+  await requireUser()
   const supabase = createAdminClient()
 
   const { data, error } = await supabase.auth.admin.createUser({

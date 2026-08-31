@@ -3,6 +3,7 @@
 // bypassing RLS for catalog reads (materials, stock, locations).
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { requireUser } from '@/lib/auth-guard'
 
 // ─── Shared result types (serialisable — no class instances) ─────────────────
 
@@ -37,6 +38,7 @@ export interface MaterialCacheRow {
 // ─── Fetch default location ───────────────────────────────────────────────────
 
 export async function getDefaultLocation(): Promise<LocationResult | null> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('locations')
@@ -49,6 +51,7 @@ export async function getDefaultLocation(): Promise<LocationResult | null> {
 // ─── Fetch org settings (prefix + footer) ────────────────────────────────────
 
 export async function getOrgSettingsAction(): Promise<{ invoice_prefix: string; receipt_footer: string }> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('organizations')
@@ -64,6 +67,7 @@ export async function getOrgSettingsAction(): Promise<{ invoice_prefix: string; 
 // ─── Fetch all active materials for local Dexie cache ────────────────────────
 
 export async function getAllMaterialsForCache(): Promise<MaterialCacheRow[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('materials')
@@ -87,6 +91,7 @@ export async function getAllMaterialsForCache(): Promise<MaterialCacheRow[]> {
 // ─── Search materials by title / author / ISBN / item_code ───────────────────
 
 export async function searchMaterialsAction(query: string): Promise<MaterialResult[]> {
+  await requireUser()
   const q = query.trim()
   if (!q) return []
 
@@ -129,6 +134,7 @@ export async function searchMaterialsAction(query: string): Promise<MaterialResu
 // ─── Barcode / ISBN / item_code lookup ────────────────────────────────────────
 
 export async function lookupBarcodeAction(code: string): Promise<MaterialResult | null> {
+  await requireUser()
   const c = code.trim()
   if (!c) return null
 
@@ -204,6 +210,7 @@ export interface SaveBillResult {
 }
 
 export async function saveBillAction(payload: SaveBillPayload): Promise<SaveBillResult> {
+  await requireUser()
   const supabase = createAdminClient()
 
   // 1. Insert sales_invoice
@@ -311,6 +318,7 @@ export async function getInvoicesAction(filters: {
   search?: string
   paymentMode?: string
 }): Promise<InvoiceListRow[]> {
+  await requireUser()
   const supabase = createAdminClient()
 
   let q = supabase
@@ -348,6 +356,7 @@ export async function getInvoicesAction(filters: {
 }
 
 export async function getInvoiceItemsAction(invoiceId: string): Promise<InvoiceDetailItem[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('sales_invoice_items')
@@ -374,6 +383,7 @@ export async function deductStockAction(
   items: StockDeductItem[],
   locationId: string
 ): Promise<void> {
+  await requireUser()
   if (!items.length || !locationId) return
 
   const supabase = createAdminClient()
