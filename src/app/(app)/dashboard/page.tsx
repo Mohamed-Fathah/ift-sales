@@ -6,6 +6,8 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 
 async function getDashboardStats() {
   try {
@@ -71,6 +73,12 @@ function fmtRupee(n: number) {
 }
 
 export default async function DashboardPage() {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    redirect('/auth/login')
+  }
+
   const stats = await getDashboardStats()
 
   const STATS = [
@@ -198,4 +206,4 @@ export default async function DashboardPage() {
 
     </div>
   )
-}
+} 
