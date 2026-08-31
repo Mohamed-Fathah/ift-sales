@@ -99,12 +99,17 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
   const isActive = (href: string) => pathname === href
 
-  async function handleLogout() {
-    const supabase = createClient()
+ async function handleLogout() {
+  const supabase = createClient()
+  try {
     await supabase.auth.signOut()
+  } catch (e) {
+    console.error('Sign out error:', e)
+  } finally {
     logout()
     router.push('/auth/login')
   }
+}
 
   return (
     <aside className={clsx(
@@ -122,8 +127,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           <img src="/ift-logo.png" alt="IFT" style={{ height: '40px', width: 'auto', filter: 'brightness(0) invert(1)' }} />
         </Link>
         <div className="overflow-hidden">
-          <p className="text-white font-semibold text-sm leading-tight truncate">Islamic Foundation</p>
-          <p className="text-blue-300 text-xs leading-tight">Trust ERP</p>
+<p className="text-white font-semibold text-sm leading-tight truncate">Islamic Foundation Trust</p>
         </div>
       </div>
 
