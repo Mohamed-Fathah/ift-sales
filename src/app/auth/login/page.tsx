@@ -64,23 +64,23 @@ export default function LoginPage() {
         {/* Brand block */}
         <div className="text-center mb-8">
           {/* IFT emblem */}
-          <div className="mx-auto mb-5 w-20 h-20 rounded-2xl flex flex-col items-center justify-center shadow-xl"
+          <div className="mx-auto mb-5 w-20 h-20 rounded-2xl flex items-center justify-center shadow-xl p-3"
                style={{ background: 'rgba(200,146,42,0.15)', border: '2px solid rgba(200,146,42,0.4)' }}>
-            <span className="text-2xl font-bold tracking-widest" style={{ color: '#E8A832' }}>IFT</span>
+            <img src="/ift-logo.png" alt="IFT" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Islamic Foundation Trust</h1>
           <p className="text-slate-400 text-sm mt-1">Enterprise Resource Planning System</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
-          <h2 className="text-base font-semibold text-gray-800 mb-5">Sign in to your account</h2>
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8">
+          <h2 className="text-base font-semibold text-white mb-5">Sign in to your account</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">
                 Email address
               </label>
               <input
@@ -88,16 +88,16 @@ export default function LoginPage() {
                 type="email"
                 autoComplete="email"
                 placeholder="admin@iftchennai.in"
-                className={`input ${errors.email ? 'input-error' : ''}`}
+                className={`w-full rounded-lg bg-white/10 border ${errors.email ? 'border-red-400' : 'border-white/20'} text-white placeholder:text-slate-400 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500/50`}
               />
               {errors.email && (
-                <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>
+                <p className="text-xs text-red-400 mt-1">{errors.email.message}</p>
               )}
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-slate-200 mb-1.5">
                 Password
               </label>
               <div className="relative">
@@ -106,18 +106,18 @@ export default function LoginPage() {
                   type={showPass ? 'text' : 'password'}
                   autoComplete="current-password"
                   placeholder="••••••••"
-                  className={`input pr-10 ${errors.password ? 'input-error' : ''}`}
+                  className={`w-full rounded-lg bg-white/10 border ${errors.password ? 'border-red-400' : 'border-white/20'} text-white placeholder:text-slate-400 px-3.5 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500/50`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
                 >
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>
+                <p className="text-xs text-red-400 mt-1">{errors.password.message}</p>
               )}
             </div>
 
@@ -138,7 +138,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-slate-500 mt-5">
-          Built by <span className="text-slate-300">Mohamed Fathah</span> · IFT Chennai
+          Built by <span className="text-slate-300">fafa creatives</span> · IFT Chennai
         </p>
 
       </div>
