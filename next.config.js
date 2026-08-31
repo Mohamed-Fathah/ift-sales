@@ -13,9 +13,6 @@ const nextConfig = {
       }
     ]
   },
-  env: {
-    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-  },
   // No allowedOrigins restriction — lets server actions work from any
   // deployment domain (localhost dev, Vercel preview, production).
   experimental: { serverActions: {} },

@@ -26,7 +26,14 @@ export async function middleware(request: NextRequest) {
 
   // getUser() validates JWT with Supabase Auth server and refreshes the session
   // cookie if needed. Must be called before any redirects so setAll() can run.
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+try {
+  const { data } = await supabase.auth.getUser()
+  user = data.user
+} catch (e) {
+  console.error('[Middleware] getUser failed:', e)
+  user = null
+}
 
   const pathname = request.nextUrl.pathname
   const isPublic = PUBLIC_ROUTES.some(r => pathname.startsWith(r))
