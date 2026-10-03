@@ -14,7 +14,7 @@ import toast from 'react-hot-toast'
 import * as XLSX from 'xlsx'
 import { useAuthStore } from '@/store/auth.store'
 import { logChange } from '@/lib/audit'
-import { exportStockReport } from '@/lib/excel-export'
+import { exportBookCatalogue, exportStockReport } from '@/lib/excel-export'
 import { createClient } from '@/lib/supabase/client'
 import {
   getStockReportDataAction,

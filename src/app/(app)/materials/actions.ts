@@ -1,6 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { requireUser } from '@/lib/auth-guard'
 
 // ─── Shared types ─────────────────────────────────────────────────────────────
 
@@ -40,6 +41,7 @@ export interface SaveMaterialInput {
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
 export async function getNextItemCodeAction(): Promise<string> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('materials')
@@ -59,6 +61,7 @@ export async function getNextItemCodeAction(): Promise<string> {
 }
 
 export async function getMaterialsAction(): Promise<MaterialRow[]> {
+  await requireUser()
   const supabase = createAdminClient()
 
   const [{ data: mats, error }, { data: stocks }] = await Promise.all([
@@ -96,6 +99,7 @@ export async function getMaterialsAction(): Promise<MaterialRow[]> {
 }
 
 export async function getCategoriesAction(): Promise<CategoryOption[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('categories')
@@ -111,6 +115,7 @@ export async function getStockReportDataAction(): Promise<{
   openingStock: number; qtyIn: number; qtySold: number;
   currentStock: number; stockValue: number; location: string
 }[]> {
+  await requireUser()
   const supabase = createAdminClient()
 
   const [{ data: mats }, { data: stocks }, { data: locations }] = await Promise.all([
@@ -150,6 +155,7 @@ export async function getStockReportDataAction(): Promise<{
 // ─── Mutations ────────────────────────────────────────────────────────────────
 
 export async function saveMaterialAction(input: SaveMaterialInput): Promise<{ id: string }> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('materials')
@@ -202,6 +208,7 @@ export async function updateMaterialAction(
   id: string,
   changes: Record<string, unknown>
 ): Promise<void> {
+  await requireUser()
   const supabase = createAdminClient()
   const { error } = await supabase
     .from('materials')
@@ -211,6 +218,7 @@ export async function updateMaterialAction(
 }
 
 export async function archiveMaterialAction(id: string): Promise<void> {
+  await requireUser()
   const supabase = createAdminClient()
   const { error } = await supabase
     .from('materials')
@@ -224,6 +232,7 @@ export async function bulkImportMaterialsAction(
   userId: string,
   userName: string,
 ): Promise<{ inserted: number; errors: string[] }> {
+  await requireUser()
   const supabase = createAdminClient()
   let inserted = 0
   const errors: string[] = []

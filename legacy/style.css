@@ -497,7 +497,7 @@ tbody tr:hover { background-color: #f8fafc; }
   .page {
     padding: 1rem;
   }
-  
+
   /* Make tables responsive */
   .card-body.p0, .bill-table-wrap {
     overflow-x: auto;
@@ -506,7 +506,7 @@ tbody tr:hover { background-color: #f8fafc; }
   table {
     min-width: 600px; /* Forces scroll on small screens */
   }
-  
+
   .dashboard-grid {
     grid-template-columns: 1fr;
   }

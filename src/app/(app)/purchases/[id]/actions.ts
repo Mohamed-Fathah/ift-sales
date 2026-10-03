@@ -1,6 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { requireUser } from '@/lib/auth-guard'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -42,6 +43,7 @@ export interface PurchaseDetail {
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
 export async function getPurchaseDetailAction(id: string): Promise<PurchaseDetail | null> {
+  await requireUser()
   const supabase = createAdminClient()
 
   const [{ data: inv, error }, { data: items }] = await Promise.all([
@@ -106,6 +108,7 @@ export async function getPurchaseDetailAction(id: string): Promise<PurchaseDetai
 // ─── Mutations ────────────────────────────────────────────────────────────────
 
 export async function cancelPurchaseInvoiceAction(id: string): Promise<void> {
+  await requireUser()
   const supabase = createAdminClient()
   const { error } = await supabase
     .from('purchase_invoices')

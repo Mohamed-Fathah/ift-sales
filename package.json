@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:types": "supabase gen types typescript --local > src/types/supabase.ts"
+    "db:types": "supabase gen types typescript --local > src/types/supabase.ts",
+    "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-build": "npm run build && electron-builder"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -22,6 +24,7 @@
     "jspdf": "^2.5.1",
     "lucide-react": "^0.378.0",
     "next": "14.2.0",
+    "next-pwa": "^5.6.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "react-hook-form": "^7.51.0",
@@ -36,11 +39,41 @@
     "@types/node": "^20.12.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
+    "@types/workbox-sw": "^4.3.7",
     "autoprefixer": "^10.4.19",
+    "concurrently": "^10.0.5",
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.0",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "wait-on": "^9.5.1"
+  },
+  "main": "main.js",
+  "build": {
+    "appId": "com.ifterp.desktop",
+    "productName": "IFT ERP",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "main.js",
+      "package.json",
+      ".next/standalone/**/*",
+      ".next/static/**/*",
+      "public/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": ".next/static",
+        "to": "app/.next/standalone/.next/static"
+      },
+      {
+        "from": "public",
+        "to": "app/.next/standalone/public"
+      }
+    ]
   }
 }

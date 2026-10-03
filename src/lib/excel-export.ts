@@ -50,6 +50,31 @@ export function exportStockReport(data: {
   }], 'IFT_Stock_Report')
 }
 
+export function exportBookCatalogue(data: {
+  itemCode: string; isbn: string; title: string; author: string;
+  category: string; mrp: number; purchaseRate: number; currentStock: number;
+  location?: string
+}[]) {
+  exportToExcel([{
+    name: 'ISBN Report',
+    headers: ['Sr.No.','Book Title','Edition','Author/Editor','ISBN Number','Item Code','Category','MRP (₹)','Purchase Rate (₹)','Current Stock','Location'],
+    rows: data.map((r, i) => [
+      i + 1,
+      r.title,
+      '',
+      r.author,
+      r.isbn,
+      r.itemCode,
+      r.category,
+      r.mrp,
+      r.purchaseRate,
+      r.currentStock,
+      r.location ?? '',
+    ]),
+    colWidths: [8,44,10,28,20,12,18,10,16,13,16],
+  }], 'IFT_Book_Catalogue')
+}
+
 export function exportSalesReport(data: {
   invoiceNo: string; date: string; customerName: string; customerPhone: string;
   items: number; grossMrp: number; discount: number; netAmount: number;

@@ -1,6 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { requireUser } from '@/lib/auth-guard'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -60,6 +61,7 @@ export interface SavePurchasePayload {
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
 export async function getSuppliersAction(): Promise<SupplierOption[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('parties')
@@ -75,6 +77,7 @@ export async function getSuppliersAction(): Promise<SupplierOption[]> {
 }
 
 export async function getPurchaseLocationsAction(): Promise<PurchaseLocationOption[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('locations')
@@ -90,6 +93,7 @@ export async function getPurchaseLocationsAction(): Promise<PurchaseLocationOpti
 export async function searchPurchaseMaterialsAction(
   query: string,
 ): Promise<PurchaseMaterialResult[]> {
+  await requireUser()
   const q = query.trim()
   if (!q) return []
   const supabase = createAdminClient()
@@ -118,6 +122,7 @@ export async function searchPurchaseMaterialsAction(
 export async function savePurchaseInvoiceAction(
   payload: SavePurchasePayload,
 ): Promise<{ invoiceId: string; invoiceNo: string }> {
+  await requireUser()
   const supabase = createAdminClient()
 
   // 1. Insert purchase_invoice

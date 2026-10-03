@@ -1,6 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
+import { requireUser } from '@/lib/auth-guard'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -41,6 +42,7 @@ export interface SavePartyInput {
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
 export async function getPartiesAction(): Promise<PartyRow[]> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('parties')
@@ -69,6 +71,7 @@ export async function getPartiesAction(): Promise<PartyRow[]> {
 // ─── Mutations ────────────────────────────────────────────────────────────────
 
 export async function savePartyAction(input: SavePartyInput): Promise<{ id: string }> {
+  await requireUser()
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('parties')
@@ -98,6 +101,7 @@ export async function updatePartyAction(
   id: string,
   input: SavePartyInput & { is_active: boolean },
 ): Promise<void> {
+  await requireUser()
   const supabase = createAdminClient()
   const { error } = await supabase
     .from('parties')
@@ -122,6 +126,7 @@ export async function updatePartyAction(
 }
 
 export async function deletePartyAction(id: string): Promise<void> {
+  await requireUser()
   const supabase = createAdminClient()
   const { error } = await supabase
     .from('parties')

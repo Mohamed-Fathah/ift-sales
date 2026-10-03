@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Toaster } from 'react-hot-toast'
 import ConditionalShell from '@/components/layout/ConditionalShell'
 import './globals.css'
@@ -6,6 +6,11 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'IFT ERP — Islamic Foundation Trust',
   description: 'Enterprise Resource Planning System for Islamic Foundation Trust, Chennai',
+  manifest: '/manifest.json',
+}
+
+export const viewport: Viewport = {
+  themeColor: '#1B2A6B',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

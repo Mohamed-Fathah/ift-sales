@@ -1,5 +1,3 @@
-// src/lib/local-db.ts
-// Dexie (IndexedDB) — for billing drafts and offline-first data
 import Dexie, { type Table } from 'dexie'
 
 export interface BillingDraftItem {
@@ -42,15 +40,32 @@ export interface CachedMaterial {
   updatedAt: Date
 }
 
+export interface OfflineBill {
+  id?: number
+  invoiceNo: string
+  userId: string
+  locationId: string
+  customerName: string
+  customerPhone: string
+  paymentMode: string
+  items: BillingDraftItem[]
+  subtotalMrp: number
+  totalDiscount: number
+  grandTotal: number
+  createdAt: Date
+}
+
 class IFTLocalDB extends Dexie {
   billingDrafts!: Table<BillingDraft, number>
   materials!: Table<CachedMaterial, string>
+  offlineBills!: Table<OfflineBill, number>
 
   constructor() {
     super('IFT_ERP_LocalDB')
-    this.version(1).stores({
+    this.version(2).stores({
       billingDrafts: '++id, userId, updatedAt',
       materials: 'id, isbn, trackingId, title, author, category',
+      offlineBills: '++id, invoiceNo, userId, createdAt',
     })
   }
 }
@@ -87,4 +102,16 @@ export async function findByBarcode(code: string): Promise<CachedMaterial | unde
     await localDB.materials.where('trackingId').equals(code).first() ||
     await localDB.materials.where('itemCode').equals(code).first()
   )
+}
+
+export async function saveOfflineBill(bill: Omit<OfflineBill, 'id'>) {
+  await localDB.offlineBills.add(bill)
+}
+
+export async function getOfflineBills(): Promise<OfflineBill[]> {
+  return localDB.offlineBills.toArray()
+}
+
+export async function deleteOfflineBill(id: number) {
+  await localDB.offlineBills.delete(id)
 }

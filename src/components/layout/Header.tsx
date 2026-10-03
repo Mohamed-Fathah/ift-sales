@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import { useAuthStore } from '@/store/auth.store'
+import SyncOfflineButton from './SyncOfflineButton'
 
 const ROUTE_TITLES: Record<string, string> = {
   '/dashboard':           'Dashboard',

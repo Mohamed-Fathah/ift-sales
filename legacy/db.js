@@ -10,7 +10,7 @@ const db = {
     const data = localStorage.getItem(DB_KEYS.BOOKS);
     return data ? JSON.parse(data) : [];
   },
-  
+
   saveBooks: function(books) {
     localStorage.setItem(DB_KEYS.BOOKS, JSON.stringify(books));
   },
@@ -38,7 +38,7 @@ const db = {
     }
     return false;
   },
-  
+
   deleteBook: function(idOrIsbn) {
     let books = this.getBooks();
     books = books.filter(b => b.id !== idOrIsbn && b.isbn !== idOrIsbn);
@@ -88,13 +88,13 @@ const db = {
     const books = this.getBooks();
     if (!query) return books;
     query = query.toLowerCase();
-    return books.filter(b => 
-      b.title.toLowerCase().includes(query) || 
+    return books.filter(b =>
+      b.title.toLowerCase().includes(query) ||
       (b.isbn && b.isbn.toLowerCase().includes(query)) ||
       (b.author && b.author.toLowerCase().includes(query))
     );
   },
-  
+
   generateBillNo: function() {
     const sales = this.getSales();
     const prefix = 'IFT-';
