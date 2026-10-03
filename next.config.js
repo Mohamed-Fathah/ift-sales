@@ -1,4 +1,11 @@
 /** @type {import('next').NextConfig} */
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
+  register: true,
+  skipWaiting: true,
+});
+
 const nextConfig = {
   async headers() {
     return [
@@ -16,6 +23,7 @@ const nextConfig = {
   // No allowedOrigins restriction — lets server actions work from any
   // deployment domain (localhost dev, Vercel preview, production).
   experimental: { serverActions: {} },
+  output: "standalone",
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'iftchennai.in' },
@@ -23,4 +31,4 @@ const nextConfig = {
     ],
   },
 }
-module.exports = nextConfig
+module.exports = withPWA(nextConfig);

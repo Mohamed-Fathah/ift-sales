@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { exportPurchaseReport } from '@/lib/excel-export'
+import { requireUser } from '@/lib/auth-guard'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -26,6 +27,7 @@ export interface PurchaseListRow {
 // ─── List query ───────────────────────────────────────────────────────────────
 
 export async function getPurchaseInvoicesAction(): Promise<PurchaseListRow[]> {
+  await requireUser()
   const supabase = createAdminClient()
 
   const { data: invoices, error } = await supabase

@@ -508,7 +508,7 @@ tbody tr:hover { background-color: #f8fafc; }
   .page {
     padding: 1rem;
   }
-  
+
   /* Make tables responsive */
   .card-body.p0, .bill-table-wrap {
     overflow-x: auto;
@@ -517,7 +517,7 @@ tbody tr:hover { background-color: #f8fafc; }
   table {
     min-width: 600px; /* Forces scroll on small screens */
   }
-  
+
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
@@ -1087,7 +1087,7 @@ const db = {
     const data = localStorage.getItem(DB_KEYS.BOOKS);
     return data ? JSON.parse(data) : [];
   },
-  
+
   saveBooks: function(books) {
     localStorage.setItem(DB_KEYS.BOOKS, JSON.stringify(books));
   },
@@ -1115,7 +1115,7 @@ const db = {
     }
     return false;
   },
-  
+
   deleteBook: function(idOrIsbn) {
     let books = this.getBooks();
     books = books.filter(b => b.id !== idOrIsbn && b.isbn !== idOrIsbn);
@@ -1165,13 +1165,13 @@ const db = {
     const books = this.getBooks();
     if (!query) return books;
     query = query.toLowerCase();
-    return books.filter(b => 
-      b.title.toLowerCase().includes(query) || 
+    return books.filter(b =>
+      b.title.toLowerCase().includes(query) ||
       (b.isbn && b.isbn.toLowerCase().includes(query)) ||
       (b.author && b.author.toLowerCase().includes(query))
     );
   },
-  
+
   generateBillNo: function() {
     const sales = this.getSales();
     const prefix = 'IFT-';
@@ -1236,13 +1236,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Setup Billing
   document.getElementById('billDate').valueAsDate = new Date();
-  
+
   // Real-time calculations in add book panel
   const calcDiscounts = () => {
     const qty = parseFloat(document.getElementById('addQty').value) || 0;
     const mrp = parseFloat(document.getElementById('addMRP').value) || 0;
     const discount = parseFloat(document.getElementById('addDiscount').value) || 0;
-    
+
     const afterDiscount = mrp - (mrp * (discount / 100));
     document.getElementById('addAfterDiscount').value = afterDiscount.toFixed(2);
   };
@@ -1252,12 +1252,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Search input listeners
   document.getElementById('bookSearch').addEventListener('input', debounce(handleBookSearch, 300));
-  
+
   // Sidebar toggle
   document.getElementById('sidebarToggle').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('collapsed');
   });
-  
+
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   if (mobileMenuBtn) {
     mobileMenuBtn.addEventListener('click', () => {
@@ -1309,7 +1309,7 @@ function initBilling() {
 function handleBookSearch(e) {
   const query = e.target.value.trim();
   const resultsDiv = document.getElementById('searchResults');
-  
+
   if (query.length < 2) {
     resultsDiv.style.display = 'none';
     return;
@@ -1317,7 +1317,7 @@ function handleBookSearch(e) {
 
   const books = db.searchBooks(query);
   resultsDiv.innerHTML = '';
-  
+
   if (books.length === 0) {
     resultsDiv.innerHTML = '<div class="search-result-item">No books found.</div>';
   } else {
@@ -1345,14 +1345,14 @@ function selectBookForBill(book) {
   selectedBookForBill = book;
   document.getElementById('searchResults').style.display = 'none';
   document.getElementById('bookSearch').value = book.title;
-  
+
   // Show add panel
   document.getElementById('addBookPanel').style.display = 'block';
   document.getElementById('selectedBookInfo').innerHTML = `
     <strong>${book.title}</strong><br/>
     <small>ISBN: ${book.isbn} | In Stock: ${book.stock}</small>
   `;
-  
+
   document.getElementById('addQty').value = 1;
   document.getElementById('addQty').max = book.stock;
   document.getElementById('addMRP').value = book.mrp;
@@ -1406,9 +1406,9 @@ function renderBillTable() {
   const tbody = document.getElementById('billTableBody');
   const emptyRow = document.getElementById('billEmptyRow');
   const totalsDiv = document.getElementById('billTotals');
-  
+
   tbody.innerHTML = '';
-  
+
   if (currentBillItems.length === 0) {
     tbody.appendChild(emptyRow);
     emptyRow.style.display = 'table-row';
@@ -1429,7 +1429,7 @@ function renderBillTable() {
     const itemTotal = item.qty * item.rate;
     subtotal += totalMRP;
     grandTotal += itemTotal;
-    
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${index + 1}</td>
@@ -1468,7 +1468,7 @@ function finalizeBill() {
   }
 
   const customerName = document.getElementById('customerName').value.trim();
-  
+
   const subtotal = currentBillItems.reduce((acc, item) => acc + (item.mrp * item.qty), 0);
   const grandTotal = currentBillItems.reduce((acc, item) => acc + item.total, 0);
 
@@ -1486,12 +1486,12 @@ function finalizeBill() {
   };
 
   db.addSale(saleData);
-  
+
   showToast("Bill Generated Successfully!", 'success');
-  
+
   // Show Receipt Modal
   generateReceiptHTML(saleData);
-  
+
   // Reset
   currentBillItems = [];
   document.getElementById('customerName').value = '';
@@ -1505,7 +1505,7 @@ function loadBooks() {
   const tbody = document.getElementById('booksTableBody');
   const books = db.getBooks();
   tbody.innerHTML = '';
-  
+
   if (books.length === 0) {
     tbody.innerHTML = '<tr><td colspan="8" class="empty-bill-msg">No books found.</td></tr>';
     return;
@@ -1532,8 +1532,8 @@ function loadBooks() {
 function filterBooks() {
   const query = document.getElementById('booksSearch').value.toLowerCase();
   const tbody = document.getElementById('booksTableBody');
-  const books = db.getBooks().filter(b => 
-    b.title.toLowerCase().includes(query) || 
+  const books = db.getBooks().filter(b =>
+    b.title.toLowerCase().includes(query) ||
     b.isbn.toLowerCase().includes(query) ||
     b.author.toLowerCase().includes(query)
   );
@@ -1576,7 +1576,7 @@ function saveBook() {
   const author = document.getElementById('bookAuthor').value.trim();
   const mrp = parseFloat(document.getElementById('bookMRP').value);
   const stock = parseInt(document.getElementById('bookStock').value);
-  
+
   if(!title || !author || isNaN(mrp) || isNaN(stock)) {
     showToast("Please fill all required fields correctly", "error");
     return;
@@ -1612,7 +1612,7 @@ function saveBook() {
 function editBook(id) {
   const book = db.getBooks().find(b => b.id === id);
   if(!book) return;
-  
+
   document.getElementById('editBookISBN').value = book.id;
   document.getElementById('bookTitle').value = book.title;
   document.getElementById('bookISBN').value = book.isbn || '';
@@ -1622,7 +1622,7 @@ function editBook(id) {
   document.getElementById('bookStock').value = book.stock;
   document.getElementById('bookPublication').value = book.publication || '';
   document.getElementById('bookDesc').value = book.desc || '';
-  
+
   openModal('modal-addBook');
 }
 
@@ -1631,7 +1631,7 @@ function editBook(id) {
 function loadStock() {
   const tbody = document.getElementById('stockTableBody');
   const books = db.getBooks();
-  
+
   if (books.length === 0) {
     tbody.innerHTML = '<tr><td colspan="9" class="empty-bill-msg">No books found.</td></tr>';
     return;
@@ -1643,12 +1643,12 @@ function loadStock() {
 function renderStockTable(books) {
   const tbody = document.getElementById('stockTableBody');
   tbody.innerHTML = '';
-  
+
   books.forEach(book => {
     let status = '<span style="color:var(--secondary)">In Stock</span>';
     if (book.stock === 0) status = '<span class="out-of-stock-text">Out of Stock</span>';
     else if (book.stock <= 5) status = '<span style="color:var(--warning)">Low Stock</span>';
-    
+
     tbody.innerHTML += `
       <tr>
         <td>${book.isbn}</td>
@@ -1670,9 +1670,9 @@ function renderStockTable(books) {
 function filterStock() {
   const query = document.getElementById('stockSearch').value.toLowerCase();
   const filter = document.getElementById('stockFilter').value;
-  
-  let books = db.getBooks().filter(b => 
-    b.title.toLowerCase().includes(query) || 
+
+  let books = db.getBooks().filter(b =>
+    b.title.toLowerCase().includes(query) ||
     (b.isbn && b.isbn.toLowerCase().includes(query)) ||
     (b.author && b.author.toLowerCase().includes(query))
   );
@@ -1704,7 +1704,7 @@ function applyStockUpdate() {
   const id = document.getElementById('stockUpdateBook').value;
   const action = document.getElementById('stockUpdateAction').value;
   const qty = parseInt(document.getElementById('stockUpdateQty').value);
-  
+
   if (!id || isNaN(qty) || qty < 0) {
     showToast("Invalid inputs", "error");
     return;
@@ -1721,17 +1721,17 @@ function applyStockUpdate() {
 function loadDashboard() {
   const sales = db.getSales();
   const books = db.getBooks();
-  
+
   const today = new Date().toISOString().slice(0,10);
   const todaySales = sales.filter(s => s.date === today);
-  
+
   const rev = todaySales.reduce((acc, s) => acc + s.grandTotal, 0);
   const booksSold = todaySales.reduce((acc, s) => acc + s.items.reduce((sum, i)=>sum+i.qty, 0), 0);
-  
+
   document.getElementById('stat-revenue').textContent = `₹${rev.toFixed(2)}`;
   document.getElementById('stat-bills').textContent = todaySales.length;
   document.getElementById('stat-books-sold').textContent = booksSold;
-  
+
   const lowStock = books.filter(b => b.stock <= 5).length;
   document.getElementById('stat-low-stock').textContent = lowStock;
 
@@ -1755,12 +1755,12 @@ function loadDashboard() {
 function loadSales() {
   const tbody = document.getElementById('salesTableBody');
   const sales = db.getSales();
-  
+
   if (sales.length === 0) {
     tbody.innerHTML = '<tr><td colspan="8" class="empty-bill-msg">No sales found.</td></tr>';
     return;
   }
-  
+
   tbody.innerHTML = '';
   sales.slice().reverse().forEach(sale => {
     tbody.innerHTML += `
@@ -1816,7 +1816,7 @@ function generateReceiptHTML(sale) {
         </p>
         <h3 style="margin:10px 0 5px 0;">CASH RECEIPT / INVOICE</h3>
       </div>
-      
+
       <div style="display:flex; justify-content:space-between; margin-bottom: 20px; font-size: 14px;">
         <div>
           <strong>Bill No:</strong> ${sale.billNo}<br>
@@ -1828,7 +1828,7 @@ function generateReceiptHTML(sale) {
           <strong>Contact:</strong> ${sale.customerPhone || 'N/A'}
         </div>
       </div>
-      
+
       <table style="width:100%; border-collapse: collapse; font-size:14px; margin-bottom:20px;">
         <thead>
           <tr style="background:#f0f0f0;">
@@ -1845,7 +1845,7 @@ function generateReceiptHTML(sale) {
           ${itemsHtml}
         </tbody>
       </table>
-      
+
       <div style="display:flex; justify-content:flex-end; font-size:14px;">
         <div style="width: 250px;">
           <div style="display:flex; justify-content:space-between; padding:5px 0;">
@@ -1871,7 +1871,7 @@ function generateReceiptHTML(sale) {
       </div>
     </div>
   `;
-  
+
   document.getElementById('receiptContent').innerHTML = html;
   openModal('modal-receipt');
 }
@@ -2000,7 +2000,7 @@ function showToast(message, type='info') {
   toast.style.color = 'white';
   toast.style.background = type === 'success' ? 'var(--secondary)' : type === 'error' ? 'var(--danger)' : '#333';
   toast.textContent = message;
-  
+
   // ensure toast container styling
   container.style.position = 'fixed';
   container.style.bottom = '20px';
@@ -2037,7 +2037,7 @@ function handleExcelUpload(event) {
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
     const json = XLSX.utils.sheet_to_json(worksheet);
-    
+
     document.getElementById('importPreview').style.display = 'block';
     document.getElementById('importPreview').innerHTML = `Found ${json.length} records ready to import.`;
     document.getElementById('importBtn').disabled = false;
@@ -2050,7 +2050,7 @@ function processExcelImport(data) {
   const overwrite = document.getElementById('overwriteExisting').checked;
   let added = 0;
   let updated = 0;
-  
+
   data.forEach(row => {
     // Map columns (fuzzy matching for common names)
     const title = row['Title'] || row['Name'] || row['Book Name'];
@@ -2060,7 +2060,7 @@ function processExcelImport(data) {
     const stock = parseInt(row['Stock'] || row['Qty'] || row['Quantity']) || 0;
     const category = row['Category'] || '';
     const publication = row['Publication'] || 'Islamic Foundation Trust';
-    
+
     if (title && mrp) {
       const existing = db.getBooks().find(b => b.isbn === isbn && isbn !== '');
       if (existing && overwrite) {
@@ -2072,7 +2072,7 @@ function processExcelImport(data) {
       }
     }
   });
-  
+
   showToast(`Imported: ${added} added, ${updated} updated.`, 'success');
   closeModal('modal-excel');
   loadBooks();
@@ -2082,7 +2082,7 @@ function processExcelImport(data) {
 function exportExcel() {
   const books = db.getBooks();
   const sales = db.getSales();
-  
+
   if (books.length === 0) {
     showToast("No books to export!", "warning");
     return;
@@ -2106,7 +2106,7 @@ function exportExcel() {
     const soldQty = salesData[b.id]?.qty || salesData[b.isbn]?.qty || 0;
     const revenue = salesData[b.id]?.revenue || salesData[b.isbn]?.revenue || 0;
     const startingStock = b.stock + soldQty;
-    
+
     return {
       'ISBN': b.isbn || '',
       'Title': b.title,
@@ -2127,7 +2127,7 @@ function exportExcel() {
 
   const dateStr = new Date().toISOString().slice(0,10);
   XLSX.writeFile(workbook, `IFT_Comprehensive_Report_${dateStr}.xlsx`);
-  
+
   showToast("Excel Exported Successfully!", "success");
 }
 

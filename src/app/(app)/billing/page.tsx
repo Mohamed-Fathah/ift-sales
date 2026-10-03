@@ -15,6 +15,7 @@ import { format } from 'date-fns'
 import {
   saveDraft, loadDraft, clearDraft,
   findByBarcode, syncMaterialsToLocal,
+  saveOfflineBill, getOfflineBills,
 } from '@/lib/local-db'
 import { getNextInvoiceNo } from '@/lib/invoice-number'
 import { generateReceiptPDF } from '@/lib/pdf-receipt'
@@ -579,6 +580,67 @@ export default function BillingPage() {
 
     setIsGenerating(true)
     try {
+
+      const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+
+      if (!isOnline) {
+        // Save to offline db
+        await saveOfflineBill({
+          invoiceNo: "OFFLINE-" + Date.now(), // Will be properly generated when synced
+          userId: user?.id || '',
+          locationId: location.id,
+          customerName: customerName || '',
+          customerPhone: customerPhone || '',
+          paymentMode,
+          items: cartItems,
+          subtotalMrp,
+          totalDiscount,
+          grandTotal,
+          createdAt: new Date(),
+        });
+        toast.success('Offline mode: Bill saved locally.');
+
+        // Generate PDF
+        try {
+          const receiptData = {
+            invoiceNo: "OFFLINE",
+            date: format(new Date(), 'dd-MMM-yyyy'),
+            customerName: customerName || 'Walk-in Customer',
+            customerPhone: customerPhone || '',
+            paymentMode: paymentMode.toUpperCase(),
+            location: location.name,
+            items: cartItems.map((item, i) => ({
+              sno: i + 1,
+              title: item.title,
+              isbn: item.isbn,
+              qty: item.qty,
+              mrp: item.mrp,
+              discountPct: item.discountPct,
+              rate: item.rate,
+              total: item.total,
+            })),
+            subtotalMrp,
+            totalDiscount,
+            grandTotal,
+            createdBy: user?.full_name || 'Staff',
+            footer: orgSettings.receipt_footer || 'Thank you for your business!',
+          }
+          await generateReceiptPDF(receiptData)
+        } catch (pdfErr) {
+          console.error('PDF generation error:', pdfErr)
+          toast.error('Bill saved locally, but PDF generation failed')
+        }
+
+        if (user?.id) await clearDraft(user.id)
+        setCartItems([])
+        setCustomerName('')
+        setCustomerPhone('')
+        setPaymentMode('cash')
+        setIsGenerating(false)
+
+        return;
+      }
+
       const invoiceNo = await getNextInvoiceNo('sales', orgSettings.invoice_prefix)
       const now       = new Date()
 
