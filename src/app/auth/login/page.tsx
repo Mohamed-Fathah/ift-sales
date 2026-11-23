@@ -1,54 +1,49 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
+import { Loader2 } from 'lucide-react'
 import { useAuthStore } from '@/store/auth.store'
+import { localDB, seedIfEmpty } from '@/lib/local-db'
 import toast from 'react-hot-toast'
 
-const schema = z.object({
-  email:    z.string().email('Enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-})
-type FormData = z.infer<typeof schema>
-
 export default function LoginPage() {
-  const router  = useRouter()
+  const router = useRouter()
   const setUser = useAuthStore((s) => s.setUser)
-  const [loading, setLoading]   = useState(false)
-  const [showPass, setShowPass] = useState(false)
+  const setOrg = useAuthStore((s) => s.setOrg)
+  const [loading, setLoading] = useState(false)
+  const [ready, setReady] = useState(false)
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  })
+  useEffect(() => {
+    seedIfEmpty().then(() => setReady(true))
+  }, [])
 
-  async function onSubmit(data: FormData) {
+  async function handleEnter() {
     setLoading(true)
     try {
-      const supabase = createClient()
-
-      const { error, data: auth } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
+      await seedIfEmpty()
+      const profile = await localDB.profiles.toCollection().first()
+      if (!profile) {
+        toast.error('No local profile found. Database may be corrupted.')
+        return
+      }
+      const org = await localDB.organizations.toCollection().first()
+      setUser({
+        id: profile.id,
+        full_name: profile.full_name,
+        email: profile.email,
+        phone: profile.phone,
+        role: profile.role,
+        status: profile.status,
+        avatar_url: profile.avatar_url,
+        org_id: profile.org_id,
       })
-      if (error) throw error
-
-      const { data: profile, error: profileErr } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', auth.user.id)
-        .single()
-
-      console.log('[Login] auth.user.id:', auth.user.id)
-      console.log('[Login] profile:', profile, '| error:', profileErr)
-      if (profile) setUser(profile)
+      if (org) {
+        setOrg({ id: org.id, name: org.name })
+      }
       router.push('/dashboard')
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'Login failed')
+      toast.error(err instanceof Error ? err.message : 'Failed to initialize')
     } finally {
       setLoading(false)
     }
@@ -63,7 +58,6 @@ export default function LoginPage() {
 
         {/* Brand block */}
         <div className="text-center mb-8">
-          {/* IFT emblem */}
           <div className="mx-auto mb-5 w-20 h-20 rounded-2xl flex items-center justify-center shadow-xl p-3"
                style={{ background: 'rgba(200,146,42,0.15)', border: '2px solid rgba(200,146,42,0.4)' }}>
             <img src="/ift-logo.png" alt="IFT" className="w-full h-full object-contain" />
@@ -74,67 +68,24 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8">
-          <h2 className="text-base font-semibold text-white mb-5">Sign in to your account</h2>
+          <h2 className="text-base font-semibold text-white mb-3">Offline Mode</h2>
+          <p className="text-slate-400 text-sm mb-6">
+            All data is stored locally on this computer. No internet connection required.
+          </p>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1.5">
-                Email address
-              </label>
-              <input
-                {...register('email')}
-                type="email"
-                autoComplete="email"
-                placeholder="admin@iftchennai.in"
-                className={`w-full rounded-lg bg-white/10 border ${errors.email ? 'border-red-400' : 'border-white/20'} text-white placeholder:text-slate-400 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500/50`}
-              />
-              {errors.email && (
-                <p className="text-xs text-red-400 mt-1">{errors.email.message}</p>
-              )}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-slate-200 mb-1.5">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  {...register('password')}
-                  type={showPass ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  className={`w-full rounded-lg bg-white/10 border ${errors.password ? 'border-red-400' : 'border-white/20'} text-white placeholder:text-slate-400 px-3.5 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500/50`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
-                >
-                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-xs text-red-400 mt-1">{errors.password.message}</p>
-              )}
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full py-2.5 mt-2"
-            >
-              {loading ? (
-                <><Loader2 size={16} className="animate-spin" /> Signing in…</>
-              ) : (
-                'Sign in'
-              )}
-            </button>
-
-          </form>
+          <button
+            onClick={handleEnter}
+            disabled={loading || !ready}
+            className="btn-primary w-full py-2.5"
+          >
+            {loading ? (
+              <><Loader2 size={16} className="animate-spin" /> Loading…</>
+            ) : !ready ? (
+              <><Loader2 size={16} className="animate-spin" /> Initializing…</>
+            ) : (
+              'Enter ERP System'
+            )}
+          </button>
         </div>
 
         <p className="text-center text-xs text-slate-500 mt-5">

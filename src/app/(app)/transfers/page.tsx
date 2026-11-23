@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { Search, X, Loader2, ArrowLeftRight, ArrowRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
-import { createClient } from '@/lib/supabase/client'
+import { localDB } from '@/lib/local-db'
 
 interface TransferRow {
   id: string
@@ -35,46 +35,23 @@ export default function TransfersPage() {
   useEffect(() => {
     (async () => {
       try {
-        const supabase = createClient()
-
-        const [
-          { data: moves,     error: movErr  },
-          { data: materials, error: matErr  },
-          { data: locations, error: locErr  },
-        ] = await Promise.all([
-          supabase
-            .from('stock_movements')
-            .select('id, material_id, location_id, qty, notes, created_by, created_at, ref_id')
-            .eq('movement_type', 'transfer_out')
-            .order('created_at', { ascending: false })
-            .limit(500),
-          supabase.from('materials').select('id, title, item_code'),
-          supabase.from('locations').select('id, name'),
+        const [moves, materials, locations] = await Promise.all([
+          localDB.stockMovements.where('movement_type').equals('transfer_out').reverse().sortBy('created_at'),
+          localDB.materials.toArray(),
+          localDB.locations.toArray(),
         ])
 
-        if (movErr)  throw new Error(movErr.message)
-        if (matErr)  throw new Error(matErr.message)
-        if (locErr)  throw new Error(locErr.message)
+        const matMap = new Map(materials.map(m => [m.id, { title: m.title ?? '', item_code: m.item_code ?? '' }]))
+        const locMap = new Map(locations.map(l => [l.id, l.name]))
 
-        const matMap = new Map(((materials ?? []) as any[]).map(m => [m.id, { title: m.title ?? '', item_code: m.item_code ?? '' }]))
-        const locMap = new Map(((locations  ?? []) as any[]).map(l => [l.id, l.name as string]))
-
-        // Each transfer_out has a paired transfer_in with same reference_id (created_at-based grouping)
-        // We approximate "to_location" by finding the matching transfer_in
-        const inMoves = await supabase
-          .from('stock_movements')
-          .select('material_id, location_id, created_at, ref_id')
-          .eq('movement_type', 'transfer_in')
-          .order('created_at', { ascending: false })
-          .limit(500)
-
+        const inMoves = await localDB.stockMovements.where('movement_type').equals('transfer_in').toArray()
         const inMap = new Map<string, string>()
-        for (const m of ((inMoves.data ?? []) as any[])) {
+        for (const m of inMoves) {
           const key = `${m.material_id}_${m.created_at}`
-          inMap.set(key, m.location_id as string)
+          inMap.set(key, m.location_id)
         }
 
-        setRows(((moves ?? []) as any[]).map(m => {
+        setRows(moves.slice(0, 500).map(m => {
           const mat = matMap.get(m.material_id) ?? { title: '—', item_code: '' }
           const inKey = `${m.material_id}_${m.created_at}`
           const toLoc = inMap.get(inKey) ?? ''

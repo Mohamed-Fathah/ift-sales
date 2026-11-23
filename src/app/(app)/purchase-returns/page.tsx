@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { Undo2, Plus, Search, X, Loader2, IndianRupee } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
-import { createClient } from '@/lib/supabase/client'
+import { localDB, uuid, nowISO } from '@/lib/local-db'
 import { getNextInvoiceNo } from '@/lib/invoice-number'
 import { useAuthStore } from '@/store/auth.store'
 
@@ -67,50 +67,26 @@ export default function PurchaseReturnsPage() {
   const load = async () => {
     setLoading(true)
     try {
-      const supabase = createClient()
-
-      // Step 1: fetch returns without FK join
-      const { data: returns, error } = await supabase
-        .from('purchase_returns')
-        .select('id, return_no, return_date, total_amount, status, notes, purchase_invoice_id')
-        .order('return_date', { ascending: false })
-      if (error) throw new Error(error.message)
-
-      const returnsArr = (returns ?? []) as any[]
-
-      // Step 2: manually fetch invoice + supplier for each unique invoice id
-      const invoiceIds = [...new Set(returnsArr.map(r => r.purchase_invoice_id).filter(Boolean))]
-      const invoiceMap = new Map<string, { invoice_no: string; supplier_name: string }>()
-      if (invoiceIds.length > 0) {
-        const { data: invData } = await supabase
-          .from('purchase_invoices')
-          .select('id, invoice_no, parties!supplier_id(name)')
-          .in('id', invoiceIds)
-        for (const inv of (invData ?? []) as any[]) {
-          invoiceMap.set(inv.id, {
-            invoice_no:    inv.invoice_no ?? '',
-            supplier_name: (inv.parties as any)?.name ?? 'Unknown',
-          })
-        }
-      }
-
-      const ids = returnsArr.map(r => r.id as string)
+      const [returns, allInvoices, allParties, allReturnItems] = await Promise.all([
+        localDB.purchaseReturns.orderBy('return_date').reverse().toArray(),
+        localDB.purchaseInvoices.toArray(),
+        localDB.parties.toArray(),
+        localDB.purchaseReturnItems.toArray(),
+      ])
+      const invMap = new Map(allInvoices.map(i => [i.id, i]))
+      const partyMap = new Map(allParties.map(p => [p.id, p.name]))
       const cntMap = new Map<string, number>()
-      if (ids.length > 0) {
-        const { data: items } = await supabase
-          .from('purchase_return_items').select('return_id').in('return_id', ids)
-        for (const i of (items ?? []) as any[])
-          cntMap.set(i.return_id, (cntMap.get(i.return_id) ?? 0) + 1)
-      }
+      for (const i of allReturnItems)
+        cntMap.set(i.return_id, (cntMap.get(i.return_id) ?? 0) + 1)
 
-      setRows(returnsArr.map(r => {
-        const inv = invoiceMap.get(r.purchase_invoice_id) ?? { invoice_no: '', supplier_name: 'Unknown' }
+      setRows(returns.map(r => {
+        const inv = invMap.get(r.purchase_invoice_id)
         return {
           id:            r.id,
           return_no:     r.return_no    ?? '',
           return_date:   r.return_date  ?? '',
-          invoice_no:    inv.invoice_no,
-          supplier_name: inv.supplier_name,
+          invoice_no:    inv?.invoice_no ?? '',
+          supplier_name: partyMap.get(inv?.supplier_id ?? '') ?? 'Unknown',
           total_amount:  Number(r.total_amount ?? 0),
           status:        r.status       ?? 'confirmed',
           notes:         r.notes        ?? '',
@@ -127,18 +103,20 @@ export default function PurchaseReturnsPage() {
   useEffect(() => { load() }, [])
 
   const openModal = async () => {
-    const supabase = createClient()
-    const { data } = await supabase
-      .from('purchase_invoices')
-      .select('id, invoice_no, invoice_date, location_id, parties!supplier_id(name)')
-      .in('status', ['confirmed', 'partial', 'paid'])
-      .order('invoice_date', { ascending: false })
-      .limit(200)
-    setInvoices(((data ?? []) as any[]).map(r => ({
+    const [allInv, allParties] = await Promise.all([
+      localDB.purchaseInvoices.toArray(),
+      localDB.parties.toArray(),
+    ])
+    const partyMap = new Map(allParties.map(p => [p.id, p.name]))
+    const eligible = allInv
+      .filter(r => ['confirmed', 'partial', 'paid'].includes(r.status))
+      .sort((a, b) => (b.invoice_date ?? '').localeCompare(a.invoice_date ?? ''))
+      .slice(0, 200)
+    setInvoices(eligible.map(r => ({
       id: r.id,
       invoice_no: r.invoice_no ?? '',
       invoice_date: r.invoice_date ?? '',
-      supplier_name: (r.parties as any)?.name ?? 'Unknown',
+      supplier_name: partyMap.get(r.supplier_id) ?? 'Unknown',
       location_id: r.location_id ?? '',
     })))
     setSelectedInvoice(null)
@@ -154,20 +132,21 @@ export default function PurchaseReturnsPage() {
     if (!inv) { setReturnItems([]); return }
     setLoadingItems(true)
     try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('purchase_invoice_items')
-        .select('material_id, qty, rate, materials(title, item_code)')
-        .eq('invoice_id', invoiceId)
-      if (error) throw new Error(error.message)
-      setReturnItems(((data ?? []) as any[]).map(r => ({
-        material_id: r.material_id,
-        title:       (r.materials as any)?.title ?? '—',
-        item_code:   (r.materials as any)?.item_code ?? '',
-        max_qty:     Number(r.qty ?? 0),
-        qty:         0,
-        rate:        Number(r.rate ?? 0),
-      })))
+      const items = await localDB.purchaseInvoiceItems.where('invoice_id').equals(invoiceId).toArray()
+      const matIds = items.map(i => i.material_id)
+      const mats = await localDB.materials.where('id').anyOf(matIds).toArray()
+      const matMap = new Map(mats.map(m => [m.id, m]))
+      setReturnItems(items.map(r => {
+        const mat = matMap.get(r.material_id)
+        return {
+          material_id: r.material_id,
+          title:       mat?.title ?? '—',
+          item_code:   mat?.item_code ?? '',
+          max_qty:     Number(r.qty ?? 0),
+          qty:         0,
+          rate:        Number(r.rate ?? 0),
+        }
+      }))
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load items')
     } finally {
@@ -190,56 +169,55 @@ export default function PurchaseReturnsPage() {
     if (activeItems.length === 0) return toast.error('Enter return qty for at least one item')
     setSaving(true)
     try {
-      const supabase = createClient()
       const returnNo = await getNextInvoiceNo('return_purchase')
+      const retId = uuid()
 
-      const { data: ret, error: retErr } = await supabase
-        .from('purchase_returns')
-        .insert({
-          return_no:           returnNo,
-          return_date:         returnDate,
-          purchase_invoice_id: selectedInvoice.id,
-          total_amount:        totalReturn,
-          notes,
-          status:              'confirmed',
-          created_by:          user?.id ?? null,
-        })
-        .select('id').single()
-      if (retErr) throw new Error(retErr.message)
+      await localDB.purchaseReturns.add({
+        id:                   retId,
+        return_no:            returnNo,
+        return_date:          returnDate,
+        purchase_invoice_id:  selectedInvoice.id,
+        total_amount:         totalReturn,
+        notes,
+        status:               'confirmed',
+        created_by:           user?.id ?? null,
+        created_at:           nowISO(),
+      })
 
-      const { error: itemsErr } = await supabase
-        .from('purchase_return_items')
-        .insert(activeItems.map(i => ({
-          return_id:   ret.id,
-          material_id: i.material_id,
-          qty:         i.qty,
-          rate:        i.rate,
-          amount:      i.qty * i.rate,
-        })))
-      if (itemsErr) throw new Error(itemsErr.message)
+      await localDB.purchaseReturnItems.bulkAdd(activeItems.map(i => ({
+        id:          uuid(),
+        return_id:   retId,
+        material_id: i.material_id,
+        qty:         i.qty,
+        rate:        i.rate,
+        amount:      i.qty * i.rate,
+      })))
 
       // Decrement stock (items go back to supplier)
       if (selectedInvoice.location_id) {
         for (const item of activeItems) {
-          const { data: stockRow } = await supabase
-            .from('stock')
-            .select('id, qty_in_hand')
-            .eq('material_id', item.material_id)
-            .eq('location_id', selectedInvoice.location_id)
-            .maybeSingle()
+          const stockRow = await localDB.stock
+            .where('[material_id+location_id]')
+            .equals([item.material_id, selectedInvoice.location_id])
+            .first()
           if (stockRow) {
-            await supabase.from('stock').update({
-              qty_in_hand: Math.max(0, Number((stockRow as any).qty_in_hand) - item.qty),
-            }).eq('id', (stockRow as any).id)
+            await localDB.stock.update(stockRow.id, {
+              qty_in_hand: Math.max(0, (stockRow.qty_in_hand ?? 0) - item.qty),
+            })
           }
-          await supabase.from('stock_movements').insert({
+          await localDB.stockMovements.add({
+            id:            uuid(),
             material_id:   item.material_id,
             location_id:   selectedInvoice.location_id,
             movement_type: 'purchase_return',
             qty:           -item.qty,
-            ref_id:        ret.id,
+            rate:          null,
+            ref_id:        retId,
+            ref_type:      null,
+            reference_id:  null,
             notes:         `Purchase Return ${returnNo}`,
             created_by:    user?.full_name ?? 'System',
+            created_at:    nowISO(),
           })
         }
       }

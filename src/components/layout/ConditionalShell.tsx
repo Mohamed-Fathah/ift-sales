@@ -3,42 +3,12 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Sidebar from './Sidebar'
 import Header from './Header'
-import { useAuthStore } from '@/store/auth.store'
-import { createClient } from '@/lib/supabase/client'
-import { fetchProfileById } from '@/lib/profile-actions'
 
 export default function ConditionalShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
-  const { user, setUser } = useAuthStore()
 
   useEffect(() => { setOpen(false) }, [pathname])
-
-  // On every mount: if the Zustand store has no user, validate the Supabase
-  // session via getUser() (server-side JWT check, not stale cookie cache) then
-  // load the profile through the admin client so RLS cannot block it.
-  useEffect(() => {
-    if (user) return
-    ;(async () => {
-      try {
-        const supabase = createClient()
-
-        // getUser() hits Supabase Auth server — validates & refreshes JWT.
-        // getSession() only reads the local cookie cache and can return stale/null.
-        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser()
-        console.log('[Auth] getUser:', authUser?.id ?? 'null', '|', authError?.message ?? 'ok')
-        if (!authUser) return
-
-        // Server action uses admin client → bypasses profiles RLS entirely.
-        const profile = await fetchProfileById(authUser.id)
-        console.log('[Auth] fetched profile: role =', profile?.role ?? 'null')
-
-        if (profile) setUser(profile as any)
-      } catch (e) {
-        console.error('[Auth] profile load failed:', e)
-      }
-    })()
-  }, [user, setUser])
 
   if (pathname.startsWith('/auth')) return <>{children}</>
   return (

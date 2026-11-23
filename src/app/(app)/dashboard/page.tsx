@@ -1,85 +1,83 @@
+'use client'
+
 export const dynamic = 'force-dynamic'
 
+import { useState, useEffect } from 'react'
 import {
   IndianRupee, ShoppingCart, BookOpen,
-  AlertTriangle, TrendingDown, TrendingUp,
+  AlertTriangle, TrendingDown, TrendingUp, Loader2,
 } from 'lucide-react'
 import Link from 'next/link'
-import { createAdminClient } from '@/lib/supabase/admin'
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { localDB } from '@/lib/local-db'
 
-async function getDashboardStats() {
-  try {
-    const supabase = createAdminClient()
-
-    const todayISO     = new Date().toISOString().slice(0, 10)           // 'YYYY-MM-DD'
-    const tomorrowISO  = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10)
-
-    const [
-      { data: invoices },
-      { data: stockRows },
-      { data: org },
-    ] = await Promise.all([
-      supabase
-        .from('sales_invoices')
-        .select('id, total_amount, balance_due')
-        .gte('invoice_date', todayISO)
-        .lt('invoice_date', tomorrowISO)
-        .neq('status', 'cancelled'),
-      supabase
-        .from('v_stock_summary')
-        .select('material_id, qty_available'),
-      supabase
-        .from('organizations')
-        .select('low_stock_threshold')
-        .limit(1)
-        .maybeSingle(),
-    ])
-
-    // Books sold today: query items for today's invoice IDs
-    const invoiceIds = (invoices ?? []).map((i: any) => i.id as string)
-    const { data: items } = invoiceIds.length
-      ? await supabase
-          .from('sales_invoice_items')
-          .select('qty')
-          .in('invoice_id', invoiceIds)
-      : { data: [] }
-
-    const threshold   = Number((org as any)?.low_stock_threshold ?? 10)
-    const revenue     = (invoices ?? []).reduce((s: number, r: any) => s + Number(r.total_amount  ?? 0), 0)
-    const billsCount  = (invoices ?? []).length
-    const booksSold   = (items    ?? []).reduce((s: number, r: any) => s + Number(r.qty           ?? 0), 0)
-    const receivables = (invoices ?? []).reduce((s: number, r: any) => s + Number(r.balance_due   ?? 0), 0)
-
-    // Count unique materials where total stock is > 0 but below threshold
-    const matQty = new Map<string, number>()
-    for (const r of (stockRows ?? [])) {
-      const id = (r as any).material_id as string
-      matQty.set(id, (matQty.get(id) ?? 0) + Number((r as any).qty_available ?? 0))
-    }
-    const lowStockTitles  = [...matQty.values()].filter(q => q > 0 && q < threshold).length
-    const outOfStockTitles = [...matQty.values()].filter(q => q <= 0).length
-
-    return { revenue, billsCount, booksSold, lowStockTitles, outOfStockTitles, receivables, threshold }
-  } catch (e) {
-    console.error('[Dashboard] stats error:', e)
-    return { revenue: 0, billsCount: 0, booksSold: 0, lowStockTitles: 0, outOfStockTitles: 0, receivables: 0, threshold: 10 }
-  }
+interface DashboardStats {
+  revenue: number
+  billsCount: number
+  booksSold: number
+  lowStockTitles: number
+  outOfStockTitles: number
+  receivables: number
+  threshold: number
 }
 
 function fmtRupee(n: number) {
   return '₹' + n.toLocaleString('en-IN', { maximumFractionDigits: 0 })
 }
 
-export default async function DashboardPage() {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    redirect('/auth/login')
-  }
+export default function DashboardPage() {
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const stats = await getDashboardStats()
+  useEffect(() => {
+    (async () => {
+      try {
+        const todayISO = new Date().toISOString().slice(0, 10)
+
+        const [invoices, stocks, org] = await Promise.all([
+          localDB.salesInvoices.toArray(),
+          localDB.stock.toArray(),
+          localDB.organizations.toCollection().first(),
+        ])
+
+        const todayInvoices = invoices.filter(
+          i => (i.invoice_date ?? '').startsWith(todayISO) && i.status !== 'cancelled'
+        )
+
+        const invoiceIds = new Set(todayInvoices.map(i => i.id))
+        const allItems = await localDB.salesInvoiceItems.toArray()
+        const todayItems = allItems.filter(item => invoiceIds.has(item.invoice_id))
+
+        const threshold = Number(org?.low_stock_threshold ?? 10)
+        const revenue = todayInvoices.reduce((s, r) => s + Number(r.total_amount ?? 0), 0)
+        const billsCount = todayInvoices.length
+        const booksSold = todayItems.reduce((s, r) => s + Number(r.qty ?? 0), 0)
+        const receivables = todayInvoices.reduce((s, r) => s + Number(r.balance_due ?? 0), 0)
+
+        const materials = await localDB.materials.toArray()
+        const matQty = new Map<string, number>()
+        for (const s of stocks) {
+          matQty.set(s.material_id, (matQty.get(s.material_id) ?? 0) + s.qty_in_hand)
+        }
+        const lowStockTitles = [...matQty.values()].filter(q => q > 0 && q < threshold).length
+        const outOfStockTitles = [...matQty.values()].filter(q => q <= 0).length
+
+        setStats({ revenue, billsCount, booksSold, lowStockTitles, outOfStockTitles, receivables, threshold })
+      } catch (e) {
+        console.error('[Dashboard] stats error:', e)
+        setStats({ revenue: 0, billsCount: 0, booksSold: 0, lowStockTitles: 0, outOfStockTitles: 0, receivables: 0, threshold: 10 })
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [])
+
+  if (loading || !stats) {
+    return (
+      <div className="flex items-center justify-center py-20 text-gray-400 gap-2">
+        <Loader2 size={20} className="animate-spin" /> Loading dashboard…
+      </div>
+    )
+  }
 
   const STATS = [
     {
@@ -196,7 +194,7 @@ export default async function DashboardPage() {
         style={{ background: 'linear-gradient(135deg, #1B2A6B 0%, #2D3F8F 100%)' }}
       >
         <p className="text-lg font-semibold">Islamic Foundation Trust — ERP</p>
-        <p className="text-blue-200 text-sm mt-1">Chennai · All data is live from the database</p>
+        <p className="text-blue-200 text-sm mt-1">Chennai · Offline Mode — All data stored locally</p>
         <div className="mt-4 flex flex-wrap gap-2 text-xs">
           {['Billing', 'Materials', 'Stock', 'Purchases', 'Parties', 'Accounts', 'Reports'].map((m) => (
             <span key={m} className="px-3 py-1 rounded-full bg-white/10 text-blue-100">{m}</span>
@@ -206,4 +204,4 @@ export default async function DashboardPage() {
 
     </div>
   )
-} 
+}

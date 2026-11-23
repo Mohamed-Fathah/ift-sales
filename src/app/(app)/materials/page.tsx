@@ -14,9 +14,10 @@ import toast from 'react-hot-toast'
 import * as XLSX from 'xlsx'
 import { useAuthStore } from '@/store/auth.store'
 import { logChange } from '@/lib/audit'
-import { exportStockReport } from '@/lib/excel-export'
-import { createClient } from '@/lib/supabase/client'
+import { exportBookCatalogue, exportStockReport } from '@/lib/excel-export'
 import {
+  getMaterialsAction,
+  getCategoriesAction,
   getStockReportDataAction,
   getNextItemCodeAction,
   saveMaterialAction,
@@ -497,48 +498,12 @@ export default function MaterialsPage() {
     setLoadError(false)
     const timer = setTimeout(() => { setIsLoading(false); setLoadError(true) }, 10_000)
     try {
-      const supabase = createClient()
-
-      const { data, error } = await supabase
-        .from('materials')
-        .select(`
-          *,
-          categories(name),
-          stock(qty_in_hand, location_id)
-        `)
-        .eq('is_active', true)
-        .order('item_code')
-
-      console.log('Materials query result:', data, error)
-      if (error) console.error('Materials error:', error)
-      if (error) throw new Error(error.message)
-
-      const { data: cats, error: catsErr } = await supabase
-        .from('categories')
-        .select('id, name')
-        .order('name')
-      if (catsErr) throw new Error(catsErr.message)
-
-      // Build a lookup map so category name resolves even if the join fails (RLS)
-      const catMap = new Map<string, string>(((cats ?? []) as any[]).map((c: any) => [c.id as string, c.name as string]))
-
-      setRows(((data ?? []) as any[]).map(m => ({
-        id:            m.id,
-        item_code:     m.item_code    ?? '',
-        isbn:          m.isbn         ?? '',
-        title:         m.title        ?? '',
-        author:        m.author       ?? '',
-        category_id:   m.category_id  ?? '',
-        category:      catMap.get(m.category_id) ?? (m.categories as any)?.name ?? '',
-        mrp:           Number(m.mrp           ?? 0),
-        purchase_rate: Number(m.purchase_rate  ?? 0),
-        discount_pct:  Number(m.discount_pct   ?? 0),
-        is_active:     Boolean(m.is_active     ?? true),
-        stock:         ((m.stock ?? []) as any[]).reduce(
-                         (s: number, row: any) => s + Number(row.qty_in_hand ?? 0), 0
-                       ),
-      })))
-      setCategories((cats ?? []) as CategoryOption[])
+      const [mats, cats] = await Promise.all([
+        getMaterialsAction(),
+        getCategoriesAction(),
+      ])
+      setRows(mats)
+      setCategories(cats)
     } catch (err: any) {
       toast.error(err.message)
     } finally {

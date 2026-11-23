@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { Shield, Search, X, Loader2, Check, Plus, Eye, EyeOff, Wrench } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
-import { createClient } from '@/lib/supabase/client'
+import { localDB } from '@/lib/local-db'
 import { type UserRole } from '@/store/auth.store'
 import { createUserAction } from './actions'
 
@@ -62,15 +62,8 @@ export default function UsersPage() {
   useEffect(() => {
     ;(async () => {
       try {
-        const supabase = createClient()
-        const { data: { user: authUser } } = await supabase.auth.getUser()
-        if (!authUser) return
-        const { data } = await supabase
-          .from('profiles')
-          .select('id, role')
-          .eq('id', authUser.id)
-          .single()
-        if (data) setCurrentProfile(data)
+        const profile = await localDB.profiles.get('local-user')
+        if (profile) setCurrentProfile({ id: profile.id, role: profile.role })
       } catch (e) {
         console.error('[Users] profile fetch failed:', e)
       }
@@ -80,19 +73,9 @@ export default function UsersPage() {
   const load = async () => {
     setLoading(true)
     try {
-      const supabase = createClient()
-      // Detect first-run: RLS means count=0 when current user has no profile
-      const { count: profileCount } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-      setFirstRun((profileCount ?? 0) === 0)
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, email, role, status, created_at')
-        .order('created_at', { ascending: false })
-      if (error) throw new Error(error.message)
-      setUsers(((data ?? []) as any[]).map(r => ({
+      const allProfiles = await localDB.profiles.orderBy('created_at').reverse().toArray()
+      setFirstRun(allProfiles.length === 0)
+      setUsers(allProfiles.map(r => ({
         id:         r.id,
         full_name:  r.full_name  ?? '—',
         email:      r.email      ?? '',
@@ -121,12 +104,7 @@ export default function UsersPage() {
   const saveRole = async (userId: string) => {
     setSaving(true)
     try {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from('profiles')
-        .update({ role: editRole })
-        .eq('id', userId)
-      if (error) throw new Error(error.message)
+      await localDB.profiles.update(userId, { role: editRole })
       toast.success('Role updated')
       setEditingId(null)
       load()
@@ -140,12 +118,7 @@ export default function UsersPage() {
   const toggleStatus = async (u: UserRow) => {
     const newStatus = u.status === 'active' ? 'inactive' : 'active'
     try {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from('profiles')
-        .update({ status: newStatus })
-        .eq('id', u.id)
-      if (error) throw new Error(error.message)
+      await localDB.profiles.update(u.id, { status: newStatus })
       toast.success(`User ${newStatus === 'active' ? 'activated' : 'deactivated'}`)
       load()
     } catch (err: any) {

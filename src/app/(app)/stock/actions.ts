@@ -1,10 +1,5 @@
-'use server'
-
-import { createAdminClient } from '@/lib/supabase/admin'
-import { requireUser } from '@/lib/auth-guard'
-import { execFileSync } from 'child_process'
-
-// ─── Types ────────────────────────────────────────────────────────────────────
+// Stock actions — offline via Dexie IndexedDB
+import { localDB, uuid, nowISO } from '@/lib/local-db'
 
 export interface StockRow {
   material_id: string
@@ -69,54 +64,31 @@ export interface PartyOption {
   name: string
 }
 
-// ─── Queries ──────────────────────────────────────────────────────────────────
-
 export async function getActiveMaterialsAction(): Promise<MaterialOption[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('materials')
-    .select('id, title, item_code, isbn')
-    .eq('is_active', true)
-    .order('title')
-  if (error) throw new Error(error.message)
-  return ((data ?? []) as any[]).map(m => ({
-    id:        m.id,
-    title:     m.title     ?? '',
+  const mats = await localDB.materials.where('is_active').equals(1).toArray()
+  return mats.sort((a, b) => a.title.localeCompare(b.title)).map(m => ({
+    id: m.id,
+    title: m.title ?? '',
     item_code: m.item_code ?? '',
-    isbn:      m.isbn      ?? '',
+    isbn: m.isbn ?? '',
   }))
 }
 
-// ─── Fetch active suppliers ────────────────────────────────────────────────────
-
 export async function getActiveSuppliersAction(): Promise<PartyOption[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('parties')
-    .select('id, name')
-    .in('party_type', ['supplier', 'both'])
-    .eq('is_active', true)
-    .order('name')
-  return ((data ?? []) as any[]).map(p => ({ id: p.id as string, name: p.name as string }))
+  const parties = await localDB.parties
+    .filter(p => p.is_active && (p.party_type === 'supplier' || p.party_type === 'both'))
+    .toArray()
+  return parties.sort((a, b) => a.name.localeCompare(b.name)).map(p => ({ id: p.id, name: p.name }))
 }
 
-// ─── Low-stock title count (for sidebar badge / dashboard) ────────────────────
-
 export async function getLowStockCountAction(): Promise<number> {
-  await requireUser()
   try {
-    const supabase = createAdminClient()
-    const [{ data: org }, { data: stockRows }] = await Promise.all([
-      supabase.from('organizations').select('low_stock_threshold').limit(1).maybeSingle(),
-      supabase.from('v_stock_summary').select('material_id, qty_available'),
-    ])
-    const threshold = Number((org as any)?.low_stock_threshold ?? 10)
+    const org = await localDB.organizations.toCollection().first()
+    const threshold = org?.low_stock_threshold ?? 10
+    const stocks = await localDB.stock.toArray()
     const matQty = new Map<string, number>()
-    for (const r of (stockRows ?? [])) {
-      const id = (r as any).material_id as string
-      matQty.set(id, (matQty.get(id) ?? 0) + Number((r as any).qty_available ?? 0))
+    for (const s of stocks) {
+      matQty.set(s.material_id, (matQty.get(s.material_id) ?? 0) + s.qty_in_hand)
     }
     return [...matQty.values()].filter(q => q > 0 && q < threshold).length
   } catch {
@@ -124,205 +96,172 @@ export async function getLowStockCountAction(): Promise<number> {
   }
 }
 
-// ─── Add stock entry (insert or add to existing) ──────────────────────────────
-
 export async function addStockEntryAction(payload: AddStockEntryPayload): Promise<void> {
-  await requireUser()
   if (payload.qty <= 0) throw new Error('Quantity must be positive')
-  const supabase = createAdminClient()
 
-  const { data: existing } = await supabase
-    .from('stock')
-    .select('id, qty_in_hand')
-    .eq('material_id', payload.materialId)
-    .eq('location_id', payload.locationId)
-    .maybeSingle()
+  const existing = await localDB.stock
+    .where('[material_id+location_id]')
+    .equals([payload.materialId, payload.locationId])
+    .first()
 
   if (existing) {
-    const newQty = Number((existing as any).qty_in_hand) + payload.qty
-    const { error } = await supabase
-      .from('stock')
-      .update({ qty_in_hand: newQty })
-      .eq('id', (existing as any).id)
-    if (error) throw new Error(error.message)
+    await localDB.stock.update(existing.id, {
+      qty_in_hand: existing.qty_in_hand + payload.qty,
+    })
   } else {
-    const { error } = await supabase
-      .from('stock')
-      .insert({ material_id: payload.materialId, location_id: payload.locationId, qty_in_hand: payload.qty })
-    if (error) throw new Error(error.message)
+    await localDB.stock.add({
+      id: uuid(),
+      material_id: payload.materialId,
+      location_id: payload.locationId,
+      qty_in_hand: payload.qty,
+    })
   }
 
-  await supabase.from('stock_movements').insert({
-    material_id:   payload.materialId,
-    location_id:   payload.locationId,
+  await localDB.stockMovements.add({
+    id: uuid(),
+    material_id: payload.materialId,
+    location_id: payload.locationId,
     movement_type: 'purchase',
-    qty:           payload.qty,
-    rate:          payload.purchaseRate ?? null,
-    ref_id:        payload.supplierId   ?? null,
-    ref_type:      payload.supplierId ? 'supplier' : null,
-    notes:         payload.notes || null,
-    created_by:    payload.createdBy || null,
+    qty: payload.qty,
+    rate: payload.purchaseRate ?? null,
+    ref_id: payload.supplierId ?? null,
+    ref_type: payload.supplierId ? 'supplier' : null,
+    reference_id: null,
+    notes: payload.notes || '',
+    created_by: payload.createdBy || null,
+    created_at: nowISO(),
   })
 }
 
-// ─── Git auto-commit (best-effort) ───────────────────────────────────────────
-
-function gitAutoCommit(msg: string) {
-  try {
-    const cwd = process.cwd()
-    execFileSync('git', ['add', '-A'], { cwd, stdio: 'ignore' })
-    execFileSync('git', ['commit', '-m', msg], { cwd, stdio: 'ignore' })
-    execFileSync('git', ['push'], { cwd, stdio: 'ignore' })
-  } catch {
-    // best-effort — stock update already succeeded
-  }
-}
-
-// ─── Queries ──────────────────────────────────────────────────────────────────
-
 export async function getStockSummaryAction(): Promise<StockRow[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('v_stock_summary')
-    .select('*')
-    .order('title')
-  if (error) throw new Error(error.message)
-  return ((data ?? []) as any[]).map(r => ({
-    material_id:   r.material_id   ?? '',
-    location_id:   r.location_id   ?? '',
-    item_code:     r.item_code     ?? '',
-    isbn:          r.isbn          ?? '',
-    title:         r.title         ?? '',
-    author:        r.author        ?? '',
-    category:      r.category      ?? '',
-    location:      r.location      ?? '',
-    qty_available: Number(r.qty_available ?? r.qty_in_hand ?? 0),
-    mrp:           Number(r.mrp           ?? 0),
-    purchase_rate: Number(r.purchase_rate  ?? 0),
-    stock_value:   Number(r.stock_value   ?? 0),
-  }))
+  const stocks = await localDB.stock.toArray()
+  const mats = await localDB.materials.toArray()
+  const cats = await localDB.categories.toArray()
+  const locs = await localDB.locations.toArray()
+
+  const matMap = new Map(mats.map(m => [m.id, m]))
+  const catMap = new Map(cats.map(c => [c.id, c.name]))
+  const locMap = new Map(locs.map(l => [l.id, l.name]))
+
+  return stocks
+    .map(s => {
+      const m = matMap.get(s.material_id)
+      if (!m) return null
+      return {
+        material_id: s.material_id,
+        location_id: s.location_id,
+        item_code: m.item_code ?? '',
+        isbn: m.isbn ?? '',
+        title: m.title ?? '',
+        author: m.author ?? '',
+        category: catMap.get(m.category_id) ?? '',
+        location: locMap.get(s.location_id) ?? '',
+        qty_available: s.qty_in_hand,
+        mrp: m.mrp ?? 0,
+        purchase_rate: m.purchase_rate ?? 0,
+        stock_value: +(s.qty_in_hand * (m.purchase_rate ?? 0)).toFixed(2),
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => (a!.title).localeCompare(b!.title)) as StockRow[]
 }
 
 export async function getLocationsAction(): Promise<LocationOption[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('locations')
-    .select('id, name')
-    .order('name')
-  return ((data ?? []) as any[]).map(l => ({ id: l.id as string, name: l.name as string }))
+  const locs = await localDB.locations.orderBy('name').toArray()
+  return locs.map(l => ({ id: l.id, name: l.name }))
 }
 
-// ─── Update stock quantity ────────────────────────────────────────────────────
-
 export async function updateStockAction(payload: UpdateStockPayload): Promise<void> {
-  await requireUser()
-  const supabase = createAdminClient()
-
-  const { data: row } = await supabase
-    .from('stock')
-    .select('id, qty_in_hand')
-    .eq('material_id', payload.materialId)
-    .eq('location_id', payload.locationId)
-    .maybeSingle()
+  const existing = await localDB.stock
+    .where('[material_id+location_id]')
+    .equals([payload.materialId, payload.locationId])
+    .first()
 
   const delta = payload.newQty - payload.currentQty
 
-  if (row) {
-    const { error } = await supabase
-      .from('stock')
-      .update({ qty_in_hand: payload.newQty })
-      .eq('id', (row as any).id)
-    if (error) throw new Error(error.message)
+  if (existing) {
+    await localDB.stock.update(existing.id, { qty_in_hand: payload.newQty })
   } else {
-    const { error } = await supabase
-      .from('stock')
-      .insert({
-        material_id: payload.materialId,
-        location_id: payload.locationId,
-        qty_in_hand: payload.newQty,
-      })
-    if (error) throw new Error(error.message)
+    await localDB.stock.add({
+      id: uuid(),
+      material_id: payload.materialId,
+      location_id: payload.locationId,
+      qty_in_hand: payload.newQty,
+    })
   }
 
-  await supabase.from('stock_movements').insert({
-    material_id:   payload.materialId,
-    location_id:   payload.locationId,
+  await localDB.stockMovements.add({
+    id: uuid(),
+    material_id: payload.materialId,
+    location_id: payload.locationId,
     movement_type: payload.movementType,
-    qty:           Math.abs(delta),
-    notes:         payload.notes || null,
-    created_by:    payload.createdBy || null,
+    qty: Math.abs(delta),
+    rate: null,
+    ref_id: null,
+    ref_type: null,
+    reference_id: null,
+    notes: payload.notes || '',
+    created_by: payload.createdBy || null,
+    created_at: nowISO(),
   })
-
-  gitAutoCommit(
-    `stock: ${payload.movementType} - ${payload.itemCode} qty ${payload.currentQty}→${payload.newQty}`
-  )
 }
 
-// ─── Transfer stock between locations ────────────────────────────────────────
-
 export async function transferStockAction(payload: TransferStockPayload): Promise<void> {
-  await requireUser()
   if (payload.qty <= 0) throw new Error('Transfer qty must be positive')
 
-  const supabase = createAdminClient()
-
-  const { data: srcRow } = await supabase
-    .from('stock')
-    .select('id, qty_in_hand')
-    .eq('material_id', payload.materialId)
-    .eq('location_id', payload.fromLocationId)
-    .maybeSingle()
+  const srcRow = await localDB.stock
+    .where('[material_id+location_id]')
+    .equals([payload.materialId, payload.fromLocationId])
+    .first()
 
   if (!srcRow) throw new Error('Source stock record not found')
-  const srcQty = Number((srcRow as any).qty_in_hand)
-  if (srcQty < payload.qty) throw new Error(`Insufficient stock. Available: ${srcQty}`)
+  if (srcRow.qty_in_hand < payload.qty) throw new Error(`Insufficient stock. Available: ${srcRow.qty_in_hand}`)
 
-  const { error: srcErr } = await supabase
-    .from('stock')
-    .update({ qty_in_hand: srcQty - payload.qty })
-    .eq('id', (srcRow as any).id)
-  if (srcErr) throw new Error(srcErr.message)
+  await localDB.stock.update(srcRow.id, {
+    qty_in_hand: srcRow.qty_in_hand - payload.qty,
+  })
 
-  const { data: dstRow } = await supabase
-    .from('stock')
-    .select('id, qty_in_hand')
-    .eq('material_id', payload.materialId)
-    .eq('location_id', payload.toLocationId)
-    .maybeSingle()
+  const dstRow = await localDB.stock
+    .where('[material_id+location_id]')
+    .equals([payload.materialId, payload.toLocationId])
+    .first()
 
   if (dstRow) {
-    await supabase
-      .from('stock')
-      .update({ qty_in_hand: Number((dstRow as any).qty_in_hand) + payload.qty })
-      .eq('id', (dstRow as any).id)
+    await localDB.stock.update(dstRow.id, {
+      qty_in_hand: dstRow.qty_in_hand + payload.qty,
+    })
   } else {
-    await supabase.from('stock').insert({
+    await localDB.stock.add({
+      id: uuid(),
       material_id: payload.materialId,
       location_id: payload.toLocationId,
       qty_in_hand: payload.qty,
     })
   }
 
-  await supabase.from('stock_movements').insert([
+  const ts = nowISO()
+  await localDB.stockMovements.bulkAdd([
     {
-      material_id:   payload.materialId,
-      location_id:   payload.fromLocationId,
+      id: uuid(),
+      material_id: payload.materialId,
+      location_id: payload.fromLocationId,
       movement_type: 'transfer_out',
-      qty:           payload.qty,
-      notes:         payload.notes || null,
-      created_by:    payload.createdBy || null,
+      qty: payload.qty,
+      rate: null, ref_id: null, ref_type: null, reference_id: null,
+      notes: payload.notes || '',
+      created_by: payload.createdBy || null,
+      created_at: ts,
     },
     {
-      material_id:   payload.materialId,
-      location_id:   payload.toLocationId,
+      id: uuid(),
+      material_id: payload.materialId,
+      location_id: payload.toLocationId,
       movement_type: 'transfer_in',
-      qty:           payload.qty,
-      notes:         payload.notes || null,
-      created_by:    payload.createdBy || null,
+      qty: payload.qty,
+      rate: null, ref_id: null, ref_type: null, reference_id: null,
+      notes: payload.notes || '',
+      created_by: payload.createdBy || null,
+      created_at: ts,
     },
   ])
-
-  gitAutoCommit(`stock: transfer ${payload.qty} units - material ${payload.materialId}`)
 }

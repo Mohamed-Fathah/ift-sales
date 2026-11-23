@@ -1,9 +1,5 @@
-'use server'
-
-import { createAdminClient } from '@/lib/supabase/admin'
-import { requireUser } from '@/lib/auth-guard'
-
-// ─── Types ────────────────────────────────────────────────────────────────────
+// New purchase actions — offline via Dexie IndexedDB
+import { localDB, uuid, nowISO } from '@/lib/local-db'
 
 export interface SupplierOption {
   id: string
@@ -58,149 +54,121 @@ export interface SavePurchasePayload {
   createdBy: string | null
 }
 
-// ─── Queries ──────────────────────────────────────────────────────────────────
-
 export async function getSuppliersAction(): Promise<SupplierOption[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('parties')
-    .select('id, name, phone')
-    .in('party_type', ['supplier', 'both'])
-    .eq('is_active', true)
-    .order('name')
-  return ((data ?? []) as any[]).map(p => ({
-    id:    p.id    as string,
-    name:  p.name  as string,
+  const parties = await localDB.parties
+    .filter(p => p.is_active && (p.party_type === 'supplier' || p.party_type === 'both'))
+    .toArray()
+  return parties.sort((a, b) => a.name.localeCompare(b.name)).map(p => ({
+    id: p.id,
+    name: p.name,
     phone: p.phone ?? '',
   }))
 }
 
 export async function getPurchaseLocationsAction(): Promise<PurchaseLocationOption[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('locations')
-    .select('id, name, is_default')
-    .order('name')
-  return ((data ?? []) as any[]).map(l => ({
-    id:         l.id as string,
-    name:       l.name as string,
-    is_default: Boolean(l.is_default),
+  const locs = await localDB.locations.orderBy('name').toArray()
+  return locs.map(l => ({
+    id: l.id,
+    name: l.name,
+    is_default: l.is_default,
   }))
 }
 
-export async function searchPurchaseMaterialsAction(
-  query: string,
-): Promise<PurchaseMaterialResult[]> {
-  await requireUser()
-  const q = query.trim()
+export async function searchPurchaseMaterialsAction(query: string): Promise<PurchaseMaterialResult[]> {
+  const q = query.trim().toLowerCase()
   if (!q) return []
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('materials')
-    .select('id, item_code, isbn, title, author, mrp, purchase_rate, discount_pct')
-    .or(`title.ilike.%${q}%,author.ilike.%${q}%,isbn.ilike.%${q}%,item_code.ilike.%${q}%`)
-    .eq('is_active', true)
-    .limit(8)
-  return ((data ?? []) as any[]).map(m => ({
-    id:            m.id,
-    item_code:     m.item_code    ?? '',
-    isbn:          m.isbn         ?? '',
-    title:         m.title        ?? '',
-    author:        m.author       ?? '',
-    mrp:           Number(m.mrp           ?? 0),
-    purchase_rate: Number(m.purchase_rate ?? 0),
-    discount_pct:  Number(m.discount_pct  ?? 0),
+  const mats = await localDB.materials.filter(m =>
+    m.is_active &&
+    (m.title.toLowerCase().includes(q) ||
+     m.author.toLowerCase().includes(q) ||
+     m.isbn.toLowerCase().includes(q) ||
+     m.item_code.toLowerCase().includes(q))
+  ).limit(8).toArray()
+
+  return mats.map(m => ({
+    id: m.id,
+    item_code: m.item_code ?? '',
+    isbn: m.isbn ?? '',
+    title: m.title ?? '',
+    author: m.author ?? '',
+    mrp: m.mrp ?? 0,
+    purchase_rate: m.purchase_rate ?? 0,
+    discount_pct: m.discount_pct ?? 0,
   }))
 }
-
-// ─── Save purchase invoice ─────────────────────────────────────────────────────
-// invoiceNo is generated client-side (getNextInvoiceNo uses browser Supabase client).
-// Status 'confirmed' additionally updates stock and logs stock_movements.
 
 export async function savePurchaseInvoiceAction(
   payload: SavePurchasePayload,
 ): Promise<{ invoiceId: string; invoiceNo: string }> {
-  await requireUser()
-  const supabase = createAdminClient()
+  const invoiceId = uuid()
 
-  // 1. Insert purchase_invoice
-  // balance_due is a GENERATED ALWAYS column — omitted intentionally
-  const { data: inv, error: invErr } = await supabase
-    .from('purchase_invoices')
-    .insert({
-      invoice_no:       payload.invoiceNo,
-      supplier_id:      payload.supplierId,
-      location_id:      payload.locationId,
-      invoice_date:     payload.invoiceDate,
-      supplier_inv_no:  payload.supplierInvNo || null,
-      subtotal:         payload.subtotal,
-      discount_amount:  payload.discountAmount,
-      transport_charge: payload.transportCharge,
-      unloading_charge: payload.unloadingCharge,
-      other_charges:    payload.otherCharges,
-      total_amount:     payload.totalAmount,
-      paid_amount:      payload.paidAmount,
-      status:           payload.status,
-      notes:            payload.notes || null,
-      created_by:       payload.createdBy || null,
+  await localDB.purchaseInvoices.add({
+    id: invoiceId,
+    invoice_no: payload.invoiceNo,
+    supplier_id: payload.supplierId,
+    location_id: payload.locationId,
+    invoice_date: payload.invoiceDate,
+    supplier_inv_no: payload.supplierInvNo || '',
+    subtotal: payload.subtotal,
+    discount_amount: payload.discountAmount,
+    transport_charge: payload.transportCharge,
+    unloading_charge: payload.unloadingCharge,
+    other_charges: payload.otherCharges,
+    total_amount: payload.totalAmount,
+    paid_amount: payload.paidAmount,
+    balance_due: payload.totalAmount - payload.paidAmount,
+    status: payload.status,
+    notes: payload.notes || '',
+    created_by: payload.createdBy || null,
+    created_at: nowISO(),
+  })
+
+  for (const item of payload.items) {
+    await localDB.purchaseInvoiceItems.add({
+      id: uuid(),
+      invoice_id: invoiceId,
+      material_id: item.materialId,
+      qty: item.qty,
+      rate: item.rate,
+      mrp: item.mrp,
+      discount_pct: item.discountPct,
+      total_amount: item.total,
     })
-    .select('id')
-    .single()
-
-  if (invErr) throw new Error(invErr.message)
-  const invoiceId = (inv as any).id as string
-
-  // 2. Insert line items
-  if (payload.items.length > 0) {
-    const { error: itemsErr } = await supabase
-      .from('purchase_invoice_items')
-      .insert(
-        payload.items.map(item => ({
-          invoice_id:   invoiceId,
-          material_id:  item.materialId,
-          qty:          item.qty,
-          rate:         item.rate,
-          mrp:          item.mrp,
-          discount_pct: item.discountPct,
-          total_amount: item.total,
-        })),
-      )
-    if (itemsErr) throw new Error(itemsErr.message)
   }
 
-  // 3. If confirmed: increment stock and log movements
-  if (payload.status === 'confirmed' && payload.items.length > 0) {
+  if (payload.status === 'confirmed') {
     for (const item of payload.items) {
-      const { data: stockRow } = await supabase
-        .from('stock')
-        .select('id, qty_in_hand')
-        .eq('material_id', item.materialId)
-        .eq('location_id', payload.locationId)
-        .maybeSingle()
+      const stockRow = await localDB.stock
+        .where('[material_id+location_id]')
+        .equals([item.materialId, payload.locationId])
+        .first()
 
       if (stockRow) {
-        await supabase
-          .from('stock')
-          .update({ qty_in_hand: Number((stockRow as any).qty_in_hand) + item.qty })
-          .eq('id', (stockRow as any).id)
+        await localDB.stock.update(stockRow.id, {
+          qty_in_hand: stockRow.qty_in_hand + item.qty,
+        })
       } else {
-        await supabase.from('stock').insert({
+        await localDB.stock.add({
+          id: uuid(),
           material_id: item.materialId,
           location_id: payload.locationId,
           qty_in_hand: item.qty,
         })
       }
 
-      await supabase.from('stock_movements').insert({
-        material_id:   item.materialId,
-        location_id:   payload.locationId,
+      await localDB.stockMovements.add({
+        id: uuid(),
+        material_id: item.materialId,
+        location_id: payload.locationId,
         movement_type: 'purchase',
-        qty:           item.qty,
-        reference_id:  invoiceId,
-        notes:         `Purchase invoice ${payload.invoiceNo}`,
-        created_by:    payload.createdBy || null,
+        qty: item.qty,
+        rate: null,
+        ref_id: null,
+        ref_type: null,
+        reference_id: invoiceId,
+        notes: `Purchase invoice ${payload.invoiceNo}`,
+        created_by: payload.createdBy || null,
+        created_at: nowISO(),
       })
     }
   }

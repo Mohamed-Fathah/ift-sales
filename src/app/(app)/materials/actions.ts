@@ -1,9 +1,5 @@
-'use server'
-
-import { createAdminClient } from '@/lib/supabase/admin'
-import { requireUser } from '@/lib/auth-guard'
-
-// ─── Shared types ─────────────────────────────────────────────────────────────
+// Materials actions — offline via Dexie IndexedDB
+import { localDB, uuid, nowISO } from '@/lib/local-db'
 
 export interface MaterialRow {
   id: string
@@ -38,75 +34,48 @@ export interface SaveMaterialInput {
   initial_stock?: number
 }
 
-// ─── Queries ──────────────────────────────────────────────────────────────────
-
 export async function getNextItemCodeAction(): Promise<string> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('materials')
-    .select('item_code')
-    .not('item_code', 'is', null)
+  const mats = await localDB.materials.toArray()
   let maxNum = 0
-  for (const row of (data ?? []) as any[]) {
-    const code = (row.item_code as string) ?? ''
-    const match = code.match(/(\d+)$/)
+  for (const m of mats) {
+    const match = (m.item_code ?? '').match(/(\d+)$/)
     if (match) {
       const n = parseInt(match[1], 10)
       if (n > maxNum) maxNum = n
     }
   }
-  const next = maxNum + 1
-  return `IFT-${String(next).padStart(3, '0')}`
+  return `IFT-${String(maxNum + 1).padStart(3, '0')}`
 }
 
 export async function getMaterialsAction(): Promise<MaterialRow[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-
-  const [{ data: mats, error }, { data: stocks }] = await Promise.all([
-    supabase
-      .from('materials')
-      .select('id, item_code, isbn, title, author, category_id, mrp, purchase_rate, discount_pct, is_active, categories(name)')
-      .order('item_code', { ascending: true }),
-    supabase
-      .from('stock')
-      .select('material_id, qty_in_hand'),
-  ])
-
-  if (error) throw new Error(error.message)
+  const mats = await localDB.materials.orderBy('item_code').toArray()
+  const cats = await localDB.categories.toArray()
+  const catMap = new Map(cats.map(c => [c.id, c.name]))
+  const stocks = await localDB.stock.toArray()
 
   const stockMap = new Map<string, number>()
-  for (const s of (stocks ?? []) as any[]) {
-    const prev = stockMap.get(s.material_id) ?? 0
-    stockMap.set(s.material_id, prev + Number(s.qty_in_hand ?? 0))
+  for (const s of stocks) {
+    stockMap.set(s.material_id, (stockMap.get(s.material_id) ?? 0) + s.qty_in_hand)
   }
 
-  return ((mats ?? []) as any[]).map(m => ({
-    id:            m.id,
-    item_code:     m.item_code    ?? '',
-    isbn:          m.isbn         ?? '',
-    title:         m.title        ?? '',
-    author:        m.author       ?? '',
-    category_id:   m.category_id  ?? '',
-    category:      (m.categories as any)?.name ?? '',
-    mrp:           Number(m.mrp           ?? 0),
-    purchase_rate: Number(m.purchase_rate  ?? 0),
-    discount_pct:  Number(m.discount_pct   ?? 0),
-    is_active:     Boolean(m.is_active     ?? true),
-    stock:         stockMap.get(m.id)       ?? 0,
+  return mats.map(m => ({
+    id: m.id,
+    item_code: m.item_code ?? '',
+    isbn: m.isbn ?? '',
+    title: m.title ?? '',
+    author: m.author ?? '',
+    category_id: m.category_id ?? '',
+    category: catMap.get(m.category_id) ?? '',
+    mrp: m.mrp ?? 0,
+    purchase_rate: m.purchase_rate ?? 0,
+    discount_pct: m.discount_pct ?? 0,
+    is_active: m.is_active ?? true,
+    stock: stockMap.get(m.id) ?? 0,
   }))
 }
 
 export async function getCategoriesAction(): Promise<CategoryOption[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('categories')
-    .select('id, name')
-    .order('name')
-  if (error) throw new Error(error.message)
-  return (data ?? []) as CategoryOption[]
+  return localDB.categories.orderBy('name').toArray()
 }
 
 export async function getStockReportDataAction(): Promise<{
@@ -115,88 +84,77 @@ export async function getStockReportDataAction(): Promise<{
   openingStock: number; qtyIn: number; qtySold: number;
   currentStock: number; stockValue: number; location: string
 }[]> {
-  await requireUser()
-  const supabase = createAdminClient()
+  const mats = await localDB.materials.where('is_active').equals(1).toArray()
+  const cats = await localDB.categories.toArray()
+  const catMap = new Map(cats.map(c => [c.id, c.name]))
+  const stocks = await localDB.stock.toArray()
+  const locs = await localDB.locations.toArray()
+  const locMap = new Map(locs.map(l => [l.id, l.name]))
 
-  const [{ data: mats }, { data: stocks }, { data: locations }] = await Promise.all([
-    supabase
-      .from('materials')
-      .select('id, item_code, isbn, title, author, mrp, purchase_rate, categories(name)')
-      .eq('is_active', true)
-      .order('item_code'),
-    supabase.from('stock').select('material_id, qty_in_hand, location_id'),
-    supabase.from('locations').select('id, name'),
-  ])
-
-  const locMap = new Map(((locations ?? []) as any[]).map(l => [l.id, l.name as string]))
-
-  return ((mats ?? []) as any[]).map(m => {
-    const matStocks = ((stocks ?? []) as any[]).filter(s => s.material_id === m.id)
-    const currentStock = matStocks.reduce((sum: number, s: any) => sum + Number(s.qty_in_hand ?? 0), 0)
+  return mats.map(m => {
+    const matStocks = stocks.filter(s => s.material_id === m.id)
+    const currentStock = matStocks.reduce((sum, s) => sum + s.qty_in_hand, 0)
     const loc = matStocks.length === 1 ? (locMap.get(matStocks[0].location_id) ?? 'All') : 'All'
     return {
-      itemCode:     m.item_code ?? '',
-      isbn:         m.isbn ?? '',
-      title:        m.title ?? '',
-      author:       m.author ?? '',
-      category:     (m.categories as any)?.name ?? '',
-      mrp:          Number(m.mrp ?? 0),
-      purchaseRate: Number(m.purchase_rate ?? 0),
+      itemCode: m.item_code ?? '',
+      isbn: m.isbn ?? '',
+      title: m.title ?? '',
+      author: m.author ?? '',
+      category: catMap.get(m.category_id) ?? '',
+      mrp: m.mrp ?? 0,
+      purchaseRate: m.purchase_rate ?? 0,
       openingStock: 0,
-      qtyIn:        0,
-      qtySold:      0,
+      qtyIn: 0,
+      qtySold: 0,
       currentStock,
-      stockValue:   +(currentStock * Number(m.purchase_rate ?? 0)).toFixed(2),
-      location:     loc,
+      stockValue: +(currentStock * (m.purchase_rate ?? 0)).toFixed(2),
+      location: loc,
     }
   })
 }
 
-// ─── Mutations ────────────────────────────────────────────────────────────────
-
 export async function saveMaterialAction(input: SaveMaterialInput): Promise<{ id: string }> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('materials')
-    .insert({
-      item_code:     input.item_code ? input.item_code.trim().toUpperCase() : null,
-      isbn:          input.isbn         || null,
-      title:         input.title,
-      author:        input.author       || null,
-      category_id:   input.category_id  || null,
-      mrp:           input.mrp,
-      purchase_rate: input.purchase_rate,
-      discount_pct:  input.discount_pct ?? 0,
-      is_active:     true,
-    })
-    .select('id')
-    .single()
+  const materialId = uuid()
+  await localDB.materials.add({
+    id: materialId,
+    item_code: input.item_code ? input.item_code.trim().toUpperCase() : '',
+    isbn: input.isbn || '',
+    tracking_id: '',
+    title: input.title,
+    author: input.author || '',
+    category_id: input.category_id || '',
+    publication: input.publication || '',
+    language: '',
+    mrp: input.mrp,
+    purchase_rate: input.purchase_rate,
+    discount_pct: input.discount_pct ?? 0,
+    description: '',
+    is_active: true,
+    created_at: nowISO(),
+  })
 
-  if (error) throw new Error(error.message)
-  const materialId = (data as any).id
-
-  // Save initial stock to default location if provided
   if (input.initial_stock && input.initial_stock > 0) {
-    const { data: locs } = await supabase
-      .from('locations')
-      .select('id')
-      .order('name')
-      .limit(1)
-    const locationId = (locs?.[0] as any)?.id
-    if (locationId) {
-      await supabase.from('stock').insert({
+    const loc = await localDB.locations.toCollection().first()
+    if (loc) {
+      await localDB.stock.add({
+        id: uuid(),
         material_id: materialId,
-        location_id: locationId,
+        location_id: loc.id,
         qty_in_hand: input.initial_stock,
       })
-      await supabase.from('stock_movements').insert({
-        material_id:   materialId,
-        location_id:   locationId,
+      await localDB.stockMovements.add({
+        id: uuid(),
+        material_id: materialId,
+        location_id: loc.id,
         movement_type: 'opening',
-        qty:           input.initial_stock,
-        notes:         'Initial stock on book creation',
-        created_by:    null,
+        qty: input.initial_stock,
+        rate: null,
+        ref_id: null,
+        ref_type: null,
+        reference_id: null,
+        notes: 'Initial stock on book creation',
+        created_by: null,
+        created_at: nowISO(),
       })
     }
   }
@@ -208,75 +166,59 @@ export async function updateMaterialAction(
   id: string,
   changes: Record<string, unknown>
 ): Promise<void> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { error } = await supabase
-    .from('materials')
-    .update(changes)
-    .eq('id', id)
-  if (error) throw new Error(error.message)
+  await localDB.materials.update(id, changes)
 }
 
 export async function archiveMaterialAction(id: string): Promise<void> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { error } = await supabase
-    .from('materials')
-    .update({ is_active: false })
-    .eq('id', id)
-  if (error) throw new Error(error.message)
+  await localDB.materials.update(id, { is_active: false })
 }
 
 export async function bulkImportMaterialsAction(
   rows: SaveMaterialInput[],
-  userId: string,
-  userName: string,
+  _userId: string,
+  _userName: string,
 ): Promise<{ inserted: number; errors: string[] }> {
-  await requireUser()
-  const supabase = createAdminClient()
   let inserted = 0
   const errors: string[] = []
 
-  const BATCH = 50
-  for (let i = 0; i < rows.length; i += BATCH) {
-    const batch = rows.slice(i, i + BATCH)
-    const { data, error } = await supabase
-      .from('materials')
-      .upsert(
-        batch.map(r => ({
-          item_code:     r.item_code ? r.item_code.trim().toUpperCase() : null,
-          isbn:          r.isbn         || null,
-          title:         r.title,
-          author:        r.author       || null,
-          category_id:   r.category_id  || null,
-          mrp:           r.mrp,
-          purchase_rate: r.purchase_rate,
-          discount_pct:  r.discount_pct ?? 0,
-          is_active:     true,
-        })),
-        { onConflict: 'item_code', ignoreDuplicates: false }
-      )
-      .select('id')
+  for (const r of rows) {
+    try {
+      const existing = r.item_code
+        ? await localDB.materials.where('item_code').equals(r.item_code.trim().toUpperCase()).first()
+        : undefined
 
-    if (error) {
-      errors.push(`Batch ${Math.floor(i / BATCH) + 1}: ${error.message}`)
-    } else {
-      inserted += (data ?? []).length
-      // Bulk audit via admin client — too many rows to send back to browser
-      if (data && data.length > 0) {
-        await supabase.from('audit_log').insert(
-          (data as any[]).map((row, idx) => ({
-            table_name:     'materials',
-            record_id:      row.id,
-            action:         'INSERT',
-            new_data:       batch[idx] as unknown as Record<string, unknown>,
-            old_data:       null,
-            changed_fields: Object.keys(batch[idx]),
-            user_id:        userId,
-            user_name:      userName,
-          }))
-        )
+      if (existing) {
+        await localDB.materials.update(existing.id, {
+          isbn: r.isbn || existing.isbn,
+          title: r.title,
+          author: r.author || existing.author,
+          category_id: r.category_id || existing.category_id,
+          mrp: r.mrp,
+          purchase_rate: r.purchase_rate,
+          discount_pct: r.discount_pct ?? existing.discount_pct,
+        })
+      } else {
+        await localDB.materials.add({
+          id: uuid(),
+          item_code: r.item_code ? r.item_code.trim().toUpperCase() : '',
+          isbn: r.isbn || '',
+          tracking_id: '',
+          title: r.title,
+          author: r.author || '',
+          category_id: r.category_id || '',
+          publication: r.publication || '',
+          language: '',
+          mrp: r.mrp,
+          purchase_rate: r.purchase_rate,
+          discount_pct: r.discount_pct ?? 0,
+          description: '',
+          is_active: true,
+          created_at: nowISO(),
+        })
       }
+      inserted++
+    } catch (e: any) {
+      errors.push(e.message)
     }
   }
 

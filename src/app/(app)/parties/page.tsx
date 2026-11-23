@@ -9,8 +9,8 @@ import {
   Phone, Mail, MapPin, CreditCard, FileText,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { createClient } from '@/lib/supabase/client'
 import {
+  getPartiesAction,
   savePartyAction,
   updatePartyAction,
   deletePartyAction,
@@ -462,20 +462,9 @@ export default function PartiesPage() {
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
-      const supabase = createClient()
-      const { data, error } = await supabase.from('parties').select('*').order('name')
-      if (error) throw new Error(error.message)
-      setRows(((data ?? []) as any[]).map(r => ({
-        id:              r.id,
-        name:            r.name            ?? '',
-        party_type:      r.party_type      ?? 'customer',
-        contact_person:  r.contact_person  ?? '',
-        phone:           r.phone           ?? '',
-        whatsapp:        r.whatsapp        ?? '',
-        email:           r.email           ?? '',
-        address:         r.address         ?? '',
-        city:            r.city            ?? '',
-        gstin:           r.gstin           ?? '',
+      const data = await getPartiesAction()
+      setRows(data.map(r => ({
+        ...r,
         credit_limit:    Number(r.credit_limit    ?? 0),
         credit_days:     Number(r.credit_days     ?? 0),
         opening_balance: Number(r.opening_balance ?? 0),

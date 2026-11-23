@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { clsx } from 'clsx'
 import {
   LayoutDashboard,
@@ -23,10 +23,6 @@ import {
   LogOut,
 } from 'lucide-react'
 import { useAuthStore } from '@/store/auth.store'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
-import { getLowStockCountAction } from '@/app/(app)/stock/actions'
 
 interface NavItem {
   label: string
@@ -91,34 +87,20 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   const pathname = usePathname()
   const { user, logout } = useAuthStore()
   const router = useRouter()
-  const [lowStockBadge, setLowStockBadge] = useState(0)
-
-  useEffect(() => {
-    getLowStockCountAction().then(setLowStockBadge).catch(() => {})
-  }, [])
 
   const isActive = (href: string) => pathname === href
 
- async function handleLogout() {
-  const supabase = createClient()
-  try {
-    await supabase.auth.signOut()
-  } catch (e) {
-    console.error('Sign out error:', e)
-  } finally {
+  function handleLogout() {
     logout()
     router.push('/auth/login')
   }
-}
 
   return (
     <aside className={clsx(
       'sidebar w-[var(--sidebar-w)] max-w-[85vw] h-screen shrink-0 overflow-x-hidden',
-      // Mobile: fixed overlay with slide transition
       'fixed inset-y-0 left-0 z-50',
       'transform transition-transform duration-300 ease-in-out',
       isOpen ? 'translate-x-0' : '-translate-x-full',
-      // Desktop: in-flow, always visible
       'md:relative md:translate-x-0',
     )}>
       {/* Logo / Brand */}
@@ -127,7 +109,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           <img src="/ift-logo.png" alt="IFT" style={{ height: '40px', width: 'auto', filter: 'brightness(0) invert(1)' }} />
         </Link>
         <div className="overflow-hidden">
-<p className="text-white font-semibold text-sm leading-tight truncate">Islamic Foundation Trust</p>
+          <p className="text-white font-semibold text-sm leading-tight truncate">Islamic Foundation Trust</p>
         </div>
       </div>
 
@@ -144,11 +126,6 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               >
                 {item.icon}
                 <span>{item.label}</span>
-                {item.href === '/stock' && lowStockBadge > 0 && (
-                  <span className="ml-auto min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
-                    {lowStockBadge > 99 ? '99+' : lowStockBadge}
-                  </span>
-                )}
               </Link>
             ))}
           </div>

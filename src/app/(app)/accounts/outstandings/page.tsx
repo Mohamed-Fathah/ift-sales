@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { Loader2, TrendingDown, TrendingUp, IndianRupee, Download } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
-import { createClient } from '@/lib/supabase/client'
+import { localDB } from '@/lib/local-db'
 import { exportOutstandings } from '@/lib/excel-export'
 
 interface PayableRow {
@@ -54,44 +54,45 @@ export default function OutstandingsPage() {
   useEffect(() => {
     (async () => {
       try {
-        const supabase = createClient()
-        const [{ data: purch, error: purchErr }, { data: sales, error: salesErr }] = await Promise.all([
-          supabase
-            .from('purchase_invoices')
-            .select('id, invoice_no, invoice_date, total_amount, paid_amount, balance_due, status, parties!supplier_id(name)')
-            .gt('balance_due', 0)
-            .order('invoice_date', { ascending: false }),
-          supabase
-            .from('sales_invoices')
-            .select('id, invoice_no, invoice_date, customer_name, customer_phone, total_amount, paid_amount, balance_due, status')
-            .gt('balance_due', 0)
-            .order('invoice_date', { ascending: false }),
+        const [allPurch, allSales, parties] = await Promise.all([
+          localDB.purchaseInvoices.toArray(),
+          localDB.salesInvoices.toArray(),
+          localDB.parties.toArray(),
         ])
-        if (purchErr) throw new Error(purchErr.message)
-        if (salesErr) throw new Error(salesErr.message)
+        const partyMap = new Map(parties.map(p => [p.id, p.name]))
 
-        setPayables(((purch ?? []) as any[]).map(r => ({
-          id:            r.id,
-          invoice_no:    r.invoice_no    ?? '',
-          invoice_date:  r.invoice_date  ?? '',
-          supplier_name: (r.parties as any)?.name ?? 'Unknown',
-          total_amount:  Number(r.total_amount  ?? 0),
-          paid_amount:   Number(r.paid_amount   ?? 0),
-          balance_due:   Number(r.balance_due   ?? 0),
-          status:        r.status        ?? '',
-        })))
+        setPayables(
+          allPurch
+            .filter(r => (r.balance_due ?? 0) > 0)
+            .sort((a, b) => (b.invoice_date ?? '').localeCompare(a.invoice_date ?? ''))
+            .map(r => ({
+              id:            r.id,
+              invoice_no:    r.invoice_no    ?? '',
+              invoice_date:  r.invoice_date  ?? '',
+              supplier_name: partyMap.get(r.supplier_id) ?? 'Unknown',
+              total_amount:  Number(r.total_amount  ?? 0),
+              paid_amount:   Number(r.paid_amount   ?? 0),
+              balance_due:   Number(r.balance_due   ?? 0),
+              status:        r.status        ?? '',
+            }))
+        )
 
-        setReceivables(((sales ?? []) as any[]).map(r => ({
-          id:             r.id,
-          invoice_no:     r.invoice_no    ?? '',
-          invoice_date:   r.invoice_date  ?? '',
-          customer_name:  r.customer_name  ?? 'Walk-in',
-          customer_phone: r.customer_phone ?? '',
-          total_amount:   Number(r.total_amount  ?? 0),
-          paid_amount:    Number(r.paid_amount   ?? 0),
-          balance_due:    Number(r.balance_due   ?? 0),
-          status:         r.status         ?? '',
-        })))
+        setReceivables(
+          allSales
+            .filter(r => (r.balance_due ?? 0) > 0)
+            .sort((a, b) => (b.invoice_date ?? '').localeCompare(a.invoice_date ?? ''))
+            .map(r => ({
+              id:             r.id,
+              invoice_no:     r.invoice_no    ?? '',
+              invoice_date:   r.invoice_date  ?? '',
+              customer_name:  r.customer_name  ?? 'Walk-in',
+              customer_phone: r.customer_phone ?? '',
+              total_amount:   Number(r.total_amount  ?? 0),
+              paid_amount:    Number(r.paid_amount   ?? 0),
+              balance_due:    Number(r.balance_due   ?? 0),
+              status:         r.status         ?? '',
+            }))
+        )
       } catch (err: any) {
         toast.error(err.message ?? 'Failed to load outstandings')
       } finally {

@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { RefreshCw, Plus, Search, X, Loader2, IndianRupee } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
-import { createClient } from '@/lib/supabase/client'
+import { localDB, uuid, nowISO } from '@/lib/local-db'
 import { getNextInvoiceNo } from '@/lib/invoice-number'
 import { useAuthStore } from '@/store/auth.store'
 
@@ -69,35 +69,15 @@ export default function SalesReturnsPage() {
   const load = async () => {
     setLoading(true)
     try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('sales_returns')
-        .select('id, return_no, return_date, total_amount, status, notes, sales_invoice_id')
-        .order('return_date', { ascending: false })
-      if (error) throw new Error(error.message)
-
-      const returns = (data ?? []) as any[]
-
-      // Batch fetch related invoices separately
-      const invoiceIds = [...new Set(returns.map(r => r.sales_invoice_id).filter(Boolean))]
-      const invMap = new Map<string, any>()
-      if (invoiceIds.length > 0) {
-        const { data: invData } = await supabase
-          .from('sales_invoices')
-          .select('id, invoice_no, customer_name, customer_phone')
-          .in('id', invoiceIds)
-        for (const inv of (invData ?? []) as any[])
-          invMap.set(inv.id, inv)
-      }
-
-      const ids = returns.map(r => r.id as string)
+      const [returns, allInvoices, allReturnItems] = await Promise.all([
+        localDB.salesReturns.orderBy('return_date').reverse().toArray(),
+        localDB.salesInvoices.toArray(),
+        localDB.salesReturnItems.toArray(),
+      ])
+      const invMap = new Map(allInvoices.map(i => [i.id, i]))
       const cntMap = new Map<string, number>()
-      if (ids.length > 0) {
-        const { data: items } = await supabase
-          .from('sales_return_items').select('return_id').in('return_id', ids)
-        for (const i of (items ?? []) as any[])
-          cntMap.set(i.return_id, (cntMap.get(i.return_id) ?? 0) + 1)
-      }
+      for (const i of allReturnItems)
+        cntMap.set(i.return_id, (cntMap.get(i.return_id) ?? 0) + 1)
 
       setRows(returns.map(r => {
         const inv = invMap.get(r.sales_invoice_id)
@@ -124,14 +104,12 @@ export default function SalesReturnsPage() {
   useEffect(() => { load() }, [])
 
   const openModal = async () => {
-    const supabase = createClient()
-    const { data } = await supabase
-      .from('sales_invoices')
-      .select('id, invoice_no, invoice_date, customer_name, customer_phone, location_id')
-      .in('status', ['confirmed', 'paid'])
-      .order('invoice_date', { ascending: false })
-      .limit(200)
-    setInvoices(((data ?? []) as any[]).map(r => ({
+    const all = await localDB.salesInvoices.toArray()
+    const eligible = all
+      .filter(r => r.status === 'confirmed' || r.status === 'paid')
+      .sort((a, b) => (b.invoice_date ?? '').localeCompare(a.invoice_date ?? ''))
+      .slice(0, 200)
+    setInvoices(eligible.map(r => ({
       id:             r.id,
       invoice_no:     r.invoice_no     ?? '',
       invoice_date:   r.invoice_date   ?? '',
@@ -152,20 +130,21 @@ export default function SalesReturnsPage() {
     if (!inv) { setReturnItems([]); return }
     setLoadingItems(true)
     try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('sales_invoice_items')
-        .select('material_id, qty, mrp, rate, materials(title, item_code)')
-        .eq('invoice_id', invoiceId)
-      if (error) throw new Error(error.message)
-      setReturnItems(((data ?? []) as any[]).map(r => ({
-        material_id: r.material_id,
-        title:       (r.materials as any)?.title ?? '—',
-        item_code:   (r.materials as any)?.item_code ?? '',
-        max_qty:     Number(r.qty ?? 0),
-        qty:         0,
-        rate:        Number(r.rate ?? r.mrp ?? 0),
-      })))
+      const items = await localDB.salesInvoiceItems.where('invoice_id').equals(invoiceId).toArray()
+      const matIds = items.map(i => i.material_id)
+      const mats = await localDB.materials.where('id').anyOf(matIds).toArray()
+      const matMap = new Map(mats.map(m => [m.id, m]))
+      setReturnItems(items.map(r => {
+        const mat = matMap.get(r.material_id)
+        return {
+          material_id: r.material_id,
+          title:       mat?.title ?? '—',
+          item_code:   mat?.item_code ?? '',
+          max_qty:     Number(r.qty ?? 0),
+          qty:         0,
+          rate:        Number(r.rate ?? r.mrp ?? 0),
+        }
+      }))
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load items')
     } finally {
@@ -188,62 +167,62 @@ export default function SalesReturnsPage() {
     if (activeItems.length === 0) return toast.error('Enter return qty for at least one item')
     setSaving(true)
     try {
-      const supabase = createClient()
       const returnNo = await getNextInvoiceNo('return_sales')
+      const retId = uuid()
 
-      const { data: ret, error: retErr } = await supabase
-        .from('sales_returns')
-        .insert({
-          return_no:        returnNo,
-          return_date:      returnDate,
-          sales_invoice_id: selectedInvoice.id,
-          total_amount:     totalReturn,
-          notes,
-          status:           'confirmed',
-          created_by:       user?.id ?? null,
-        })
-        .select('id').single()
-      if (retErr) throw new Error(retErr.message)
+      await localDB.salesReturns.add({
+        id:                retId,
+        return_no:         returnNo,
+        return_date:       returnDate,
+        sales_invoice_id:  selectedInvoice.id,
+        total_amount:      totalReturn,
+        notes,
+        status:            'confirmed',
+        created_by:        user?.id ?? null,
+        created_at:        nowISO(),
+      })
 
-      const { error: itemsErr } = await supabase
-        .from('sales_return_items')
-        .insert(activeItems.map(i => ({
-          return_id:   ret.id,
-          material_id: i.material_id,
-          qty:         i.qty,
-          rate:        i.rate,
-          amount:      i.qty * i.rate,
-        })))
-      if (itemsErr) throw new Error(itemsErr.message)
+      await localDB.salesReturnItems.bulkAdd(activeItems.map(i => ({
+        id:          uuid(),
+        return_id:   retId,
+        material_id: i.material_id,
+        qty:         i.qty,
+        rate:        i.rate,
+        amount:      i.qty * i.rate,
+      })))
 
       // Increment stock (items come back from customer)
       if (selectedInvoice.location_id) {
         for (const item of activeItems) {
-          const { data: stockRow } = await supabase
-            .from('stock')
-            .select('id, qty_in_hand')
-            .eq('material_id', item.material_id)
-            .eq('location_id', selectedInvoice.location_id)
-            .maybeSingle()
+          const stockRow = await localDB.stock
+            .where('[material_id+location_id]')
+            .equals([item.material_id, selectedInvoice.location_id])
+            .first()
           if (stockRow) {
-            await supabase.from('stock').update({
-              qty_in_hand: Number((stockRow as any).qty_in_hand) + item.qty,
-            }).eq('id', (stockRow as any).id)
+            await localDB.stock.update(stockRow.id, {
+              qty_in_hand: (stockRow.qty_in_hand ?? 0) + item.qty,
+            })
           } else {
-            await supabase.from('stock').insert({
+            await localDB.stock.add({
+              id: uuid(),
               material_id: item.material_id,
               location_id: selectedInvoice.location_id,
               qty_in_hand: item.qty,
             })
           }
-          await supabase.from('stock_movements').insert({
+          await localDB.stockMovements.add({
+            id:            uuid(),
             material_id:   item.material_id,
             location_id:   selectedInvoice.location_id,
             movement_type: 'sale_return',
             qty:           item.qty,
-            ref_id:        ret.id,
+            rate:          null,
+            ref_id:        retId,
+            ref_type:      null,
+            reference_id:  null,
             notes:         `Sales Return ${returnNo}`,
             created_by:    user?.full_name ?? 'System',
+            created_at:    nowISO(),
           })
         }
       }

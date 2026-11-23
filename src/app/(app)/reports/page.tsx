@@ -15,7 +15,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import { createClient } from '@/lib/supabase/client'
+import { localDB } from '@/lib/local-db'
 import {
   exportToExcel,
   exportSalesReport,
@@ -216,15 +216,11 @@ function SalesTab() {
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('sales_invoices')
-        .select('id, invoice_no, invoice_date, customer_name, customer_phone, payment_mode, subtotal_mrp, discount_amount, total_amount, status, created_by')
-        .gte('invoice_date', from)
-        .lte('invoice_date', to)
-        .order('invoice_date', { ascending: false })
-      if (error) throw new Error(error.message)
-      setRows(((data ?? []) as any[]).map(r => ({
+      const all = await localDB.salesInvoices.toArray()
+      const filtered = all
+        .filter(r => (r.invoice_date ?? '') >= from && (r.invoice_date ?? '') <= to)
+        .sort((a, b) => (b.invoice_date ?? '').localeCompare(a.invoice_date ?? ''))
+      setRows(filtered.map(r => ({
         id:              r.id,
         invoice_no:      r.invoice_no      ?? '',
         invoice_date:    r.invoice_date    ?? '',
@@ -444,26 +440,33 @@ function StockTab() {
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('v_stock_summary')
-        .select('*')
-        .order('title')
-      if (error) throw new Error(error.message)
-      setRows(((data ?? []) as any[]).map(r => ({
-        material_id:  r.material_id  ?? '',
-        location_id:  r.location_id  ?? '',
-        item_code:    r.item_code    ?? '',
-        isbn:         r.isbn         ?? '',
-        title:        r.title        ?? '',
-        author:       r.author       ?? '',
-        category:     r.category     ?? '',
-        location:     r.location     ?? '',
-        qty_available:Number(r.qty_available ?? r.qty_in_hand ?? 0),
-        mrp:          Number(r.mrp           ?? 0),
-        purchase_rate:Number(r.purchase_rate ?? 0),
-        stock_value:  Number(r.stock_value   ?? 0),
-      })))
+      const [stocks, materials, categories, locations] = await Promise.all([
+        localDB.stock.toArray(),
+        localDB.materials.toArray(),
+        localDB.categories.toArray(),
+        localDB.locations.toArray(),
+      ])
+      const matMap = new Map(materials.map(m => [m.id, m]))
+      const catMap = new Map(categories.map(c => [c.id, c.name]))
+      const locMap = new Map(locations.map(l => [l.id, l.name]))
+      const rows: StockRow[] = stocks.map(s => {
+        const mat = matMap.get(s.material_id)
+        return {
+          material_id:  s.material_id,
+          location_id:  s.location_id,
+          item_code:    mat?.item_code    ?? '',
+          isbn:         mat?.isbn         ?? '',
+          title:        mat?.title        ?? '',
+          author:       mat?.author       ?? '',
+          category:     catMap.get(mat?.category_id ?? '') ?? '',
+          location:     locMap.get(s.location_id) ?? '',
+          qty_available: s.qty_in_hand ?? 0,
+          mrp:          Number(mat?.mrp           ?? 0),
+          purchase_rate:Number(mat?.purchase_rate ?? 0),
+          stock_value:  (s.qty_in_hand ?? 0) * Number(mat?.purchase_rate ?? 0),
+        }
+      }).sort((a, b) => a.title.localeCompare(b.title))
+      setRows(rows)
     } catch (err: any) {
       toast.error(err.message ?? 'Failed to load stock')
     } finally {
@@ -661,19 +664,19 @@ function PurchasesTab() {
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('purchase_invoices')
-        .select('id, invoice_no, invoice_date, supplier_inv_no, total_amount, paid_amount, balance_due, status, parties!supplier_id(name)')
-        .gte('invoice_date', from)
-        .lte('invoice_date', to)
-        .order('invoice_date', { ascending: false })
-      if (error) throw new Error(error.message)
-      setRows(((data ?? []) as any[]).map(r => ({
+      const [allPurch, parties] = await Promise.all([
+        localDB.purchaseInvoices.toArray(),
+        localDB.parties.toArray(),
+      ])
+      const partyMap = new Map(parties.map(p => [p.id, p.name]))
+      const filtered = allPurch
+        .filter(r => (r.invoice_date ?? '') >= from && (r.invoice_date ?? '') <= to)
+        .sort((a, b) => (b.invoice_date ?? '').localeCompare(a.invoice_date ?? ''))
+      setRows(filtered.map(r => ({
         id:              r.id,
         invoice_no:      r.invoice_no     ?? '',
         invoice_date:    r.invoice_date   ?? '',
-        supplier_name:   (r.parties as any)?.name ?? 'Unknown',
+        supplier_name:   partyMap.get(r.supplier_id) ?? 'Unknown',
         supplier_inv_no: r.supplier_inv_no ?? '',
         total_amount:    Number(r.total_amount  ?? 0),
         paid_amount:     Number(r.paid_amount   ?? 0),
@@ -851,18 +854,18 @@ function ExpensesTab() {
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('expenses')
-        .select('id, expense_date, description, amount, payment_mode, paid_to, expense_categories(name)')
-        .gte('expense_date', from)
-        .lte('expense_date', to)
-        .order('expense_date', { ascending: false })
-      if (error) throw new Error(error.message)
-      setRows(((data ?? []) as any[]).map(r => ({
+      const [allExpenses, expCats] = await Promise.all([
+        localDB.expenses.toArray(),
+        localDB.expenseCategories.toArray(),
+      ])
+      const catMap = new Map(expCats.map(c => [c.id, c.name]))
+      const filtered = allExpenses
+        .filter(r => (r.expense_date ?? '') >= from && (r.expense_date ?? '') <= to)
+        .sort((a, b) => (b.expense_date ?? '').localeCompare(a.expense_date ?? ''))
+      setRows(filtered.map(r => ({
         id:            r.id,
         expense_date:  r.expense_date  ?? '',
-        category_name: (r.expense_categories as any)?.name ?? '',
+        category_name: catMap.get(r.category_id ?? '') ?? '',
         description:   r.description   ?? '',
         amount:        Number(r.amount  ?? 0),
         payment_mode:  r.payment_mode  ?? '',

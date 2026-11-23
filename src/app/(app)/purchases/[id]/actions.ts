@@ -1,9 +1,5 @@
-'use server'
-
-import { createAdminClient } from '@/lib/supabase/admin'
-import { requireUser } from '@/lib/auth-guard'
-
-// ─── Types ────────────────────────────────────────────────────────────────────
+// Purchase detail actions — offline via Dexie IndexedDB
+import { localDB } from '@/lib/local-db'
 
 export interface PurchaseDetailItem {
   id: string
@@ -40,79 +36,54 @@ export interface PurchaseDetail {
   items: PurchaseDetailItem[]
 }
 
-// ─── Queries ──────────────────────────────────────────────────────────────────
-
 export async function getPurchaseDetailAction(id: string): Promise<PurchaseDetail | null> {
-  await requireUser()
-  const supabase = createAdminClient()
+  const inv = await localDB.purchaseInvoices.get(id)
+  if (!inv) return null
 
-  const [{ data: inv, error }, { data: items }] = await Promise.all([
-    supabase
-      .from('purchase_invoices')
-      .select(`
-        id, invoice_no, invoice_date, supplier_inv_no,
-        subtotal, discount_amount, transport_charge, unloading_charge,
-        other_charges, total_amount, paid_amount, balance_due,
-        status, notes, created_at,
-        parties!supplier_id(name, phone),
-        locations!location_id(name)
-      `)
-      .eq('id', id)
-      .single(),
-    supabase
-      .from('purchase_invoice_items')
-      .select(`
-        id, material_id, qty, rate, mrp, discount_pct, total_amount,
-        materials!material_id(item_code, isbn, title)
-      `)
-      .eq('invoice_id', id)
-      .order('id'),
-  ])
-
-  if (error || !inv) return null
+  const supplier = await localDB.parties.get(inv.supplier_id)
+  const location = await localDB.locations.get(inv.location_id)
+  const items = await localDB.purchaseInvoiceItems.where('invoice_id').equals(id).toArray()
+  const matIds = items.map(i => i.material_id)
+  const mats = await localDB.materials.where('id').anyOf(matIds).toArray()
+  const matMap = new Map(mats.map(m => [m.id, m]))
 
   return {
-    id:               (inv as any).id,
-    invoice_no:       (inv as any).invoice_no       ?? '',
-    invoice_date:     (inv as any).invoice_date     ?? '',
-    supplier_name:    (inv as any).parties?.name    ?? 'Unknown',
-    supplier_phone:   (inv as any).parties?.phone   ?? '',
-    supplier_inv_no:  (inv as any).supplier_inv_no  ?? '',
-    location_name:    (inv as any).locations?.name  ?? '',
-    subtotal:         Number((inv as any).subtotal         ?? 0),
-    discount_amount:  Number((inv as any).discount_amount  ?? 0),
-    transport_charge: Number((inv as any).transport_charge ?? 0),
-    unloading_charge: Number((inv as any).unloading_charge ?? 0),
-    other_charges:    Number((inv as any).other_charges    ?? 0),
-    total_amount:     Number((inv as any).total_amount     ?? 0),
-    paid_amount:      Number((inv as any).paid_amount      ?? 0),
-    balance_due:      Number((inv as any).balance_due      ?? 0),
-    status:           (inv as any).status           ?? 'draft',
-    notes:            (inv as any).notes            ?? '',
-    created_at:       (inv as any).created_at       ?? '',
-    items: ((items ?? []) as any[]).map(item => ({
-      id:           item.id,
-      material_id:  item.material_id,
-      item_code:    item.materials?.item_code ?? '',
-      isbn:         item.materials?.isbn      ?? '',
-      title:        item.materials?.title     ?? '',
-      qty:          Number(item.qty           ?? 0),
-      rate:         Number(item.rate          ?? 0),
-      mrp:          Number(item.mrp           ?? 0),
-      discount_pct: Number(item.discount_pct  ?? 0),
-      total_amount: Number(item.total_amount  ?? 0),
-    })),
+    id: inv.id,
+    invoice_no: inv.invoice_no ?? '',
+    invoice_date: inv.invoice_date ?? '',
+    supplier_name: supplier?.name ?? 'Unknown',
+    supplier_phone: supplier?.phone ?? '',
+    supplier_inv_no: inv.supplier_inv_no ?? '',
+    location_name: location?.name ?? '',
+    subtotal: inv.subtotal ?? 0,
+    discount_amount: inv.discount_amount ?? 0,
+    transport_charge: inv.transport_charge ?? 0,
+    unloading_charge: inv.unloading_charge ?? 0,
+    other_charges: inv.other_charges ?? 0,
+    total_amount: inv.total_amount ?? 0,
+    paid_amount: inv.paid_amount ?? 0,
+    balance_due: inv.balance_due ?? 0,
+    status: inv.status ?? 'draft',
+    notes: inv.notes ?? '',
+    created_at: inv.created_at ?? '',
+    items: items.map(item => {
+      const m = matMap.get(item.material_id)
+      return {
+        id: item.id,
+        material_id: item.material_id,
+        item_code: m?.item_code ?? '',
+        isbn: m?.isbn ?? '',
+        title: m?.title ?? '',
+        qty: item.qty ?? 0,
+        rate: item.rate ?? 0,
+        mrp: item.mrp ?? 0,
+        discount_pct: item.discount_pct ?? 0,
+        total_amount: item.total_amount ?? 0,
+      }
+    }),
   }
 }
 
-// ─── Mutations ────────────────────────────────────────────────────────────────
-
 export async function cancelPurchaseInvoiceAction(id: string): Promise<void> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { error } = await supabase
-    .from('purchase_invoices')
-    .update({ status: 'cancelled' })
-    .eq('id', id)
-  if (error) throw new Error(error.message)
+  await localDB.purchaseInvoices.update(id, { status: 'cancelled' })
 }

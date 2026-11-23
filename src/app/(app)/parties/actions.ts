@@ -1,9 +1,5 @@
-'use server'
-
-import { createAdminClient } from '@/lib/supabase/admin'
-import { requireUser } from '@/lib/auth-guard'
-
-// ─── Types ────────────────────────────────────────────────────────────────────
+// Parties actions — offline via Dexie IndexedDB
+import { localDB, uuid } from '@/lib/local-db'
 
 export interface PartyRow {
   id: string
@@ -39,98 +35,71 @@ export interface SavePartyInput {
   notes: string
 }
 
-// ─── Queries ──────────────────────────────────────────────────────────────────
-
 export async function getPartiesAction(): Promise<PartyRow[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('parties')
-    .select('*')
-    .order('name')
-  if (error) throw new Error(error.message)
-  return ((data ?? []) as any[]).map(r => ({
-    id:              r.id,
-    name:            r.name            ?? '',
-    party_type:      r.party_type      ?? 'customer',
-    contact_person:  r.contact_person  ?? '',
-    phone:           r.phone           ?? '',
-    whatsapp:        r.whatsapp        ?? '',
-    email:           r.email           ?? '',
-    address:         r.address         ?? '',
-    city:            r.city            ?? '',
-    gstin:           r.gstin           ?? '',
-    credit_limit:    Number(r.credit_limit    ?? 0),
-    credit_days:     Number(r.credit_days     ?? 0),
-    opening_balance: Number(r.opening_balance ?? 0),
-    notes:           r.notes           ?? '',
-    is_active:       Boolean(r.is_active ?? true),
+  const data = await localDB.parties.orderBy('name').toArray()
+  return data.map(r => ({
+    id: r.id,
+    name: r.name ?? '',
+    party_type: r.party_type ?? 'customer',
+    contact_person: r.contact_person ?? '',
+    phone: r.phone ?? '',
+    whatsapp: r.whatsapp ?? '',
+    email: r.email ?? '',
+    address: r.address ?? '',
+    city: r.city ?? '',
+    gstin: r.gstin ?? '',
+    credit_limit: r.credit_limit ?? 0,
+    credit_days: r.credit_days ?? 0,
+    opening_balance: r.opening_balance ?? 0,
+    notes: r.notes ?? '',
+    is_active: r.is_active ?? true,
   }))
 }
 
-// ─── Mutations ────────────────────────────────────────────────────────────────
-
 export async function savePartyAction(input: SavePartyInput): Promise<{ id: string }> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('parties')
-    .insert({
-      name:            input.name,
-      party_type:      input.party_type,
-      contact_person:  input.contact_person  || null,
-      phone:           input.phone           || null,
-      whatsapp:        input.whatsapp        || null,
-      email:           input.email           || null,
-      address:         input.address         || null,
-      city:            input.city            || null,
-      gstin:           input.gstin           || null,
-      credit_limit:    input.credit_limit,
-      credit_days:     input.credit_days,
-      opening_balance: input.opening_balance,
-      notes:           input.notes           || null,
-      is_active:       true,
-    })
-    .select('id')
-    .single()
-  if (error) throw new Error(error.message)
-  return { id: (data as any).id }
+  const id = uuid()
+  await localDB.parties.add({
+    id,
+    name: input.name,
+    party_type: input.party_type,
+    contact_person: input.contact_person || '',
+    phone: input.phone || '',
+    whatsapp: input.whatsapp || '',
+    email: input.email || '',
+    address: input.address || '',
+    city: input.city || '',
+    gstin: input.gstin || '',
+    credit_limit: input.credit_limit,
+    credit_days: input.credit_days,
+    opening_balance: input.opening_balance,
+    notes: input.notes || '',
+    is_active: true,
+  })
+  return { id }
 }
 
 export async function updatePartyAction(
   id: string,
   input: SavePartyInput & { is_active: boolean },
 ): Promise<void> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { error } = await supabase
-    .from('parties')
-    .update({
-      name:            input.name,
-      party_type:      input.party_type,
-      contact_person:  input.contact_person  || null,
-      phone:           input.phone           || null,
-      whatsapp:        input.whatsapp        || null,
-      email:           input.email           || null,
-      address:         input.address         || null,
-      city:            input.city            || null,
-      gstin:           input.gstin           || null,
-      credit_limit:    input.credit_limit,
-      credit_days:     input.credit_days,
-      opening_balance: input.opening_balance,
-      notes:           input.notes           || null,
-      is_active:       input.is_active,
-    })
-    .eq('id', id)
-  if (error) throw new Error(error.message)
+  await localDB.parties.update(id, {
+    name: input.name,
+    party_type: input.party_type,
+    contact_person: input.contact_person || '',
+    phone: input.phone || '',
+    whatsapp: input.whatsapp || '',
+    email: input.email || '',
+    address: input.address || '',
+    city: input.city || '',
+    gstin: input.gstin || '',
+    credit_limit: input.credit_limit,
+    credit_days: input.credit_days,
+    opening_balance: input.opening_balance,
+    notes: input.notes || '',
+    is_active: input.is_active,
+  })
 }
 
 export async function deletePartyAction(id: string): Promise<void> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { error } = await supabase
-    .from('parties')
-    .delete()
-    .eq('id', id)
-  if (error) throw new Error(error.message)
+  await localDB.parties.delete(id)
 }

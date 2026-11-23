@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 import { useState, useEffect } from 'react'
 import { Settings, Building2, Printer, Bell, Database, Loader2, Save, Check, AlertTriangle, RefreshCw, Wrench } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { createClient } from '@/lib/supabase/client'
+import { localDB, uuid } from '@/lib/local-db'
 
 interface OrgSettings {
   id: string
@@ -45,15 +45,8 @@ export default function SettingsPage() {
   useEffect(() => {
     ;(async () => {
       try {
-        const supabase = createClient()
-        const { data: { user: authUser } } = await supabase.auth.getUser()
-        if (!authUser) return
-        const { data } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', authUser.id)
-          .single()
-        if (data) setCurrentProfile(data)
+        const profile = await localDB.profiles.get('local-user')
+        if (profile) setCurrentProfile({ role: profile.role })
       } catch (e) {
         console.error('[Settings] profile fetch failed:', e)
       }
@@ -65,32 +58,23 @@ export default function SettingsPage() {
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
-      const supabase = createClient()
-      const { data, error } = await supabase
-        .from('organizations')
-        .select('*')
-        .limit(1)
-        .maybeSingle()
-      // Detect first-run: no profile row for current user means no admin exists yet
-      const { count: profileCount } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-      setFirstRun((profileCount ?? 0) === 0)
+      const profileCount = await localDB.profiles.count()
+      setFirstRun(profileCount === 0)
 
-      if (error && !error.message.includes('does not exist')) throw new Error(error.message)
+      const data = await localDB.organizations.toCollection().first()
       if (data) {
-        setOrgId((data as any).id)
+        setOrgId(data.id)
         setSettings({
-          id:                  (data as any).id,
-          name:                (data as any).name                ?? DEFAULTS.name,
-          address:             (data as any).address             ?? DEFAULTS.address,
-          gstin:               (data as any).gstin               ?? DEFAULTS.gstin,
-          phone:               (data as any).phone               ?? DEFAULTS.phone,
-          email:               (data as any).email               ?? DEFAULTS.email,
-          invoice_prefix:      (data as any).invoice_prefix      ?? DEFAULTS.invoice_prefix,
-          purchase_prefix:     (data as any).purchase_prefix     ?? DEFAULTS.purchase_prefix,
-          receipt_footer:      (data as any).receipt_footer      ?? DEFAULTS.receipt_footer,
-          low_stock_threshold: Number((data as any).low_stock_threshold ?? DEFAULTS.low_stock_threshold),
+          id:                  data.id,
+          name:                data.name                ?? DEFAULTS.name,
+          address:             data.address             ?? DEFAULTS.address,
+          gstin:               data.gstin               ?? DEFAULTS.gstin,
+          phone:               data.phone               ?? DEFAULTS.phone,
+          email:               data.email               ?? DEFAULTS.email,
+          invoice_prefix:      data.invoice_prefix      ?? DEFAULTS.invoice_prefix,
+          purchase_prefix:     data.purchase_prefix     ?? DEFAULTS.purchase_prefix,
+          receipt_footer:      data.receipt_footer      ?? DEFAULTS.receipt_footer,
+          low_stock_threshold: Number(data.low_stock_threshold ?? DEFAULTS.low_stock_threshold),
         })
       }
     } catch (err: any) {
@@ -108,7 +92,6 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      const supabase = createClient()
       const payload = {
         name:                settings.name,
         address:             settings.address,
@@ -120,16 +103,13 @@ export default function SettingsPage() {
         receipt_footer:      settings.receipt_footer,
         low_stock_threshold: settings.low_stock_threshold,
       }
-      let error
       if (orgId) {
-        const res = await supabase.from('organizations').update(payload).eq('id', orgId)
-        error = res.error
+        await localDB.organizations.update(orgId, payload)
       } else {
-        const res = await supabase.from('organizations').insert(payload).select('id').single()
-        error = res.error
-        if (!error && res.data) setOrgId((res.data as any).id)
+        const newId = uuid()
+        await localDB.organizations.add({ id: newId, ...payload } as any)
+        setOrgId(newId)
       }
-      if (error) throw new Error(error.message)
       setSaved(true)
       toast.success('Settings saved')
       setTimeout(() => setSaved(false), 2000)
@@ -299,9 +279,9 @@ export default function SettingsPage() {
           </div>
           <div className="space-y-3">
             {[
-              { label: 'Database',  value: 'Supabase (PostgreSQL)' },
-              { label: 'Region',    value: 'ap-south-1 (Mumbai)'   },
-              { label: 'Version',   value: 'IFT ERP v2.0'          },
+              { label: 'Database',  value: 'IndexedDB (Local / Offline)' },
+              { label: 'Storage',   value: 'Browser Local Storage'    },
+              { label: 'Version',   value: 'IFT ERP v3.0 (Offline)'  },
             ].map(f => (
               <div key={f.label} className="flex items-center justify-between gap-4">
                 <label className="text-xs font-medium text-gray-500 w-44 shrink-0">{f.label}</label>

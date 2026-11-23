@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { Search, X, Loader2, ClipboardList, ChevronDown, ChevronUp } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
-import { createClient } from '@/lib/supabase/client'
+import { localDB } from '@/lib/local-db'
 
 interface AuditRow {
   id: string
@@ -48,18 +48,12 @@ export default function AuditTrailPage() {
   useEffect(() => {
     ;(async () => {
       try {
-        const supabase = createClient()
-        const { data, error } = await supabase
-          .from('audit_log')
-          .select('id, table_name, record_id, action, changed_fields, user_name, created_at, old_data, new_data')
-          .order('created_at', { ascending: false })
-          .limit(500)
-        if (error) throw new Error(error.message)
-        setRows(((data ?? []) as any[]).map(r => ({
+        const data = await localDB.auditLog.orderBy('created_at').reverse().limit(500).toArray()
+        setRows(data.map(r => ({
           id:             r.id,
           table_name:     r.table_name     ?? '',
           record_id:      r.record_id      ?? '',
-          action:         r.action         ?? 'UPDATE',
+          action:         (r.action as any) ?? 'UPDATE',
           changed_fields: r.changed_fields ?? [],
           user_name:      r.user_name      ?? '',
           created_at:     r.created_at     ?? '',

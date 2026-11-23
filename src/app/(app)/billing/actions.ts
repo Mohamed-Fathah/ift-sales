@@ -1,11 +1,5 @@
-'use server'
-// Billing server actions — run on the server with the admin client,
-// bypassing RLS for catalog reads (materials, stock, locations).
-
-import { createAdminClient } from '@/lib/supabase/admin'
-import { requireUser } from '@/lib/auth-guard'
-
-// ─── Shared result types (serialisable — no class instances) ─────────────────
+// Billing actions — offline via Dexie IndexedDB
+import { localDB, uuid, nowISO } from '@/lib/local-db'
 
 export interface MaterialResult {
   id: string
@@ -35,149 +29,96 @@ export interface MaterialCacheRow {
   discountPct: number
 }
 
-// ─── Fetch default location ───────────────────────────────────────────────────
-
 export async function getDefaultLocation(): Promise<LocationResult | null> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('locations')
-    .select('id, name')
-    .eq('is_default', true)
-    .maybeSingle()
-  return data as LocationResult | null
+  const loc = await localDB.locations.where('is_default').equals(1).first()
+  if (!loc) return null
+  return { id: loc.id, name: loc.name }
 }
-
-// ─── Fetch org settings (prefix + footer) ────────────────────────────────────
 
 export async function getOrgSettingsAction(): Promise<{ invoice_prefix: string; receipt_footer: string }> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('organizations')
-    .select('invoice_prefix, receipt_footer')
-    .limit(1)
-    .maybeSingle()
+  const org = await localDB.organizations.toCollection().first()
   return {
-    invoice_prefix: (data as any)?.invoice_prefix ?? 'IFT-BILL-',
-    receipt_footer: (data as any)?.receipt_footer ?? 'Thank you for your purchase!',
+    invoice_prefix: org?.invoice_prefix ?? 'IFT-BILL-',
+    receipt_footer: org?.receipt_footer ?? 'Thank you for your purchase!',
   }
 }
-
-// ─── Fetch all active materials for local Dexie cache ────────────────────────
 
 export async function getAllMaterialsForCache(): Promise<MaterialCacheRow[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data } = await supabase
-    .from('materials')
-    .select('id, item_code, isbn, tracking_id, title, author, category, mrp, discount_pct')
-    .eq('is_active', true)
-    .limit(2000)
-  if (!data) return []
-  return (data as any[]).map(m => ({
-    id:          m.id,
-    itemCode:    m.item_code    ?? '',
-    isbn:        m.isbn         ?? '',
-    trackingId:  m.tracking_id  ?? '',
-    title:       m.title,
-    author:      m.author       ?? '',
-    category:    m.category     ?? '',
-    mrp:         m.mrp,
+  const mats = await localDB.materials.where('is_active').equals(1).toArray()
+  const cats = await localDB.categories.toArray()
+  const catMap = new Map(cats.map(c => [c.id, c.name]))
+  return mats.map(m => ({
+    id: m.id,
+    itemCode: m.item_code ?? '',
+    isbn: m.isbn ?? '',
+    trackingId: m.tracking_id ?? '',
+    title: m.title,
+    author: m.author ?? '',
+    category: catMap.get(m.category_id) ?? '',
+    mrp: m.mrp,
     discountPct: m.discount_pct ?? 0,
   }))
 }
 
-// ─── Search materials by title / author / ISBN / item_code ───────────────────
+async function getStockForMaterials(ids: string[]): Promise<Map<string, number>> {
+  const stockMap = new Map<string, number>()
+  const stocks = await localDB.stock.where('material_id').anyOf(ids).toArray()
+  for (const s of stocks) {
+    stockMap.set(s.material_id, (stockMap.get(s.material_id) ?? 0) + s.qty_in_hand)
+  }
+  return stockMap
+}
 
 export async function searchMaterialsAction(query: string): Promise<MaterialResult[]> {
-  await requireUser()
-  const q = query.trim()
+  const q = query.trim().toLowerCase()
   if (!q) return []
 
-  const supabase = createAdminClient()
+  const all = await localDB.materials.filter(m =>
+    m.is_active &&
+    (m.title.toLowerCase().includes(q) ||
+     m.author.toLowerCase().includes(q) ||
+     m.isbn.toLowerCase().includes(q) ||
+     m.item_code.toLowerCase().includes(q))
+  ).limit(8).toArray()
 
-  const { data: mats, error } = await supabase
-    .from('materials')
-    .select('id, item_code, isbn, title, author, mrp, discount_pct')
-    .or(`title.ilike.%${q}%,author.ilike.%${q}%,isbn.ilike.%${q}%,item_code.ilike.%${q}%`)
-    .eq('is_active', true)
-    .limit(8)
+  const stockMap = await getStockForMaterials(all.map(m => m.id))
 
-  if (error || !mats || mats.length === 0) return []
-
-  // Fetch stock from the stock table (aggregate across all locations)
-  const ids = (mats as any[]).map(m => m.id as string)
-  const { data: stocks } = await supabase
-    .from('stock')
-    .select('material_id, qty_in_hand')
-    .in('material_id', ids)
-
-  const stockMap = new Map<string, number>()
-  for (const s of (stocks ?? []) as any[]) {
-    const prev = stockMap.get(s.material_id) ?? 0
-    stockMap.set(s.material_id, prev + Number(s.qty_in_hand ?? 0))
-  }
-
-  return (mats as any[]).map(m => ({
-    id:          m.id,
-    title:       m.title,
-    author:      m.author       ?? '',
-    isbn:        m.isbn         ?? '',
-    itemCode:    m.item_code    ?? '',
-    mrp:         m.mrp,
+  return all.map(m => ({
+    id: m.id,
+    title: m.title,
+    author: m.author ?? '',
+    isbn: m.isbn ?? '',
+    itemCode: m.item_code ?? '',
+    mrp: m.mrp,
     discountPct: m.discount_pct ?? 0,
-    stock:       stockMap.get(m.id) ?? 0,
+    stock: stockMap.get(m.id) ?? 0,
   }))
 }
 
-// ─── Barcode / ISBN / item_code lookup ────────────────────────────────────────
-
 export async function lookupBarcodeAction(code: string): Promise<MaterialResult | null> {
-  await requireUser()
   const c = code.trim()
   if (!c) return null
 
-  const supabase = createAdminClient()
-
-  const { data: mat } = await supabase
-    .from('materials')
-    .select('id, item_code, isbn, tracking_id, title, author, mrp, discount_pct')
-    .or(`isbn.eq.${c},tracking_id.eq.${c},item_code.eq.${c}`)
-    .eq('is_active', true)
-    .maybeSingle()
+  const mat = await localDB.materials.filter(m =>
+    m.is_active && (m.isbn === c || m.tracking_id === c || m.item_code === c)
+  ).first()
 
   if (!mat) return null
 
-  const { data: stocks } = await supabase
-    .from('stock')
-    .select('qty_in_hand')
-    .eq('material_id', (mat as any).id)
-
-  const totalStock = ((stocks ?? []) as any[]).reduce(
-    (sum, s) => sum + Number(s.qty_in_hand ?? 0), 0
-  )
+  const stocks = await localDB.stock.where('material_id').equals(mat.id).toArray()
+  const totalStock = stocks.reduce((sum, s) => sum + s.qty_in_hand, 0)
 
   return {
-    id:          (mat as any).id,
-    title:       (mat as any).title,
-    author:      (mat as any).author       ?? '',
-    isbn:        (mat as any).isbn         ?? '',
-    itemCode:    (mat as any).item_code    ?? '',
-    mrp:         (mat as any).mrp,
-    discountPct: (mat as any).discount_pct ?? 0,
-    stock:       totalStock,
+    id: mat.id,
+    title: mat.title,
+    author: mat.author ?? '',
+    isbn: mat.isbn ?? '',
+    itemCode: mat.item_code ?? '',
+    mrp: mat.mrp,
+    discountPct: mat.discount_pct ?? 0,
+    stock: totalStock,
   }
 }
-
-// ─── Deduct stock after a completed sale ─────────────────────────────────────
-// Runs on the server with the admin client — stock writes need RLS bypass.
-// Uses fetch-then-update per item (acceptable for low-concurrency single-store).
-
-// ─── Save completed bill (invoice + items + stock deduction) ─────────────────
-// The browser client cannot write to sales_invoices — RLS requires
-// auth.role() = 'authenticated'. Using the admin client here bypasses RLS
-// for all three writes in one server round-trip.
 
 export interface BillItem {
   materialId: string
@@ -186,7 +127,7 @@ export interface BillItem {
   qty: number
   mrp: number
   discountPct: number
-  discountAmount: number  // per unit
+  discountAmount: number
   rate: number
   total: number
 }
@@ -196,7 +137,7 @@ export interface SaveBillPayload {
   customerName: string | null
   customerPhone: string | null
   locationId: string
-  invoiceDate: string          // 'yyyy-MM-dd'
+  invoiceDate: string
   subtotalMrp: number
   totalDiscount: number
   grandTotal: number
@@ -210,83 +151,58 @@ export interface SaveBillResult {
 }
 
 export async function saveBillAction(payload: SaveBillPayload): Promise<SaveBillResult> {
-  await requireUser()
-  const supabase = createAdminClient()
+  const invoiceId = uuid()
 
-  // 1. Insert sales_invoice
-  const { data: inv, error: invErr } = await supabase
-    .from('sales_invoices')
-    .insert({
-      invoice_no:      payload.invoiceNo,
-      customer_name:   payload.customerName   || null,
-      customer_phone:  payload.customerPhone  || null,
-      location_id:     payload.locationId,
-      invoice_date:    payload.invoiceDate,
-      subtotal_mrp:    payload.subtotalMrp,
-      discount_amount: payload.totalDiscount,
-      total_amount:    payload.grandTotal,
-      paid_amount:     payload.grandTotal,
-      // balance_due is GENERATED ALWAYS — omitted intentionally
-      payment_mode:    payload.paymentMode,
-      status:          'paid',
-      created_by:      payload.createdBy || null,
+  await localDB.salesInvoices.add({
+    id: invoiceId,
+    invoice_no: payload.invoiceNo,
+    customer_name: payload.customerName || null,
+    customer_phone: payload.customerPhone || null,
+    customer_id: null,
+    location_id: payload.locationId,
+    invoice_date: payload.invoiceDate,
+    subtotal_mrp: payload.subtotalMrp,
+    discount_amount: payload.totalDiscount,
+    total_amount: payload.grandTotal,
+    paid_amount: payload.grandTotal,
+    balance_due: 0,
+    payment_mode: payload.paymentMode,
+    payment_ref: null,
+    status: 'paid',
+    created_by: payload.createdBy || null,
+    created_at: nowISO(),
+  })
+
+  for (const item of payload.items) {
+    await localDB.salesInvoiceItems.add({
+      id: uuid(),
+      invoice_id: invoiceId,
+      material_id: item.materialId,
+      title: item.title,
+      isbn: item.isbn || null,
+      qty: item.qty,
+      mrp: item.mrp,
+      discount_pct: item.discountPct,
+      discount_amount: parseFloat((item.discountAmount * item.qty).toFixed(2)),
+      rate: item.rate,
+      total_amount: item.total,
     })
-    .select('id')
-    .single()
 
-  if (invErr) throw new Error(invErr.message)
+    // Deduct stock
+    const stockRow = await localDB.stock
+      .where('[material_id+location_id]')
+      .equals([item.materialId, payload.locationId])
+      .first()
 
-  const invoiceId = (inv as { id: string }).id
-
-  // 2. Insert line items
-  const { error: itemsErr } = await supabase
-    .from('sales_invoice_items')
-    .insert(
-      payload.items.map(item => ({
-        invoice_id:      invoiceId,
-        material_id:     item.materialId,
-        title:           item.title,
-        isbn:            item.isbn || null,
-        qty:             item.qty,
-        mrp:             item.mrp,
-        discount_pct:    item.discountPct,
-        discount_amount: parseFloat((item.discountAmount * item.qty).toFixed(2)),
-        rate:            item.rate,
-        total_amount:    item.total,
-      }))
-    )
-
-  if (itemsErr) throw new Error(itemsErr.message)
-
-  // 3. Deduct stock
-  const materialIds = payload.items.map(i => i.materialId)
-  const { data: stockRows } = await supabase
-    .from('stock')
-    .select('id, material_id, qty_in_hand')
-    .in('material_id', materialIds)
-    .eq('location_id', payload.locationId)
-
-  if (stockRows && stockRows.length > 0) {
-    const qtyMap = new Map(payload.items.map(i => [i.materialId, i.qty]))
-    await Promise.all(
-      (stockRows as any[]).map(row =>
-        supabase
-          .from('stock')
-          .update({
-            qty_in_hand: Math.max(
-              0,
-              Number(row.qty_in_hand) - (qtyMap.get(row.material_id) ?? 0)
-            ),
-          })
-          .eq('id', row.id)
-      )
-    )
+    if (stockRow) {
+      await localDB.stock.update(stockRow.id, {
+        qty_in_hand: Math.max(0, stockRow.qty_in_hand - item.qty),
+      })
+    }
   }
 
   return { invoiceId }
 }
-
-// ─── Billing history ─────────────────────────────────────────────────────────
 
 export interface InvoiceListRow {
   id: string
@@ -318,59 +234,57 @@ export async function getInvoicesAction(filters: {
   search?: string
   paymentMode?: string
 }): Promise<InvoiceListRow[]> {
-  await requireUser()
-  const supabase = createAdminClient()
+  let invoices = await localDB.salesInvoices
+    .orderBy('invoice_date')
+    .reverse()
+    .toArray()
 
-  let q = supabase
-    .from('sales_invoices')
-    .select('id, invoice_no, invoice_date, customer_name, customer_phone, payment_mode, subtotal_mrp, discount_amount, total_amount, status, sales_invoice_items(count)')
-    .order('invoice_date', { ascending: false })
-    .order('created_at', { ascending: false })
-    .limit(300)
-
-  if (filters.from) q = q.gte('invoice_date', filters.from)
-  if (filters.to)   q = q.lte('invoice_date', filters.to)
-  if (filters.paymentMode && filters.paymentMode !== 'all')
-    q = q.eq('payment_mode', filters.paymentMode)
+  if (filters.from) invoices = invoices.filter(i => i.invoice_date >= filters.from!)
+  if (filters.to) invoices = invoices.filter(i => i.invoice_date <= filters.to!)
+  if (filters.paymentMode && filters.paymentMode !== 'all') {
+    invoices = invoices.filter(i => i.payment_mode === filters.paymentMode)
+  }
   if (filters.search?.trim()) {
-    const s = filters.search.trim()
-    q = q.or(`invoice_no.ilike.%${s}%,customer_name.ilike.%${s}%`)
+    const s = filters.search.trim().toLowerCase()
+    invoices = invoices.filter(i =>
+      i.invoice_no.toLowerCase().includes(s) ||
+      (i.customer_name ?? '').toLowerCase().includes(s)
+    )
   }
 
-  const { data, error } = await q
-  if (error) throw new Error(error.message)
+  invoices = invoices.slice(0, 300)
 
-  return ((data ?? []) as any[]).map(inv => ({
-    id:              inv.id,
-    invoice_no:      inv.invoice_no,
-    invoice_date:    inv.invoice_date,
-    customer_name:   inv.customer_name  ?? null,
-    customer_phone:  inv.customer_phone ?? null,
-    payment_mode:    inv.payment_mode,
-    subtotal_mrp:    Number(inv.subtotal_mrp    ?? 0),
-    discount_amount: Number(inv.discount_amount ?? 0),
-    total_amount:    Number(inv.total_amount    ?? 0),
-    status:          inv.status,
-    items_count:     Number(inv.sales_invoice_items?.[0]?.count ?? 0),
+  const allItems = await localDB.salesInvoiceItems.toArray()
+  const countMap = new Map<string, number>()
+  for (const item of allItems) {
+    countMap.set(item.invoice_id, (countMap.get(item.invoice_id) ?? 0) + 1)
+  }
+
+  return invoices.map(inv => ({
+    id: inv.id,
+    invoice_no: inv.invoice_no,
+    invoice_date: inv.invoice_date,
+    customer_name: inv.customer_name ?? null,
+    customer_phone: inv.customer_phone ?? null,
+    payment_mode: inv.payment_mode,
+    subtotal_mrp: inv.subtotal_mrp,
+    discount_amount: inv.discount_amount,
+    total_amount: inv.total_amount,
+    status: inv.status,
+    items_count: countMap.get(inv.id) ?? 0,
   }))
 }
 
 export async function getInvoiceItemsAction(invoiceId: string): Promise<InvoiceDetailItem[]> {
-  await requireUser()
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('sales_invoice_items')
-    .select('title, isbn, qty, mrp, discount_pct, rate, total_amount')
-    .eq('invoice_id', invoiceId)
-  if (error) throw new Error(error.message)
-  return ((data ?? []) as any[]).map(item => ({
-    title:        item.title        ?? '',
-    isbn:         item.isbn         ?? null,
-    qty:          Number(item.qty          ?? 0),
-    mrp:          Number(item.mrp          ?? 0),
-    discount_pct: Number(item.discount_pct ?? 0),
-    rate:         Number(item.rate         ?? 0),
-    total_amount: Number(item.total_amount ?? 0),
+  const items = await localDB.salesInvoiceItems.where('invoice_id').equals(invoiceId).toArray()
+  return items.map(item => ({
+    title: item.title ?? '',
+    isbn: item.isbn ?? null,
+    qty: item.qty,
+    mrp: item.mrp,
+    discount_pct: item.discount_pct,
+    rate: item.rate,
+    total_amount: item.total_amount,
   }))
 }
 
@@ -383,32 +297,17 @@ export async function deductStockAction(
   items: StockDeductItem[],
   locationId: string
 ): Promise<void> {
-  await requireUser()
   if (!items.length || !locationId) return
 
-  const supabase = createAdminClient()
-
-  // Fetch current qty_in_hand for all affected materials in one query
-  const materialIds = items.map(i => i.materialId)
-  const { data: rows } = await supabase
-    .from('stock')
-    .select('id, material_id, qty_in_hand')
-    .in('material_id', materialIds)
-    .eq('location_id', locationId)
-
-  if (!rows || rows.length === 0) return
-
-  const qtyMap = new Map(items.map(i => [i.materialId, i.qty]))
-
-  // Update each row — Math.max(0, …) prevents going negative
-  await Promise.all(
-    (rows as any[]).map(row =>
-      supabase
-        .from('stock')
-        .update({
-          qty_in_hand: Math.max(0, Number(row.qty_in_hand) - (qtyMap.get(row.material_id) ?? 0)),
-        })
-        .eq('id', row.id)
-    )
-  )
+  for (const item of items) {
+    const stockRow = await localDB.stock
+      .where('[material_id+location_id]')
+      .equals([item.materialId, locationId])
+      .first()
+    if (stockRow) {
+      await localDB.stock.update(stockRow.id, {
+        qty_in_hand: Math.max(0, stockRow.qty_in_hand - item.qty),
+      })
+    }
+  }
 }

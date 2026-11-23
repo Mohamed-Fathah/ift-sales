@@ -6,7 +6,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { BookMarked, Search, Loader2, ChevronDown, TrendingDown, TrendingUp, IndianRupee } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, parseISO } from 'date-fns'
-import { createClient } from '@/lib/supabase/client'
+import { localDB } from '@/lib/local-db'
 
 interface Party {
   id: string
@@ -50,14 +50,8 @@ export default function AccountsPage() {
   useEffect(() => {
     (async () => {
       try {
-        const supabase = createClient()
-        const { data, error } = await supabase
-          .from('parties')
-          .select('id, name, party_type, phone')
-          .eq('is_active', true)
-          .order('name')
-        if (error) throw new Error(error.message)
-        setParties(((data ?? []) as any[]).map(r => ({
+        const data = await localDB.parties.filter(p => p.is_active).sortBy('name')
+        setParties(data.map(r => ({
           id:    r.id,
           name:  r.name  ?? '',
           type:  r.party_type  ?? 'supplier',
@@ -76,26 +70,13 @@ export default function AccountsPage() {
     setLedger([])
     setLoadingLedger(true)
     try {
-      const supabase = createClient()
-
-      const [{ data: invoices, error: invErr }, { data: returns, error: retErr }] = await Promise.all([
-        supabase
-          .from('purchase_invoices')
-          .select('id, invoice_no, invoice_date, total_amount, paid_amount, balance_due, status')
-          .eq('supplier_id', party.id)
-          .order('invoice_date', { ascending: true }),
-        supabase
-          .from('purchase_returns')
-          .select('id, return_no, return_date, total_amount, purchase_invoice_id')
-          .eq('purchase_invoices.supplier_id', party.id)
-          .order('return_date', { ascending: true }),
-      ])
-      if (invErr) throw new Error(invErr.message)
+      const invoices = await localDB.purchaseInvoices
+        .where('supplier_id').equals(party.id)
+        .sortBy('invoice_date')
 
       const entries: Omit<LedgerEntry, 'balance'>[] = []
 
-      // Purchases: debit (we owe supplier)
-      for (const inv of ((invoices ?? []) as any[])) {
+      for (const inv of invoices) {
         entries.push({
           id:          inv.id,
           date:        inv.invoice_date ?? '',
@@ -104,19 +85,6 @@ export default function AccountsPage() {
           description: `Purchase Invoice ${inv.invoice_no}`,
           debit:       Number(inv.total_amount ?? 0),
           credit:      Number(inv.paid_amount ?? 0),
-        })
-      }
-
-      // Purchase returns: credit (reduces what we owe)
-      for (const ret of ((returns ?? []) as any[])) {
-        entries.push({
-          id:          ret.id,
-          date:        ret.return_date ?? '',
-          reference:   ret.return_no ?? '',
-          type:        'purchase_return',
-          description: `Purchase Return ${ret.return_no}`,
-          debit:       0,
-          credit:      Number(ret.total_amount ?? 0),
         })
       }
 

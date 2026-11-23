@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format, isToday, isThisWeek, isThisMonth, parseISO } from 'date-fns'
-import { createClient } from '@/lib/supabase/client'
+import { localDB, uuid, nowISO } from '@/lib/local-db'
 import { exportToExcel } from '@/lib/excel-export'
 import { getExpenseCategoriesAction } from './actions'
 
@@ -135,24 +135,21 @@ function ExpenseModal({
     if (Object.keys(e).length) { setErrs(e); return }
     setSaving(true)
     try {
-      const supabase = createClient()
       const payload = {
         expense_date: form.expense_date,
         category_id:  form.category_id,
         description:  form.description.trim(),
         amount:       form.amount,
         payment_mode: form.payment_mode,
-        paid_to:      form.paid_to.trim()  || null,
-        location:     form.location.trim() || null,
-        notes:        form.notes.trim()    || null,
+        paid_to:      form.paid_to.trim()  || '',
+        location:     form.location.trim() || '',
+        notes:        form.notes.trim()    || '',
       }
       if (isEdit) {
-        const { error } = await supabase.from('expenses').update(payload).eq('id', expense.id)
-        if (error) throw new Error(error.message)
+        await localDB.expenses.update(expense.id, payload)
         toast.success('Expense updated')
       } else {
-        const { error } = await supabase.from('expenses').insert(payload)
-        if (error) throw new Error(error.message)
+        await localDB.expenses.add({ id: uuid(), ...payload, created_at: nowISO() })
         toast.success('Expense added')
       }
       onSaved()
@@ -379,25 +376,17 @@ export default function ExpensesPage() {
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
-      const supabase = createClient()
-      const [
-        { data: expenses, error: expErr },
-        cats,
-      ] = await Promise.all([
-        supabase
-          .from('expenses')
-          .select('*, expense_categories(name)')
-          .order('expense_date', { ascending: false })
-          .order('created_at',   { ascending: false }),
+      const [expenses, cats] = await Promise.all([
+        localDB.expenses.orderBy('expense_date').reverse().toArray(),
         getExpenseCategoriesAction(),
       ])
-      if (expErr) throw new Error(expErr.message)
+      const catMap = new Map(cats.map(c => [c.id, c.name]))
 
-      setRows(((expenses ?? []) as any[]).map(r => ({
+      setRows(expenses.map(r => ({
         id:            r.id,
         expense_date:  r.expense_date  ?? '',
         category_id:   r.category_id   ?? '',
-        category_name: (r.expense_categories as any)?.name ?? '',
+        category_name: catMap.get(r.category_id) ?? '',
         description:   r.description   ?? '',
         amount:        Number(r.amount  ?? 0),
         payment_mode:  r.payment_mode  ?? 'Cash',
@@ -490,9 +479,7 @@ export default function ExpensesPage() {
     if (!deleteTarget) return
     setDeleting(true)
     try {
-      const supabase = createClient()
-      const { error } = await supabase.from('expenses').delete().eq('id', deleteTarget.id)
-      if (error) throw new Error(error.message)
+      await localDB.expenses.delete(deleteTarget.id)
       toast.success('Expense deleted')
       setDeleteTarget(null)
       await load()

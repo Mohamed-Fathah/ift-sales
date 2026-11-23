@@ -9,9 +9,8 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
-import { createClient } from '@/lib/supabase/client'
 import { exportPurchaseReport } from '@/lib/excel-export'
-import { type PurchaseListRow } from './actions'
+import { getPurchaseInvoicesAction, type PurchaseListRow } from './actions'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -51,27 +50,9 @@ export default function PurchasesPage() {
     setLoadError(false)
     const timer = setTimeout(() => { setLoading(false); setLoadError(true) }, 10_000)
     try {
-      const supabase = createClient()
-      const { data: invoices, error } = await supabase
-        .from('purchase_invoices')
-        .select(`id, invoice_no, invoice_date, supplier_inv_no, subtotal, discount_amount, transport_charge, unloading_charge, other_charges, total_amount, paid_amount, balance_due, status, parties!supplier_id(name)`)
-        .order('invoice_date', { ascending: false })
-      if (error) throw new Error(error.message)
-      const ids = ((invoices ?? []) as any[]).map(i => i.id as string)
-      const countMap = new Map<string, number>()
-      if (ids.length > 0) {
-        const { data: items } = await supabase.from('purchase_invoice_items').select('invoice_id').in('invoice_id', ids)
-        for (const item of (items ?? []) as any[]) {
-          countMap.set(item.invoice_id, (countMap.get(item.invoice_id) ?? 0) + 1)
-        }
-      }
-      setRows(((invoices ?? []) as any[]).map(inv => ({
-        id:               inv.id,
-        invoice_no:       inv.invoice_no       ?? '',
-        invoice_date:     inv.invoice_date     ?? '',
-        supplier_name:    (inv.parties as any)?.name ?? 'Unknown',
-        supplier_inv_no:  inv.supplier_inv_no  ?? '',
-        items_count:      countMap.get(inv.id) ?? 0,
+      const data = await getPurchaseInvoicesAction()
+      setRows(data.map(inv => ({
+        ...inv,
         subtotal:         Number(inv.subtotal         ?? 0),
         discount_amount:  Number(inv.discount_amount  ?? 0),
         transport_charge: Number(inv.transport_charge ?? 0),

@@ -1,5 +1,5 @@
-// src/lib/audit.ts
-import { createClient } from '@/lib/supabase/client'
+// src/lib/audit.ts — offline audit logger
+import { localDB, uuid } from '@/lib/local-db'
 
 export async function logChange(params: {
   tableName: string
@@ -10,7 +10,6 @@ export async function logChange(params: {
   userId: string
   userName: string
 }) {
-  const supabase = createClient()
   const changedFields: string[] = []
 
   if (params.oldData && params.newData) {
@@ -21,19 +20,20 @@ export async function logChange(params: {
     }
   }
 
-  await supabase.from('audit_log').insert({
-    table_name:     params.tableName,
-    record_id:      params.recordId,
-    action:         params.action,
-    old_data:       params.oldData ?? null,
-    new_data:       params.newData ?? null,
+  await localDB.auditLog.add({
+    id: uuid(),
+    table_name: params.tableName,
+    record_id: params.recordId,
+    action: params.action,
+    old_data: params.oldData ?? null,
+    new_data: params.newData ?? null,
     changed_fields: changedFields,
-    user_id:        params.userId,
-    user_name:      params.userName,
+    user_id: params.userId,
+    user_name: params.userName,
+    created_at: new Date().toISOString(),
   })
 }
 
-// Format audit log for display in timeline UI
 export function formatAuditEntry(entry: {
   action: string
   user_name: string
