@@ -520,7 +520,7 @@ export default function BillingPage() {
           // Still need real-time stock — server action handles that
           const result = await lookupBarcodeAction(code)
           const stock  = result?.stock ?? 0
-          addToCart({ id: cached.id, title: cached.title, author: cached.author, isbn: cached.isbn, mrp: cached.mrp, discountPct: cached.discountPct, stock })
+          addToCart({ id: cached.id, title: cached.title, author: cached.author, isbn: cached.isbn, mrp: cached.mrp, discountPct: cached.discount_pct, stock })
           toast.success(`Added: ${cached.title}`, { id: tid })
           return
         }
