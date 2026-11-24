@@ -142,14 +142,13 @@ function ExpenseModal({
         amount:       form.amount,
         payment_mode: form.payment_mode,
         paid_to:      form.paid_to.trim()  || '',
-        location:     form.location.trim() || '',
-        notes:        form.notes.trim()    || '',
+        location_id:  form.location.trim() || '',
       }
       if (isEdit) {
         await localDB.expenses.update(expense.id, payload)
         toast.success('Expense updated')
       } else {
-        await localDB.expenses.add({ id: uuid(), ...payload, created_at: nowISO() })
+        await localDB.expenses.add({ id: uuid(), ...payload, created_by: null, created_at: nowISO() })
         toast.success('Expense added')
       }
       onSaved()
@@ -391,8 +390,8 @@ export default function ExpensesPage() {
         amount:        Number(r.amount  ?? 0),
         payment_mode:  r.payment_mode  ?? 'Cash',
         paid_to:       r.paid_to       ?? '',
-        location:      r.location      ?? '',
-        notes:         r.notes         ?? '',
+        location:      r.location_id   ?? '',
+        notes:         '',
         created_at:    r.created_at    ?? '',
       })))
       setCategories(cats)

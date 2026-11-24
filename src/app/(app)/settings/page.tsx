@@ -74,7 +74,7 @@ export default function SettingsPage() {
           phone:               data.phone               ?? DEFAULTS.phone,
           email:               data.email               ?? DEFAULTS.email,
           invoice_prefix:      data.invoice_prefix      ?? DEFAULTS.invoice_prefix,
-          purchase_prefix:     data.purchase_prefix     ?? DEFAULTS.purchase_prefix,
+          purchase_prefix:     (data as any).purchase_prefix ?? DEFAULTS.purchase_prefix,
           receipt_footer:      data.receipt_footer      ?? DEFAULTS.receipt_footer,
           low_stock_threshold: Number(data.low_stock_threshold ?? DEFAULTS.low_stock_threshold),
         })
