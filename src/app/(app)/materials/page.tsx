@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 import {
   Search, Plus, Upload, Download, Trash2, X,
-  Loader2, FileSpreadsheet, AlertTriangle, RefreshCw,
+  Loader2, FileSpreadsheet, AlertTriangle, RefreshCw, PackagePlus,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import * as XLSX from 'xlsx'
@@ -28,6 +28,7 @@ import {
   type CategoryOption,
   type SaveMaterialInput,
 } from './actions'
+import { addStockEntryAction } from '../stock/actions'
 
 // ─── Inline-edit context (avoids nested-component re-mount bug) ───────────────
 
@@ -489,6 +490,10 @@ export default function MaterialsPage() {
   const [isDeleting,    setIsDeleting]    = useState(false)
   const [deactivateRow, setDeactivateRow] = useState<MaterialRow | null>(null)
 
+  // Quick stock update (mobile)
+  const [stockEditId,  setStockEditId]  = useState<string | null>(null)
+  const [stockQty,     setStockQty]     = useState('')
+
   // Busy flags
   const [isExporting,  setIsExporting]  = useState(false)
 
@@ -881,6 +886,15 @@ export default function MaterialsPage() {
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <StockBadge qty={row.stock} />
+                        {mounted && can('manage_stock') && (
+                          <button
+                            onClick={() => { setStockEditId(stockEditId === row.id ? null : row.id); setStockQty('') }}
+                            className="w-6 h-6 flex items-center justify-center rounded bg-blue-50 text-blue-600 hover:bg-blue-100"
+                            title="Add stock"
+                          >
+                            <PackagePlus size={13} />
+                          </button>
+                        )}
                         <button
                           onClick={() => {
                             if (!mounted || !can('manage_materials')) return
@@ -896,8 +910,8 @@ export default function MaterialsPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3 mt-2 text-xs">
-                      <span className="text-gray-500">MRP: <strong className="text-gray-800">₹{row.mrp}</strong></span>
-                      <span className="text-gray-500">Rate: <strong className="text-gray-800">₹{row.purchase_rate}</strong></span>
+                      <span className="text-gray-500 inline-flex items-center gap-0.5">MRP: <EC rowId={row.id} field="mrp" value={row.mrp} type="number" className="w-16" /></span>
+                      <span className="text-gray-500 inline-flex items-center gap-0.5">Rate: <EC rowId={row.id} field="purchase_rate" value={row.purchase_rate} type="number" className="w-16" /></span>
                       {row.category && <span className="badge-blue text-[10px]">{row.category}</span>}
                       {mounted && can('manage_materials') && (
                         <button
@@ -908,6 +922,50 @@ export default function MaterialsPage() {
                         </button>
                       )}
                     </div>
+                    {stockEditId === row.id && (
+                      <div className="flex items-center gap-2 mt-2 p-2 bg-blue-50 rounded-lg">
+                        <input
+                          autoFocus
+                          type="number"
+                          min="1"
+                          placeholder="Qty"
+                          value={stockQty}
+                          onChange={e => setStockQty(e.target.value)}
+                          className="w-20 px-2 py-1.5 text-sm rounded border border-blue-300 outline-none focus:ring-2 focus:ring-blue-200"
+                        />
+                        <button
+                          disabled={!stockQty || parseInt(stockQty) <= 0}
+                          onClick={async () => {
+                            const qty = parseInt(stockQty)
+                            if (!qty || qty <= 0) return
+                            try {
+                              await addStockEntryAction({
+                                materialId: row.id,
+                                locationId: 'main-store',
+                                qty,
+                                purchaseRate: row.purchase_rate,
+                                createdBy: user?.id ?? null,
+                              })
+                              setRows(prev => prev.map(r => r.id === row.id ? { ...r, stock: r.stock + qty } : r))
+                              toast.success(`+${qty} stock added`)
+                              setStockEditId(null)
+                              setStockQty('')
+                            } catch (err: any) {
+                              toast.error(err.message ?? 'Failed to add stock')
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs font-semibold rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40"
+                        >
+                          + Add
+                        </button>
+                        <button
+                          onClick={() => { setStockEditId(null); setStockQty('') }}
+                          className="p-1 text-gray-400 hover:text-gray-600"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
