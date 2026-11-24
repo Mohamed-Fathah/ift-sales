@@ -65,7 +65,7 @@ export interface PartyOption {
 }
 
 export async function getActiveMaterialsAction(): Promise<MaterialOption[]> {
-  const mats = await localDB.materials.where('is_active').equals(1).toArray()
+  const mats = await localDB.materials.filter(m => m.is_active).toArray()
   return mats.sort((a, b) => a.title.localeCompare(b.title)).map(m => ({
     id: m.id,
     title: m.title ?? '',

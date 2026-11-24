@@ -30,7 +30,7 @@ export interface MaterialCacheRow {
 }
 
 export async function getDefaultLocation(): Promise<LocationResult | null> {
-  const loc = await localDB.locations.where('is_default').equals(1).first()
+  const loc = await localDB.locations.filter(l => l.is_default).first()
   if (!loc) return null
   return { id: loc.id, name: loc.name }
 }
@@ -44,7 +44,7 @@ export async function getOrgSettingsAction(): Promise<{ invoice_prefix: string; 
 }
 
 export async function getAllMaterialsForCache(): Promise<MaterialCacheRow[]> {
-  const mats = await localDB.materials.where('is_active').equals(1).toArray()
+  const mats = await localDB.materials.filter(m => m.is_active).toArray()
   const cats = await localDB.categories.toArray()
   const catMap = new Map(cats.map(c => [c.id, c.name]))
   return mats.map(m => ({

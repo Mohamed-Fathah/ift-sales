@@ -411,7 +411,7 @@ async function seedBooks() {
       mrp: number; purchase_rate: number; current_stock: number;
     }>
 
-    const defaultLoc = await localDB.locations.where('is_default').equals(1).first()
+    const defaultLoc = await localDB.locations.filter(l => l.is_default).first()
     const locationId = defaultLoc?.id ?? (await localDB.locations.toCollection().first())?.id
 
     for (const book of booksData) {

@@ -84,7 +84,7 @@ export async function getStockReportDataAction(): Promise<{
   openingStock: number; qtyIn: number; qtySold: number;
   currentStock: number; stockValue: number; location: string
 }[]> {
-  const mats = await localDB.materials.where('is_active').equals(1).toArray()
+  const mats = await localDB.materials.filter(m => m.is_active).toArray()
   const cats = await localDB.categories.toArray()
   const catMap = new Map(cats.map(c => [c.id, c.name]))
   const stocks = await localDB.stock.toArray()

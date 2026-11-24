@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
-import { Settings, Building2, Printer, Bell, Database, Loader2, Save, Check, AlertTriangle, RefreshCw, Wrench } from 'lucide-react'
+import { Settings, Building2, Printer, Bell, Database, Loader2, Save, Check, AlertTriangle, RefreshCw, Wrench, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { localDB, uuid } from '@/lib/local-db'
 
@@ -41,6 +41,8 @@ export default function SettingsPage() {
   const [saved,      setSaved]      = useState(false)
   const [orgId,      setOrgId]      = useState<string | null>(null)
   const [firstRun,   setFirstRun]   = useState(false)
+  const [resetting,  setResetting]  = useState(false)
+  const [confirmReset, setConfirmReset] = useState('')
 
   useEffect(() => {
     ;(async () => {
@@ -264,6 +266,69 @@ export default function SettingsPage() {
             <Field label="Low Stock Threshold" field="low_stock_threshold" type="number" placeholder="10" />
           </div>
         </div>
+
+        {/* Data Management — admin only */}
+        {canEdit && (
+          <div className="card">
+            <div className="flex items-center gap-3 mb-4 pb-3 border-b border-gray-100">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-red-50 text-red-500">
+                <Trash2 size={18} />
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900 text-sm">Data Management</p>
+                <p className="text-[11px] text-gray-400">Reset billing history and invoices</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <p className="text-xs text-gray-500">
+                This will permanently delete all sales invoices, purchase invoices, expenses, returns, stock movements, and billing drafts. Stock quantities and materials are kept.
+              </p>
+              <div className="flex items-center gap-3">
+                <input
+                  type="text"
+                  className="input text-sm flex-1"
+                  placeholder='Type "RESET" to confirm'
+                  value={confirmReset}
+                  onChange={e => setConfirmReset(e.target.value)}
+                />
+                <button
+                  className="px-4 py-2 rounded-lg text-sm font-semibold bg-red-500 text-white hover:bg-red-600 disabled:opacity-40 transition-colors flex items-center gap-2"
+                  disabled={confirmReset !== 'RESET' || resetting}
+                  onClick={async () => {
+                    setResetting(true)
+                    try {
+                      await Promise.all([
+                        localDB.salesInvoices.clear(),
+                        localDB.salesInvoiceItems.clear(),
+                        localDB.purchaseInvoices.clear(),
+                        localDB.purchaseInvoiceItems.clear(),
+                        localDB.expenses.clear(),
+                        localDB.salesReturns.clear(),
+                        localDB.salesReturnItems.clear(),
+                        localDB.purchaseReturns.clear(),
+                        localDB.purchaseReturnItems.clear(),
+                        localDB.stockMovements.clear(),
+                        localDB.billingDrafts.clear(),
+                        localDB.invoiceCounters.clear(),
+                      ])
+                      for (const type of ['sales','purchase','transfer','return_sales','return_purchase','payment','expense']) {
+                        await localDB.invoiceCounters.add({ type, last_number: 0 })
+                      }
+                      toast.success('Billing history reset successfully')
+                      setConfirmReset('')
+                    } catch (err: any) {
+                      toast.error(err.message ?? 'Reset failed')
+                    } finally {
+                      setResetting(false)
+                    }
+                  }}
+                >
+                  {resetting ? <><Loader2 size={14} className="animate-spin" /> Resetting…</> : 'Reset Billing History'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Data (read-only) */}
         <div className="card">
