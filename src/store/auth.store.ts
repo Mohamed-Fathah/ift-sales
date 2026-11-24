@@ -22,14 +22,14 @@ interface AuthState {
   setOrg: (org: AuthState['org']) => void
   logout: () => void
   // Permission helpers
-  can: (action: 'view_reports' | 'manage_users' | 'manage_materials' | 'manage_purchases' | 'manage_accounts' | 'delete_records') => boolean
+  can: (action: 'view_reports' | 'manage_users' | 'manage_materials' | 'manage_purchases' | 'manage_accounts' | 'delete_records' | 'manage_stock' | 'manage_billing') => boolean
 }
 
 const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
-  superadmin: ['view_reports','manage_users','manage_materials','manage_purchases','manage_accounts','delete_records'],
-  admin:      ['view_reports','manage_users','manage_materials','manage_purchases','manage_accounts'],
-  manager:    ['view_reports','manage_materials','manage_purchases'],
-  billing:    [],
+  superadmin: ['view_reports','manage_users','manage_materials','manage_purchases','manage_accounts','delete_records','manage_stock','manage_billing'],
+  admin:      ['view_reports','manage_users','manage_materials','manage_purchases','manage_accounts','manage_stock','manage_billing'],
+  manager:    ['view_reports','manage_materials','manage_purchases','manage_stock','manage_billing'],
+  billing:    ['manage_billing'],
   viewer:     ['view_reports'],
 }
 
@@ -47,6 +47,6 @@ export const useAuthStore = create<AuthState>()(
         return ROLE_PERMISSIONS[role]?.includes(action) ?? false
       },
     }),
-    { name: 'ift-auth' }
+    { name: 'ift-auth', skipHydration: true }
   )
 )

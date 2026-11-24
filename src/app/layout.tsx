@@ -1,17 +1,31 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
+import dynamic from 'next/dynamic'
 import { Toaster } from 'react-hot-toast'
-import ConditionalShell from '@/components/layout/ConditionalShell'
+import PWARegister from '@/components/PWARegister'
 import './globals.css'
+
+const ConditionalShell = dynamic(() => import('@/components/layout/ConditionalShell'), { ssr: false })
 
 export const metadata: Metadata = {
   title: 'IFT ERP — Islamic Foundation Trust',
   description: 'Enterprise Resource Planning System for Islamic Foundation Trust, Chennai',
+  manifest: '/manifest.json',
+  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'IFT ERP' },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#1B2A6B',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
+        <PWARegister />
         <ConditionalShell>{children}</ConditionalShell>
         <Toaster
           position="top-right"

@@ -741,7 +741,7 @@ export default function MaterialsPage() {
       <div className="flex flex-col h-full gap-5">
 
         {/* ── Page header ───────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 page-header-mobile">
           <div>
             <h2 className="page-title">Materials</h2>
             <p className="page-sub mt-0.5">
@@ -749,8 +749,7 @@ export default function MaterialsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* Export */}
+          <div className="flex items-center gap-2 page-actions">
             <button
               onClick={handleExport}
               disabled={isExporting}
@@ -759,15 +758,15 @@ export default function MaterialsPage() {
               {isExporting
                 ? <Loader2 size={15} className="animate-spin" />
                 : <Download size={15} />}
-              Stock Report
+              <span className="hidden sm:inline">Stock Report</span>
+              <span className="sm:hidden">Export</span>
             </button>
 
             {mounted && can('manage_materials') && (
               <>
-                {/* Import Excel */}
                 <label className="btn-outline cursor-pointer">
                   <Upload size={15} />
-                  Import Excel
+                  Import
                   <input
                     type="file"
                     accept=".xlsx,.xls,.csv"
@@ -776,7 +775,6 @@ export default function MaterialsPage() {
                   />
                 </label>
 
-                {/* Add Book */}
                 <button onClick={() => setShowAdd(true)} className="btn-primary">
                   <Plus size={15} />
                   Add Book
@@ -787,8 +785,8 @@ export default function MaterialsPage() {
         </div>
 
         {/* ── Search / filter bar ───────────────────────────────────────── */}
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1 max-w-sm">
+        <div className="flex items-center gap-3 filter-bar-mobile">
+          <div className="relative flex-1 max-w-sm search-wrap">
             <Search
               size={15}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
@@ -796,7 +794,7 @@ export default function MaterialsPage() {
             <input
               type="text"
               className="input pl-9 pr-8"
-              placeholder="Search title, author, ISBN, item code…"
+              placeholder="Search title, ISBN, item code…"
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
@@ -811,7 +809,7 @@ export default function MaterialsPage() {
           </div>
 
           <select
-            className="input w-auto min-w-[160px]"
+            className="input w-auto min-w-[140px]"
             value={filterCategory}
             onChange={e => setFilterCategory(e.target.value)}
           >
@@ -821,17 +819,18 @@ export default function MaterialsPage() {
             ))}
           </select>
 
-          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
+          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none whitespace-nowrap">
             <input
               type="checkbox"
               checked={showInactive}
               onChange={e => setShowInactive(e.target.checked)}
               className="rounded border-gray-300"
             />
-            Show inactive
+            <span className="hidden sm:inline">Show inactive</span>
+            <span className="sm:hidden">Inactive</span>
           </label>
 
-          <p className="text-xs text-gray-400 ml-auto">
+          <p className="text-xs text-gray-400 ml-auto whitespace-nowrap">
             {filtered.length} {filtered.length === 1 ? 'result' : 'results'}
           </p>
         </div>
@@ -865,17 +864,66 @@ export default function MaterialsPage() {
             </div>
           ) : (
             <div className="flex-1 overflow-auto">
-              <table className="table-auto-ift">
+              {/* Mobile card view */}
+              <div className="md:hidden divide-y divide-gray-100">
+                {filtered.map(row => (
+                  <div
+                    key={row.id}
+                    className={`px-4 py-3 ${!row.is_active ? 'opacity-50' : ''}`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm text-gray-900 leading-snug">{row.title}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {row.item_code}{row.isbn ? ` · ${row.isbn}` : ''}
+                        </p>
+                        {row.author && <p className="text-xs text-gray-400 mt-0.5">{row.author}</p>}
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <StockBadge qty={row.stock} />
+                        <button
+                          onClick={() => {
+                            if (!mounted || !can('manage_materials')) return
+                            row.is_active ? setDeactivateRow(row) : toggleActive(row)
+                          }}
+                          disabled={!mounted || !can('manage_materials')}
+                          className="disabled:cursor-default"
+                        >
+                          {row.is_active
+                            ? <span className="badge badge-green text-[10px]">Active</span>
+                            : <span className="badge badge-red text-[10px]">Off</span>}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 mt-2 text-xs">
+                      <span className="text-gray-500">MRP: <strong className="text-gray-800">₹{row.mrp}</strong></span>
+                      <span className="text-gray-500">Rate: <strong className="text-gray-800">₹{row.purchase_rate}</strong></span>
+                      {row.category && <span className="badge-blue text-[10px]">{row.category}</span>}
+                      {mounted && can('manage_materials') && (
+                        <button
+                          onClick={() => setDeleteId(row.id)}
+                          className="ml-auto text-gray-300 hover:text-red-500 transition-colors p-1"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop table view */}
+              <table className="table-auto-ift hidden md:table">
                 <thead className="sticky top-0 z-10 bg-gray-50">
                   <tr>
-                    <th className="w-24 mobile-hide">Item Code</th>
-                    <th className="w-32 mobile-hide">ISBN</th>
+                    <th className="w-24">Item Code</th>
+                    <th className="w-32">ISBN</th>
                     <th>Title</th>
-                    <th className="w-36 mobile-hide">Author</th>
-                    <th className="w-28 mobile-hide">Category</th>
-                    <th className="w-20 text-right mobile-hide">MRP</th>
-                    <th className="w-24 text-right mobile-hide">Purch. Rate</th>
-                    <th className="w-16 text-center mobile-hide">Disc%</th>
+                    <th className="w-36">Author</th>
+                    <th className="w-28">Category</th>
+                    <th className="w-20 text-right">MRP</th>
+                    <th className="w-24 text-right">Purch. Rate</th>
+                    <th className="w-16 text-center">Disc%</th>
                     <th className="w-20 text-center">Stock</th>
                     <th className="w-20 text-center">Status</th>
                     {mounted && can('manage_materials') && <th className="w-10" />}
@@ -887,30 +935,21 @@ export default function MaterialsPage() {
                       key={row.id}
                       className={`group ${!row.is_active ? 'opacity-50' : ''}`}
                     >
-                      {/* Item Code — read-only */}
-                      <td className="mobile-hide">
+                      <td>
                         <span className="font-mono text-xs text-gray-500">
                           {row.item_code || '—'}
                         </span>
                       </td>
-
-                      {/* ISBN */}
-                      <td className="mobile-hide">
+                      <td>
                         <EC rowId={row.id} field="isbn" value={row.isbn} className="font-mono text-xs" />
                       </td>
-
-                      {/* Title */}
                       <td className="max-w-xs">
                         <EC rowId={row.id} field="title" value={row.title} className="font-medium" />
                       </td>
-
-                      {/* Author */}
-                      <td className="mobile-hide">
+                      <td>
                         <EC rowId={row.id} field="author" value={row.author} />
                       </td>
-
-                      {/* Category */}
-                      <td className="mobile-hide">
+                      <td>
                         <SC
                           rowId={row.id}
                           field="category_id"
@@ -918,28 +957,18 @@ export default function MaterialsPage() {
                           label={row.category}
                         />
                       </td>
-
-                      {/* MRP */}
-                      <td className="mobile-hide">
+                      <td>
                         <EC rowId={row.id} field="mrp" value={row.mrp} type="number" align="right" />
                       </td>
-
-                      {/* Purchase Rate */}
-                      <td className="mobile-hide">
+                      <td>
                         <EC rowId={row.id} field="purchase_rate" value={row.purchase_rate} type="number" align="right" />
                       </td>
-
-                      {/* Discount % */}
-                      <td className="text-center mobile-hide">
+                      <td className="text-center">
                         <EC rowId={row.id} field="discount_pct" value={row.discount_pct} type="number" align="right" />
                       </td>
-
-                      {/* Stock */}
                       <td className="text-center">
                         <StockBadge qty={row.stock} />
                       </td>
-
-                      {/* Status toggle */}
                       <td className="text-center">
                         <button
                           onClick={() => {
@@ -955,8 +984,6 @@ export default function MaterialsPage() {
                             : <span className="badge badge-red">Inactive</span>}
                         </button>
                       </td>
-
-                      {/* Delete */}
                       {mounted && can('manage_materials') && (
                         <td>
                           <button

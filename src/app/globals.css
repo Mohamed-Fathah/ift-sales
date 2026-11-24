@@ -182,5 +182,58 @@
     .mobile-only { display: block !important; }
     .page-action-btn { width: 100%; margin-top: 8px; }
     .table-auto-ift { min-width: 0; }
+
+    .btn, .btn-primary, .btn-outline, .btn-gold {
+      min-height: 44px;
+      font-size: 14px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .input { min-height: 44px; font-size: 16px; }
+    .card { padding: 12px; }
+    .page-title { font-size: 18px; }
+    .page-sub { font-size: 12px; }
+    .app-header { padding-left: 12px; padding-right: 12px; }
+
+    /* Stack page headers on mobile */
+    .page-header-mobile {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 12px !important;
+    }
+    .page-header-mobile .page-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .page-header-mobile .page-actions .btn,
+    .page-header-mobile .page-actions .btn-primary,
+    .page-header-mobile .page-actions .btn-outline {
+      flex: 1;
+      min-width: 0;
+      justify-content: center;
+    }
+
+    /* Stack filter bars on mobile */
+    .filter-bar-mobile {
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+    .filter-bar-mobile .search-wrap {
+      width: 100%;
+      max-width: 100% !important;
+    }
+    .filter-bar-mobile select { flex: 1; min-width: 0; }
+
+    /* Stat cards: 2 per row on mobile */
+    .stat-card {
+      padding: 12px;
+    }
+    .stat-card p.text-2xl { font-size: 20px; }
+    .stat-card p.text-xl { font-size: 18px; }
+
+    /* Better table cells on mobile */
+    .table-auto-ift td { padding: 10px 8px; }
+    .table-auto-ift th { padding: 10px 8px; font-size: 11px; }
   }
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useAuthStore } from '@/store/auth.store'
 
@@ -37,6 +38,8 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const pathname = usePathname()
   const { user } = useAuthStore()
   const title = getTitle(pathname)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   return (
     <header
@@ -48,7 +51,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
       </div>
 
       <div className="flex items-center gap-3">
-        {user && (
+        {mounted && user && (
           <div className="flex items-center gap-2.5">
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold"

@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { clsx } from 'clsx'
@@ -87,6 +88,8 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   const pathname = usePathname()
   const { user, logout } = useAuthStore()
   const router = useRouter()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   const isActive = (href: string) => pathname === href
 
@@ -134,7 +137,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
       {/* User footer */}
       <div className="border-t border-white/10 px-4 py-3">
-        {user && (
+        {mounted && user && (
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 rounded-full bg-gold-500 flex items-center justify-center text-white text-xs font-bold shrink-0"
                  style={{ backgroundColor: '#C8922A' }}>

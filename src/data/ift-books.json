@@ -1,0 +1,4970 @@
+[
+  {
+    "item_code": "IFT-001",
+    "isbn": "9788168717497",
+    "title": "Hussan (Rali)",
+    "author": "Dr. Ali Mohammad Assallaabi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-002",
+    "isbn": "9788168717480",
+    "title": "Islamiya Veruppu Unarvu - Islamophobia (Indiavin Tharpothaiya Soozhnilaiyin Pinnaniyil)",
+    "author": "Syed Sadathullah Husaini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-003",
+    "isbn": "9788168717473",
+    "title": "Tafheemul Quran Chapter 39 (Az-Zumar)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-004",
+    "isbn": "9788168717466",
+    "title": "Muslim Naagarigam: Sarivirkkaana Kaaranangal Sari Seiyum Vazhimuraigal",
+    "author": "Dr. M. Umer Chapra",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-005",
+    "isbn": "9788168717459",
+    "title": "Pallivaasalil Pengal (Aanmiga Valarchiyum Samooga Mempaadum)",
+    "author": "A. Rahmatunnisa",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-006",
+    "isbn": "9788168717442",
+    "title": "SHAITHAAN… (Manithakulathin Bagirangamaana Pagaivan)",
+    "author": "Dr. J. Mohideen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-007",
+    "isbn": "9788168717435",
+    "title": "Palesthina Porattam",
+    "author": "Syed Sadathullah Husaini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-008",
+    "isbn": "9788168717428",
+    "title": "Veruppu Arasiyal (Veruppu Maraya pasam malara)",
+    "author": "Dr. K.V.S. Habeeb Muhammad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-009",
+    "isbn": "9788168717411",
+    "title": "Tafheemul Quran Chapter 44 - 46 (Ad Dukhan, Al Jathiyah, Al-Ahqaf)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-010",
+    "isbn": "9788168717404",
+    "title": "Tafheemul Quran Chapter 43 (Az-Zukruf)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-011",
+    "isbn": "9788168759299",
+    "title": "Thiru Qur'an Vilakkavurai Atthiyayam Yaseen",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-012",
+    "isbn": "9788168759282",
+    "title": "Vaasikkum Kuzhanthaigaley Naalaya Varalaaru",
+    "author": "Prof. Dr. Abdul Karim Bakkar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-013",
+    "isbn": "9788168759275",
+    "title": "Chera Chola Pandiya Mannargalin Aatchiyil Muslimgal",
+    "author": "P. Sirajudeen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-014",
+    "isbn": "9788168759268",
+    "title": "Vanmurai Markkamalla Islam",
+    "author": "Dr. Yusuf Al Qardhawi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-015",
+    "isbn": "9788168759251",
+    "title": "Thiru Qur'an Vilakkavurai Atthiyayam An-Noor",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-016",
+    "isbn": "9788168759244",
+    "title": "Thiru Qur'an Vilakkavurai Atthiyayam Banu Israel",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-017",
+    "isbn": "9788168759237",
+    "title": "Quran Mozhiperyarppai Padikka Thodangum Mun…",
+    "author": "G. Abdur Raheem Afzal-ul Ulama",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-018",
+    "isbn": "9788168759220",
+    "title": "THREE STORIES FROM OUR GLORIOUS PAST",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-019",
+    "isbn": "9788168759213",
+    "title": "Thiru Quran (Moolam - Tamizhakkam)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-020",
+    "isbn": "9788168759206",
+    "title": "Thiru Quran (Moolam - Tamizhakkam - Vilakkavurai)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-021",
+    "isbn": "9788168817791",
+    "title": "Hassan",
+    "author": "Dr. Ali Mohammad Assallaabi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-022",
+    "isbn": "9788168817784",
+    "title": "Hajjin Naayagar",
+    "author": "V.S. Mohamed Ameen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-023",
+    "isbn": "9788168817777",
+    "title": "Zakathul Fithr",
+    "author": "Dr. Yusuf Al Qardhawi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-024",
+    "isbn": "9788168817760",
+    "title": "Umar Ibnu Abdul Azeez",
+    "author": "Dr. Ali Mohammad Assallaabi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-025",
+    "isbn": "9788168817753",
+    "title": "Ali",
+    "author": "Dr. Ali Mohammad Assallaabi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-026",
+    "isbn": "9788168817746",
+    "title": "Usman",
+    "author": "Dr. Ali Mohammad Assallaabi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-027",
+    "isbn": "9788168817739",
+    "title": "Umar",
+    "author": "Dr. Ali Mohammad Assallaabi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-028",
+    "isbn": "9788168817722",
+    "title": "Abubacker",
+    "author": "Dr. Ali Mohammad Assallaabi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-029",
+    "isbn": "9788168817715",
+    "title": "Sufithuvam",
+    "author": "Dr. Wakkar Anwar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-030",
+    "isbn": "9788168817708",
+    "title": "Islamiya Kudumbam",
+    "author": "Dr. Yusuf Al Qardhawi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-031",
+    "isbn": "9788168841994",
+    "title": "Islamic Studies for Kindergarten - 2",
+    "author": "Afzalul Ulamaa Moulavi M. Muhammed Siddique Umar, Madani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-032",
+    "isbn": "9788168841987",
+    "title": "Islamic Studies for Kindergarten - 1",
+    "author": "Afzalul Ulamaa Moulavi M. Muhammed Siddique Umar, Madani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-033",
+    "isbn": "9788168841970",
+    "title": "Ullathai Thodum Uraiyaadalgal",
+    "author": "Sheikh Jasim Mohammad Al Matthu, Dr. Muhiyudin Qazi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-034",
+    "isbn": "9788168841963",
+    "title": "Islam Manidhakulathirkku Vazhangiyathu Enna",
+    "author": "Dr. K.V.S. Habeeb Muhammad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-035",
+    "isbn": "9788168841956",
+    "title": "Maanavargalukkana Therndedukkappatta Duakkal",
+    "author": "Moulavi A. Abul Huda Salami",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-036",
+    "isbn": "9788168841949",
+    "title": "Naan Muslimaaga Irupathil Perumaipadugiren",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-037",
+    "isbn": "9788168841932",
+    "title": "Islamiya Porulaathaaram",
+    "author": "Shaikh Muhammad Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-038",
+    "isbn": "9788168841925",
+    "title": "Islamum Adimaithuvamum",
+    "author": "Shaikh Muhammad Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-039",
+    "isbn": "9788168841918",
+    "title": "Irai Vazhiyil Selavu… Arul Vazhiyil Varavu",
+    "author": "Dr. K.V.S. Habeeb Muhammad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-040",
+    "isbn": "9788168841901",
+    "title": "Thiruquran Koorum Eduthukkaattugal",
+    "author": "Nazeer Athaullah",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-041",
+    "isbn": "9788168865990",
+    "title": "Veda Varigalum Thoodar Mozhigalum - (Part - 3)",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-042",
+    "isbn": "9788168865983",
+    "title": "Veda Varigalum Thoodar Mozhigalum - (Part - 2)",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-043",
+    "isbn": "9788168865976",
+    "title": "Veda Varigalum Thoodar Mozhigalum - (Part - 1)",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-044",
+    "isbn": "9788168865969",
+    "title": "Moulana Moududi Badhilgal (Part - 3)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-045",
+    "isbn": "9788168865952",
+    "title": "Moulana Moududi Badhilgal (Part - 2)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-046",
+    "isbn": "9788168865945",
+    "title": "Moulana Moududi Badhilgal (Part - 1)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-047",
+    "isbn": "9788168865938",
+    "title": "Peru Petra Penmanigal",
+    "author": "Adirai Ahmed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-048",
+    "isbn": "9788168865921",
+    "title": "Nenjodu",
+    "author": "Sirajul Hasan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-049",
+    "isbn": "9788168865914",
+    "title": "Kelvi Piranthadhu Indru",
+    "author": "Dr. K.V.S. Habeeb Muhammad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-050",
+    "isbn": "9788168865907",
+    "title": "Irai Nambikkaiyin Adippadai",
+    "author": "Abu Farooq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-051",
+    "isbn": "9788169989992",
+    "title": "Hajj Umra Vazhikaatti",
+    "author": "Hajj Umra Vazhikaatti",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-052",
+    "isbn": "9788169989985",
+    "title": "Islamiya Iyakkathin Munnurimaigal",
+    "author": "Dr Khurshid Ahmed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-053",
+    "isbn": "9788169989978",
+    "title": "Munmaathiri Nabithozhiyargal",
+    "author": "Maayil Kairabathi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-054",
+    "isbn": "9788169989961",
+    "title": "Sorkkathai Sonthamaakkikollungal",
+    "author": "Jarina Jamal",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-055",
+    "isbn": "9788169989954",
+    "title": "Ozhukkame Suthanthiram",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-056",
+    "isbn": "9788169989947",
+    "title": "Islamum Samooga Neethiyum",
+    "author": "Moulana Syed Abul A'la Moududi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-057",
+    "isbn": "9788169989930",
+    "title": "Islathin Thanithanmaigal",
+    "author": "Dr. J. Mohideen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-058",
+    "isbn": "9788169989923",
+    "title": "Pesa Thayangum Karupporul Kaadhal",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-059",
+    "isbn": "9788169989916",
+    "title": "Anbuthalai Azhudha Pozhudhugal",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-060",
+    "isbn": "9788169989909",
+    "title": "Mughalayar Aatchiyil India Babar Mudhal Bahadur Shah (II) Varai",
+    "author": "P. Sirajudeen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-061",
+    "isbn": "9788169989893",
+    "title": "Uthama Sahabakkal - Moulana Moududi",
+    "author": "Moulana Syed Abul A'la Moududi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-062",
+    "isbn": "9788169989886",
+    "title": "Waqf Thirutha Sattam - Oru Virivaana Paarvai",
+    "author": "V.S. Mohamed Ameen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-063",
+    "isbn": "9788169989879",
+    "title": "Madhasaarbinmaiyum Islamiya Iyakkamum",
+    "author": "Syed Sadatullah Hussaini, Ahmed Rizwan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-064",
+    "isbn": "9788169989862",
+    "title": "Iraivanai Muzhumaiyaaga Saarndiruthal",
+    "author": "Syed Sadatullah Hussaini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-065",
+    "isbn": "9788169989855",
+    "title": "Iyakka Uzhiyar Yaar?",
+    "author": "K. Jalaludeen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-066",
+    "isbn": "9788169989848",
+    "title": "Fiqhus Sunnah Vol-12",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-067",
+    "isbn": "9788169989831",
+    "title": "Fiqhus Sunnah Vol-11",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-068",
+    "isbn": "9788169989824",
+    "title": "Fiqhus Sunnah Vol-10",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-069",
+    "isbn": "9788169989817",
+    "title": "Fiqhus Sunnah Vol-9",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-070",
+    "isbn": "9788169989800",
+    "title": "Fiqhus Sunnah Vol-8",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-071",
+    "isbn": "9788169989794",
+    "title": "Fiqhus Sunnah Vol-7",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-072",
+    "isbn": "9788169989787",
+    "title": "Fiqhus Sunnah Vol-6",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-073",
+    "isbn": "9788169989770",
+    "title": "Fiqhus Sunnah Vol-5",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-074",
+    "isbn": "9788169989763",
+    "title": "Fiqhus Sunnah Vol-4",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-075",
+    "isbn": "9788169989756",
+    "title": "Fiqhus Sunnah Vol-3",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-076",
+    "isbn": "9788169989749",
+    "title": "Fiqhus Sunnah Vol-2",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-077",
+    "isbn": "9788169989732",
+    "title": "Fiqhus Sunnah Vol-1",
+    "author": "As-Shaikh Sayyid Sabiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-078",
+    "isbn": "9788169989725",
+    "title": "Tafheemul Quran Chapter: 69-73 (Al-Haqqa, Al-Ma'arij, Nuh, Al-Jinn, Al-Muzzammil)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-079",
+    "isbn": "9788169989718",
+    "title": "Tafheemul Quran Chapter: 66-68 (At-Tahrim, Al-Mulk, Al-Qalam)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-080",
+    "isbn": "9788169989701",
+    "title": "Tafheemul Quran Chapter: 47-48 (Muhammad & Al Fatah)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-081",
+    "isbn": "9788169989695",
+    "title": "Tafheemul Quran Chapter: 42 (Ash Shoora)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-082",
+    "isbn": "9788169989688",
+    "title": "Tafheemul Quran Chapter: 41 (Hamim As-Sajdah)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-083",
+    "isbn": "9788169989671",
+    "title": "Tafheemul Quran Chapter: 40 (Al-Mumin)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-084",
+    "isbn": "9788169989664",
+    "title": "Tafheemul Quran Chapter: 38 (Saad)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-085",
+    "isbn": "9788169989657",
+    "title": "Tafheemul Quran Chapter: 37 (As-Saaffaat)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-086",
+    "isbn": "9788169989640",
+    "title": "Tafheemul Quran Chapter: 35 (Al Faathir)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-087",
+    "isbn": "9788169989633",
+    "title": "Tafheemul Quran Chapter: 34 (Saba)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-088",
+    "isbn": "9788169989626",
+    "title": "Tafheemul Quran Chapter: 33 (Al-Ahzab)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-089",
+    "isbn": "9788169989619",
+    "title": "Tafheemul Quran Chapter: 32 (As-Sajda)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-090",
+    "isbn": "9788169989602",
+    "title": "Tafheemul Quran Chapter: 31 (Luqman)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-091",
+    "isbn": "9788169989596",
+    "title": "Tafheemul Quran Chapter: 30 (Ar-Room)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-092",
+    "isbn": "9788169989589",
+    "title": "Tafheemul Quran Chapter: 29 (Al-Ankabooth)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-093",
+    "isbn": "9788169989572",
+    "title": "Tafheemul Quran Chapter: 28 (Al-Qasas)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-094",
+    "isbn": "9788169989565",
+    "title": "Tafheemul Quran Chapter: 27 (An-Naml)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-095",
+    "isbn": "9788169989558",
+    "title": "Tafheemul Quran Chapter: 26 (Ash-Shu'ara)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-096",
+    "isbn": "9788169989541",
+    "title": "Tafheemul Quran Chapter: 25 (Al-Furqan)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-097",
+    "isbn": "9788169989534",
+    "title": "Tafheemul Quran Chapter: 23 (Al-Muminoon)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-098",
+    "isbn": "9788169989527",
+    "title": "Tafheemul Quran Chapter: 22 (Al-Hajj)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-099",
+    "isbn": "9788169989510",
+    "title": "Tafheemul Quran Chapter: 21 (Al-Anbiyaa)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-100",
+    "isbn": "9788169989503",
+    "title": "Tafheemul Quran Chapter: 20 (Taaha)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-101",
+    "isbn": "9788169989497",
+    "title": "Tafheemul Quran Chapter: 19 (Maryam)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-102",
+    "isbn": "9788169989480",
+    "title": "Tafheemul Quran Chapter: 18 (Al-Kahf)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-103",
+    "isbn": "9788169989473",
+    "title": "Tafheemul Quran Chapter: 16 (An-Nahl)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-104",
+    "isbn": "9788169989466",
+    "title": "Tafheemul Quran Chapter: 15 (Al Hijr)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-105",
+    "isbn": "9788169989459",
+    "title": "Tafheemul Quran Chapter: 13 & 14 (Ar-Ra'd & Ibrahim)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-106",
+    "isbn": "9788169989442",
+    "title": "Tafheemul Quran Chapter: 12 (Yusuf)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-107",
+    "isbn": "9788169989435",
+    "title": "Tafheemul Quran Chapter: 10 & 11 (Yunus & Hud)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-108",
+    "isbn": "9788169989428",
+    "title": "Tafheemul Quran Chapter: 8 & 9 (Al-Anfaal & At-Tawba)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-109",
+    "isbn": "9788169989411",
+    "title": "Tafheemul Quran Chapter: 7 (Al A'raaf)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-110",
+    "isbn": "9788169989404",
+    "title": "Tafheemul Quran Chapter: 6 (Al-An Aam)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-111",
+    "isbn": "9788169989398",
+    "title": "Tafheemul Quran Chapter: 5 (Al-Maaidah)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-112",
+    "isbn": "9788169989381",
+    "title": "Tafheemul Quran Chapter: 4 (An-Nisa)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-113",
+    "isbn": "9788169989374",
+    "title": "Tafheemul Quran Chapter: 3 (Alu Imran)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-114",
+    "isbn": "9788169989367",
+    "title": "Tafheemul Quran Chapter: 1 & 2 (Al Fathiha & Al Baqara)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-115",
+    "isbn": "9788169989350",
+    "title": "Idhayathai Thodum Uraiyaadalgal",
+    "author": "Sheikh Jasim Mohammad Al Matthu, Dr Muhiyudin Qazi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-116",
+    "isbn": "9788169989343",
+    "title": "Islamiya Porulaathaaram Neethi - Niyaayam - Samooganalan",
+    "author": "Shaikh Muhammad Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-117",
+    "isbn": "9788169989336",
+    "title": "Varalatrin Velichathil Aurangzeb",
+    "author": "S. Divan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-118",
+    "isbn": "9788169989329",
+    "title": "Kadavul Undu Kadavul Ondru",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-119",
+    "isbn": "9788169989312",
+    "title": "Sirupaanmai Muslimgalukkaana Sattam",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-120",
+    "isbn": "9788169989305",
+    "title": "Nagarigathin Thanthai Umar (Rali)",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-121",
+    "isbn": "9788169989299",
+    "title": "Palestine - Israel Pirachnai Neethi Yaar Pakkam?",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-122",
+    "isbn": "9788169989282",
+    "title": "Muhammad (Sal) Avargalin Narpanbugal - Nannadathaigal (Part - 2)",
+    "author": "Adhil Salahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-123",
+    "isbn": "9788169989275",
+    "title": "Selvandar Nabigal Nayagam",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-124",
+    "isbn": "9788169989268",
+    "title": "Rajab Tayyip Erdogan",
+    "author": "K.M. Ashraf Kizhuparamba",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-125",
+    "isbn": "9788169989251",
+    "title": "Thiruquraniya Kalaigal",
+    "author": "Dr. J. Mohideen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-126",
+    "isbn": "9788169989244",
+    "title": "Thiravukol - III",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-127",
+    "isbn": "9788169989237",
+    "title": "Palesteena Varalaaru Porkkalathin Seithigal",
+    "author": "V.S. Mohamed Ameen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-128",
+    "isbn": "9788169989220",
+    "title": "Al-Quran Koorum Azhagiya Sarithaigal",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-129",
+    "isbn": "9788169989213",
+    "title": "Muhammad Nabigalaar Mugam Sivandha Tharunangal",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-130",
+    "isbn": "9788169989206",
+    "title": "Alangaripom Ramalaanai",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-131",
+    "isbn": "9788169989190",
+    "title": "Inikkum Islam",
+    "author": "V.S. Mohamed Ameen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-132",
+    "isbn": "9788169989183",
+    "title": "Aghimsai - islamiyak Kannottam",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-133",
+    "isbn": "9788169989176",
+    "title": "Al Quranai Anugum Murai",
+    "author": "Dr. Yusuf Al Qardhawi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-134",
+    "isbn": "9788169989169",
+    "title": "Neengalum Peachaalar Aagalaam",
+    "author": "Jamaat-e-Islami Hind, Chennai Metro",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-135",
+    "isbn": "9788169989152",
+    "title": "Vaazhkkai - Thottuvidum Dhooramdhaan",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-136",
+    "isbn": "9788169989145",
+    "title": "Islamum Koottamaippum",
+    "author": "Moulana Sadruddin Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-137",
+    "isbn": "9788169989138",
+    "title": "Islamiya Varalaru (Abyssinia Hijrat Muthal Uhad Varai)",
+    "author": "Moulavi M.I. Muhammed Siddiq Umari, Madani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-138",
+    "isbn": "9788169989121",
+    "title": "Annalaarin Aalumaigal",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-139",
+    "isbn": "9788169989114",
+    "title": "Nabithozhargalin Pallikkoodam",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-140",
+    "isbn": "9788169989107",
+    "title": "Porumai",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-141",
+    "isbn": "9788169989091",
+    "title": "Tarjumanul Hadees Volume - 2",
+    "author": "Sayyid Mahmood Hasan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-142",
+    "isbn": "9788169989084",
+    "title": "Tarjumanul Hadees Volume - 1",
+    "author": "Sayyid Mahmood Hasan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-143",
+    "isbn": "9788169989077",
+    "title": "Islamiya Thirumana Chattangal",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-144",
+    "isbn": "9788169989060",
+    "title": "Islam Oru Paarvai",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-145",
+    "isbn": "9788169989053",
+    "title": "Pirainilaa Kaalam",
+    "author": "V.S. Mohamed Ameen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-146",
+    "isbn": "9788169989046",
+    "title": "Nallatchi Naayagar Kaleefa Umar (Rali)",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-147",
+    "isbn": "9788169989039",
+    "title": "Kitab Al-Bidaya (Arabu Mozhi Thodakka Nilaiyinarukku)",
+    "author": "Moulavi A. Abul Hudha Salami",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-148",
+    "isbn": "9788169989022",
+    "title": "Marumalarchi Nayagar Imam Moududiyin Sindhanai: Oru Paarvai",
+    "author": "Dr. Yusuf Al Qardhawi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-149",
+    "isbn": "9788169989015",
+    "title": "Musa Nabi Varalaaru",
+    "author": "E.A. Fazlur Rahman Umari M.A.",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-150",
+    "isbn": "9788169989008",
+    "title": "Amaithi Adaintha Aanmaa…",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-151",
+    "isbn": "9788168043992",
+    "title": "Muhammad (Sal) Avargalin Narpanbugal - Nannadathaigal (Part - 1)",
+    "author": "Adil Salahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-152",
+    "isbn": "9788168043985",
+    "title": "Madina Market - Seeravin Purakkanikkapatta Amsam",
+    "author": "H. Abdur Raqeeb",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-153",
+    "isbn": "9788168043978",
+    "title": "Munmaathiri Muslim Ilaignan",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-154",
+    "isbn": "9788168043961",
+    "title": "Vaazhvum Varalaarum",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-155",
+    "isbn": "9788168043954",
+    "title": "ISIS - Islam Illai",
+    "author": "Ashraf Keezhuparambu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-156",
+    "isbn": "9788168043947",
+    "title": "Islaamiya Azhaippup Pani",
+    "author": "Moulana Syed Jalaludheen Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-157",
+    "isbn": "9788168043930",
+    "title": "Enbathu Nabimozhigal",
+    "author": "Ashsheikh M.M.M. Asam",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-158",
+    "isbn": "9788168043923",
+    "title": "Indiya Muslimgal Ini Seiyya Vendiyathu Enna?",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-159",
+    "isbn": "9788168043916",
+    "title": "Dinamum Oru Nabimozhi",
+    "author": "T. Azeez Luthfullah",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-160",
+    "isbn": "9788168043909",
+    "title": "Corona Thuyaramum Naamum",
+    "author": "Syed Sadathullah Husaini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-161",
+    "isbn": "9788168043893",
+    "title": "Poraamai Thee",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-162",
+    "isbn": "9788168043886",
+    "title": "Azhikkum Aanavam",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-163",
+    "isbn": "9788168043879",
+    "title": "Nayavanjagam Andrum - Indrum",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-164",
+    "isbn": "9788168043862",
+    "title": "Pagattu - Riya (Padaithavanukkaagava? Pagattirkkaagava?)",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-165",
+    "isbn": "9788168043855",
+    "title": "Paava Mannippu - Eppodhu? Eppadi?",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-166",
+    "isbn": "9788168043848",
+    "title": "Thavakkul - Iraivanai Saarndhiruthal",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-167",
+    "isbn": "9788168043831",
+    "title": "Irai Thiyanam",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-168",
+    "isbn": "9788168043824",
+    "title": "Naanamum Maanamum",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-169",
+    "isbn": "9788168043817",
+    "title": "Nanri Seluthinaal Namakke Nanmai",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-170",
+    "isbn": "9788168043800",
+    "title": "Azhagiya Andai Veedu",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-171",
+    "isbn": "9788168043794",
+    "title": "Kudumba Uravugalai Kulaikkalaamaa?",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-172",
+    "isbn": "9788168043787",
+    "title": "Anaathaigal - Vidhavaigal (Aadharavatravargalai Aravanaippoom)",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-173",
+    "isbn": "9788168043770",
+    "title": "Virunthombal Sirakka",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-174",
+    "isbn": "9788168043763",
+    "title": "Payanam Inidhaaga",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-175",
+    "isbn": "9788168043756",
+    "title": "Vaarungal Ramalaanai Arivom",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-176",
+    "isbn": "9788168043749",
+    "title": "Shahin Bagh",
+    "author": "V.S. Mohamed Ameen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-177",
+    "isbn": "9788168043732",
+    "title": "Imam Hussain Uyirai Koduthathu Etharkaga?",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-178",
+    "isbn": "9788168043725",
+    "title": "Suvanam Sellum Vanigargal",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-179",
+    "isbn": "9788168043718",
+    "title": "Thirumanathil Aneethi, Anaachaaram, Viraiyam",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-180",
+    "isbn": "9788168043701",
+    "title": "Jamaat-e-Islami Hind - Nokkamum Vazhimuraium",
+    "author": "Moulana Abullais Islahi Nadvi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-181",
+    "isbn": "9788168043695",
+    "title": "Islamum Arasiyalum",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-182",
+    "isbn": "9788168043688",
+    "title": "Azhappaalanukku Vidumurai Illai..!",
+    "author": "Moulana Naeem Siddiqui",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-183",
+    "isbn": "9788168043671",
+    "title": "Jumu'a Thozhugai",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-184",
+    "isbn": "9788168043664",
+    "title": "Naam Engae Sendru Kondirukkindrom...?",
+    "author": "T. Azeez Luthfullah",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-185",
+    "isbn": "9788168043657",
+    "title": "Jamaat-e-Islami Sila Sandegangalukku Bathilgal",
+    "author": "Moulavi Mohammed Ismail Imdadi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-186",
+    "isbn": "9788168043640",
+    "title": "Manidhavala Mempaattin Mukkiyathuvam",
+    "author": "Dr. K.V.S. Habeeb Mohammed, H. Abdur Raqeeb",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-187",
+    "isbn": "9788168043633",
+    "title": "Arivom Hijab",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-188",
+    "isbn": "9788168043626",
+    "title": "SUYAMARIYADAI",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-189",
+    "isbn": "9788168043619",
+    "title": "Islam Vettri Pera",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-190",
+    "isbn": "9788168043602",
+    "title": "Qur’an Aaga Vaazhvom",
+    "author": "Dr. Mohiudeen Gazi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-191",
+    "isbn": "9788168043596",
+    "title": "Samooga Pathukaappu - India Soozhalil...",
+    "author": "Dr. Abdus Salam Ahmed, Sheikh Muhammad Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-192",
+    "isbn": "9788168043589",
+    "title": "Allah Sothiththa Moondru Manithargal",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-193",
+    "isbn": "9788168043572",
+    "title": "Annalaarin Palathaara Thirumanangal - Oor Alasal",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-194",
+    "isbn": "9788168043565",
+    "title": "Islamiya Neethi Kathaigal - 20 (Moondradukku Sodhanai)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-195",
+    "isbn": "9788168043558",
+    "title": "Islamiya Neethi Kathaigal - 19 (Firaunin Manaivi)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-196",
+    "isbn": "9788168043541",
+    "title": "Islamiya Neethi Kathaigal - 18 (Muthiyavarum Kaippaiyum)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-197",
+    "isbn": "9788168043534",
+    "title": "Islamiya Neethi Kathaigal - 17 (Pugazhpetra Marpor Veerar)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-198",
+    "isbn": "9788168043527",
+    "title": "Islamiya Neethi Kathaigal - 16 (Siruvanum Pasithiruntha Naayum)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-199",
+    "isbn": "9788168043510",
+    "title": "Islamiya Neethi Kathaigal - 15 (Nabi Musa (Alai))",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-200",
+    "isbn": "9788168043503",
+    "title": "Islamiya Neethi Kathaigal - 14 (Aasiriyar)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-201",
+    "isbn": "9788168043497",
+    "title": "Islamiya Neethi Kathaigal - 13 (Kaleefa Umarum Adimai Aslamum)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-202",
+    "isbn": "9788168043480",
+    "title": "Islamiya Neethi Kathaigal - 12 (Koduppathe Siranthathu)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-203",
+    "isbn": "9788168043473",
+    "title": "Islamiya Neethi Kathaigal - 11 (Meenavar)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-204",
+    "isbn": "9788168043466",
+    "title": "Islamiya Neethi Kathaigal - 10 (Uzhaippin Mathippu)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-205",
+    "isbn": "9788168043459",
+    "title": "Islamiya Neethi Kathaigal - 9 (Pazhathottam)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-206",
+    "isbn": "9788168043442",
+    "title": "Islamiya Neethi Kathaigal - 8 (Ghazaliyum Kollaiyargalum)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-207",
+    "isbn": "9788168043435",
+    "title": "Islamiya Neethi Kathaigal - 7 (Vaanavar Jibreel (Alai))",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-208",
+    "isbn": "9788168043428",
+    "title": "Islamiya Neethi Kathaigal - 6 (Selvathin Vilaivu)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-209",
+    "isbn": "9788168043411",
+    "title": "Islamiya Neethi Kathaigal - 5 (Kaalathin Mathippu)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-210",
+    "isbn": "9788168043404",
+    "title": "Islamiya Neethi Kathaigal - 4 (Puthisaali Siruvan)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-211",
+    "isbn": "9788168043398",
+    "title": "Islamiya Neethi Kathaigal - 3 (Kodaari Manithan)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-212",
+    "isbn": "9788168043381",
+    "title": "Islamiya Neethi Kathaigal - 2 (Nandriunarvu)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-213",
+    "isbn": "9788168043374",
+    "title": "Islamiya Neethi Kathaigal - 1 (Oru Kugaiyum Moonru Manithargalum)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-214",
+    "isbn": "9788168043367",
+    "title": "Qurania Kathaigal - 14 (Thiyaagam)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-215",
+    "isbn": "9788168043350",
+    "title": "Qurania Kathaigal - 13 (Nabi Sulaiman (Alai) Avargalum Balqees Raanium)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-216",
+    "isbn": "9788168043343",
+    "title": "Qurania Kathaigal - 12 (Nabi Dawood (Alai) Avargalin Neethi)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-217",
+    "isbn": "9788168043336",
+    "title": "Qurania Kathaigal - 11 (Nabi Hud (Alai))",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-218",
+    "isbn": "9788168043329",
+    "title": "Qurania Kathaigal - 10 (Zamzamin Varalaaru)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-219",
+    "isbn": "9788168043312",
+    "title": "Qurania Kathaigal - 9 (Yaanai Aandu)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-220",
+    "isbn": "9788168043305",
+    "title": "Qurania Kathaigal - 8 (Yusuf Nabiyum Sagotharargalum)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-221",
+    "isbn": "9788168043299",
+    "title": "Qurania Kathaigal - 7 (Yunus Nabi (Alai))",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-222",
+    "isbn": "9788168043282",
+    "title": "Qurania Kathaigal - 6 (Musa Nabiyin Pirappu)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-223",
+    "isbn": "9788168043275",
+    "title": "Qurania Kathaigal - 5 (Nabi Lut (Alai))",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-224",
+    "isbn": "9788168043268",
+    "title": "Qurania Kathaigal - 4 (Isa Nabi (Alai))",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-225",
+    "isbn": "9788168043251",
+    "title": "Qurania Kathaigal - 3 (Nooh (Alai) Nabiyum Avarathu Kappalum)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-226",
+    "isbn": "9788168043244",
+    "title": "Qurania Kathaigal - 2 (Habil - Qabil)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-227",
+    "isbn": "9788168043237",
+    "title": "Qurania Kathaigal - 1 (Maaperum Iraithootharin Pirappu)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-228",
+    "isbn": "9788168043220",
+    "title": "Allahvin Arputhangal - 14 (Iyarkkai)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-229",
+    "isbn": "9788168043213",
+    "title": "Allahvin Arputhangal - 13 (Thaneer)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-230",
+    "isbn": "9788168043206",
+    "title": "Allahvin Arputhangal - 12 (Prabanjam, Natchathirangal, Kolgal)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-231",
+    "isbn": "9788168043190",
+    "title": "Allahvin Arputhangal - 11 (Sooriyanum Santhiranum)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-232",
+    "isbn": "9788168043183",
+    "title": "Allahvin Arputhangal - 10 (Manithargal)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-233",
+    "isbn": "9788168043176",
+    "title": "Allahvin Arputhangal - 9 (Thaavarangal)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-234",
+    "isbn": "9788168043169",
+    "title": "Allahvin Arputhangal - 8 (Puvikkolam)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-235",
+    "isbn": "9788168043152",
+    "title": "Allahvin Arputhangal - 7 (Earigal, Aarugal, Kadalgal)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-236",
+    "isbn": "9788168043145",
+    "title": "Allahvin Arputhangal - 6 (Manitha Udal)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-237",
+    "isbn": "9788168043138",
+    "title": "Allahvin Arputhangal - 5 (Pazhangal - Kaaikarigal)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-238",
+    "isbn": "9788168043121",
+    "title": "Allahvin Arputhangal - 4 (Paalaivanangalum Malaigalum)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-239",
+    "isbn": "9788168043114",
+    "title": "Allahvin Arputhangal - 3 (Paravaigal)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-240",
+    "isbn": "9788168043107",
+    "title": "Allahvin Arputhangal - 2 (Nilathil Vaazhum Vilangugal)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-241",
+    "isbn": "9788168043091",
+    "title": "Allahvin Arputhangal - 1 (Kadal Vilangugal)",
+    "author": "IMAM Mohsin Teladia, IMAM Ibraheem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-242",
+    "isbn": "9788168043084",
+    "title": "Urudhimikka Poraattathin Ezhubathaindhu Aandugal Jamaat-e-Islami Hind",
+    "author": "Syed Sadathullah Husaini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-243",
+    "isbn": "9788168043077",
+    "title": "Ilagu Vazhi Islam - Uyarkalvi Maanavargalukkaana Paadathittam (Vol - 2)",
+    "author": "Nazeer Athaullah",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-244",
+    "isbn": "9788168043060",
+    "title": "Ilagu Vazhi Islam - Uyarkalvi Maanavargalukkaana Paadathittam (Vol - 1)",
+    "author": "Nazeer Athaullah",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-245",
+    "isbn": "9788168043053",
+    "title": "Anbu Nanbanukku",
+    "author": "Moulana Asad Geelani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-246",
+    "isbn": "9788168043046",
+    "title": "Dulkarnain Tharum Seythi..!",
+    "author": "Syed Sadatullah Hussaini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-247",
+    "isbn": "9788168043039",
+    "title": "Maari Varum Samoogach Soozhalum Muslim Ilainjargalum",
+    "author": "Syed Sadatullah Hussaini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-248",
+    "isbn": "9788168043022",
+    "title": "Nabigal Naayagathin Manathil Nirainthavar",
+    "author": "Dr. Yasir Qadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-249",
+    "isbn": "9788168043015",
+    "title": "Pathavi Mogam Paduthum Paadu",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-250",
+    "isbn": "9788168043008",
+    "title": "Irai Ninaivu",
+    "author": "Ibnu Jamal",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-251",
+    "isbn": "9788168098992",
+    "title": "Orupaal Uravu - Aaivum Aalosanaiyum",
+    "author": "Dr. K.V.S. Habeeb Muhammed, Dr. J. Muhaideen Abdul Khadir, Moulavi Nooh Mahlari, V.S. Mohamed Ameen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-252",
+    "isbn": "9788168098985",
+    "title": "Indiavil Islamiya Iyakkam",
+    "author": "Sheikh Muhammed Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-253",
+    "isbn": "9788168098978",
+    "title": "Islamiya Marumalarchi",
+    "author": "Moulana Syed Abul Ala Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-254",
+    "isbn": "9788168098961",
+    "title": "Zakath Koottu Viniyogam",
+    "author": "H. Abdur Raqeeb",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-255",
+    "isbn": "9788168098954",
+    "title": "Poruleettal : Islamiya Anugal",
+    "author": "Dr. Najathullah Siddiqui",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-256",
+    "isbn": "9788168098947",
+    "title": "Madhabugal Sarchai Thevaiyaa?",
+    "author": "Moulana Syed Jalaludeen Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-257",
+    "isbn": "9788168098930",
+    "title": "Siruvargalukkana Islamiya Kadhaigal",
+    "author": "Sirajul Hasan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-258",
+    "isbn": "9788168098923",
+    "title": "Varathatchinai Enum Avamaanam",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-259",
+    "isbn": "9788168098916",
+    "title": "Illaram Nallaramaaga...",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-260",
+    "isbn": "9788168098909",
+    "title": "Khalifaakkal Varalaaru",
+    "author": "Moulana Abdul Hafeez Rahmani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-261",
+    "isbn": "9788168098893",
+    "title": "Ondre Kulam Oruvane Devan",
+    "author": "Moulana Syed Jalaludeen Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-262",
+    "isbn": "9788168098886",
+    "title": "Islamiya Azhaiyppum seyalmuraiyum",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-263",
+    "isbn": "9788168098879",
+    "title": "Panbiyal (Class - 9)",
+    "author": "Moulavi Mohammed Ismail Imdhadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-264",
+    "isbn": "9788168098862",
+    "title": "Panbiyal (Class - 8)",
+    "author": "Moulavi Mohammed Ismail Imdhadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-265",
+    "isbn": "9788168098855",
+    "title": "Panbiyal (Class - 7)",
+    "author": "Moulavi Mohammed Ismail Imdhadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-266",
+    "isbn": "9788168098848",
+    "title": "Panbiyal (Class - 6)",
+    "author": "Moulavi Mohammed Ismail Imdhadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-267",
+    "isbn": "9788168098831",
+    "title": "Panbiyal (Class - 5)",
+    "author": "Moulavi Mohammed Ismail Imdhadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-268",
+    "isbn": "9788168098824",
+    "title": "Panbiyal (Class - 4)",
+    "author": "Moulavi Mohammed Ismail Imdhadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-269",
+    "isbn": "9788168098817",
+    "title": "Panbiyal (Class - 3)",
+    "author": "Moulavi Mohammed Ismail Imdhadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-270",
+    "isbn": "9788168098800",
+    "title": "Panbiyal (Class - 2)",
+    "author": "Moulavi Mohammed Ismail Imdhadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-271",
+    "isbn": "9788168098794",
+    "title": "Panbiyal (Class - 1)",
+    "author": "Moulavi Mohammed Ismail Imdhadhi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-272",
+    "isbn": "9788168098787",
+    "title": "Iruthi Uyil",
+    "author": "Khurram Murad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-273",
+    "isbn": "9788168098770",
+    "title": "Kaadiyanigal Yaar?",
+    "author": "P.P. Abdul Rahaman",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-274",
+    "isbn": "9788168098763",
+    "title": "Peru Petra Penmanigal... Volume - I",
+    "author": "Adirai Ahmed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-275",
+    "isbn": "9788168098756",
+    "title": "Peru Petra Penmanigal... Volume - II",
+    "author": "Adirai Ahmed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-276",
+    "isbn": "9788168098749",
+    "title": "kavalaipadathe",
+    "author": "Dr. AAIZ BIN ABDULLAH ALQARNI",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-277",
+    "isbn": "9788168098732",
+    "title": "Deenai Nilainaattungal",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-278",
+    "isbn": "9788168098725",
+    "title": "Kelvi Piranthadhu Indru (Part - I)",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-279",
+    "isbn": "9788168098718",
+    "title": "Kelvi Piranthadhu Indru (Part - II)",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-280",
+    "isbn": "9788168098701",
+    "title": "Azhaippin Nilam",
+    "author": "Usthaz Rasheed Hajjul Akbar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-281",
+    "isbn": "9788168098695",
+    "title": "Naadum Naamum",
+    "author": "Moulana Sayyid Hamid Ali",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-282",
+    "isbn": "9788168098688",
+    "title": "Iyakkamum Iniya Uravugalum",
+    "author": "Khurram Murad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-283",
+    "isbn": "9788168098671",
+    "title": "Pengalum Islamum",
+    "author": "Moulana Syed Jalaluddin Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-284",
+    "isbn": "9788168098664",
+    "title": "JAMAAT-E-ISLAMI HIND AMAIPPU CHATTAM",
+    "author": "JAMAAT-E-ISLAMI HIND",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-285",
+    "isbn": "9788168098657",
+    "title": "Suvanam Namadhu Veedugalil",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-286",
+    "isbn": "9788168098640",
+    "title": "Vergalai Vaasikkum Vizhudugal",
+    "author": "Humaira Moududi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-287",
+    "isbn": "9788168098633",
+    "title": "Islam : Nambikkaigalum Bothanaigalum",
+    "author": "Ghulam Sarwar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-288",
+    "isbn": "9788168098626",
+    "title": "Munmaathiri Vanigar Abdur Rahman Ibnu Awf (Rali)",
+    "author": "Yembal Thajammul Mohammad, K. Tajudeen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-289",
+    "isbn": "9788168098619",
+    "title": "Visaaranai Neram",
+    "author": "Moulana Syed Jalaluddin Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-290",
+    "isbn": "9788168098602",
+    "title": "Karuththu Verupaadugal Arulaa? Azhivaa?",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-291",
+    "isbn": "9788168098596",
+    "title": "Naattu Nadappum Namadhu Poruppugalum",
+    "author": "Moulana Syed Jalaluddin Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-292",
+    "isbn": "9788168098589",
+    "title": "Tharkolai: Aaivum Theervum",
+    "author": "Sheikh Muhammed Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-293",
+    "isbn": "9788168098572",
+    "title": "Aadhalinaal Khathal Seyaatheer...",
+    "author": "V.S. Mohamed Ameen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-294",
+    "isbn": "9788168098565",
+    "title": "Jaathi Ozhiya... Samathuvam Malara...!",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-295",
+    "isbn": "9788168098558",
+    "title": "Nabigalaar Varaintha Kodugalil Manitha Vaazhvu",
+    "author": "Usthaz Rasheed Hajjul Akbar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-296",
+    "isbn": "9788168098541",
+    "title": "Idazhiyal Varalaatril Samarasam",
+    "author": "Dr. M.I. Ahamed Maricar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-297",
+    "isbn": "9788168098534",
+    "title": "Islaathil Illaram",
+    "author": "Shiekh Muhammed Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-298",
+    "isbn": "9788168098527",
+    "title": "Islaamum Ingithamum",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-299",
+    "isbn": "9788168098510",
+    "title": "Manam Veesum Manichorkkal",
+    "author": "Ashiek Khalid Mohamed Minhaj (Islahi)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-300",
+    "isbn": "9788168098503",
+    "title": "Chinna Chinna Minnalgal",
+    "author": "Sirajul Hasan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-301",
+    "isbn": "9788168098497",
+    "title": "Idhayam Thiruntha Iniya Marundhu",
+    "author": "Sirajul Hasan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-302",
+    "isbn": "9788168098480",
+    "title": "Anbulla...",
+    "author": "Sirajul Hasan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-303",
+    "isbn": "9788168098473",
+    "title": "Varumai Ozhippil Zakaathin Pangu",
+    "author": "Prof. M.S. Syed Mohamed Madani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-304",
+    "isbn": "9788168098466",
+    "title": "Hijab: Ullum Puramum",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-305",
+    "isbn": "9788168098459",
+    "title": "Mannargalukku Maanabiyin Madalgal (Naadaga Vadivil)",
+    "author": "K.J. Masthan Ali Baqavi, Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-306",
+    "isbn": "9788168098442",
+    "title": "Indhiyach choolalum Muslimgalum",
+    "author": "Moulana Syed Jalaludeen Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-307",
+    "isbn": "9788168098435",
+    "title": "Irai Illangalai Makkal Sevai Maiyangalakkungal",
+    "author": "H. Abdur Raqeeb",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-308",
+    "isbn": "9788168098428",
+    "title": "Nabi (Sal) Varalaaru Nam Pillaigalukku",
+    "author": "Adirai Ahmed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-309",
+    "isbn": "9788168098411",
+    "title": "Ungalai Neengale Maatrikollaathavarai",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-310",
+    "isbn": "9788168098404",
+    "title": "Unadhu Peyaraal Uyir Vaazhgirom",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-311",
+    "isbn": "9788168098398",
+    "title": "Vaddiyai Ozhippom",
+    "author": "Dr. M. Umer Chapra",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-312",
+    "isbn": "9788168098381",
+    "title": "Anbu Nabiyin (Sal) Amudha Vaakkugal - Ozhukkaviyal - Mudhal Thoguthi",
+    "author": "Moulana Muhammad Farooq Khan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-313",
+    "isbn": "9788168098374",
+    "title": "Thirukuranin Paathayil... Vaazhviyal Payanam!",
+    "author": "Khurram Murad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-314",
+    "isbn": "9788168098367",
+    "title": "THIRAVUKOL - II",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-315",
+    "isbn": "9788168098350",
+    "title": "Islaathil Munnurimaigal",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-316",
+    "isbn": "9788168098343",
+    "title": "Unnai Arivaai... Unmai Arivaai...",
+    "author": "Jeelani, Syed Kasim, Abdul Hameed Harshoori",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-317",
+    "isbn": "9788168098336",
+    "title": "Nenjukku Nimmathi",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-318",
+    "isbn": "9788168098329",
+    "title": "Panmai Samoogathil Muslimgal",
+    "author": "Dr. Fazlur Rahman Fareedi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-319",
+    "isbn": "9788168098312",
+    "title": "Ivargal Paarvail Nabigal Naayagam (Sal)",
+    "author": "V.S. Mohammed Ameen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-320",
+    "isbn": "9788168098305",
+    "title": "Varalaarum Vaguppuvadhamum",
+    "author": "Prof. Arunan, Prof. Dastageer,  Dr. K.V.S. Habeeb Mohamed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-321",
+    "isbn": "9788168098299",
+    "title": "Islam: Manidha Urimaigalin Kaavalan",
+    "author": "Moulana Syed Jalaludeen Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-322",
+    "isbn": "9788168098282",
+    "title": "Varalaaru Padaitha Pengal",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-323",
+    "isbn": "9788168098275",
+    "title": "Muslim Thaniyar Sattamum Muslimgalin Poruppugalum",
+    "author": "Dr. Raziul Islam Nadwi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-324",
+    "isbn": "9788168098268",
+    "title": "Muslim Pengalin Prachnaigalum Theervugalum",
+    "author": "Athiya Siddiqua",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-325",
+    "isbn": "9788168098251",
+    "title": "Maariyadhu Nenjam Maatriyadhu Qur'an",
+    "author": "Dr. Sumaiyya Ramalan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-326",
+    "isbn": "9788168098244",
+    "title": "Thiru Qur'anil Marumai",
+    "author": "K.C. Abdullah Moulavi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-327",
+    "isbn": "9788168098237",
+    "title": "Azhaippalar Kaiyedu",
+    "author": "Usthaz Rasheed Hajjul Akbar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-328",
+    "isbn": "9788168098220",
+    "title": "Islam Oru Nadunilai Markkam",
+    "author": "Dr. Yusuf Al Qardhawi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-329",
+    "isbn": "9788168098213",
+    "title": "Vedikkai Manithargalaa Naam?",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-330",
+    "isbn": "9788168098206",
+    "title": "Uyir Thudippulla Penn Alumaigal",
+    "author": "Rauff Zain",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-331",
+    "isbn": "9788168098190",
+    "title": "Nabigalaar Bodhittha Vaazhviyal",
+    "author": "Moulana Jaleel Ahsan Nadvi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-332",
+    "isbn": "9788168098183",
+    "title": "Kuzhandhai Valarppu",
+    "author": "Shaik Muhammed Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-333",
+    "isbn": "9788168098176",
+    "title": "Aval - Penniya Paarvail",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-334",
+    "isbn": "9788168098169",
+    "title": "Velicha Keetrukal",
+    "author": "Tasneem",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-335",
+    "isbn": "9788168098152",
+    "title": "Thaai Enbaval...",
+    "author": "Shaik Muhammed Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-336",
+    "isbn": "9788168098145",
+    "title": "Marumai",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-337",
+    "isbn": "9788168098138",
+    "title": "Nalla Petrorgal",
+    "author": "Shaik Muhammed Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-338",
+    "isbn": "9788168098121",
+    "title": "Tazkiya Vazhikaatti",
+    "author": "Moulana Waliullah Sayeedi Falahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-339",
+    "isbn": "9788168098114",
+    "title": "Pathinparuva Muslim Pengalukkana Kaiyedu",
+    "author": "Prof. K. Kabir Uddin",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-340",
+    "isbn": "9788168098107",
+    "title": "Pathinparuva Muslim Vaalipargalukkana Kaiyedu (Aangal Pathippu)",
+    "author": "Prof. K. Kabir Uddin",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-341",
+    "isbn": "9788168098091",
+    "title": "Thozhilaali Muthalaali Urimaigal - Kadamaigal - Uravugal",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-342",
+    "isbn": "9788168098084",
+    "title": "Vaazhnthu Paarppom Vaarungal",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-343",
+    "isbn": "9788168098077",
+    "title": "Ulaga Sindhanaiyaalargalin Paarvaiyil Muhammad (Sal)",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-344",
+    "isbn": "9788168098060",
+    "title": "Andraada Duakkal - Piraarthanaigal",
+    "author": "Moulana Muhammad Farook Khan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-345",
+    "isbn": "9788168098053",
+    "title": "Virunthaali",
+    "author": "Moulana Mohamed Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-346",
+    "isbn": "9788168098046",
+    "title": "Islam Sila Nimidangalil",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-347",
+    "isbn": "9788168098039",
+    "title": "Halal Haram",
+    "author": "Dr. Yusuf Al Qardhawi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-348",
+    "isbn": "9788168098022",
+    "title": "Idayangalai Velvom",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-349",
+    "isbn": "9788168098015",
+    "title": "Panmai Samoogathil Muslimgalin Poruppugal",
+    "author": "Syed Sadathullah Husseini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-350",
+    "isbn": "9788168098008",
+    "title": "India Muslimgal: Sawalgal Saaththiyangal Seyalthittam",
+    "author": "Syed Sadathullah Husaini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-351",
+    "isbn": "9788168113992",
+    "title": "Naalum Pazhaga Nabimozhi Naarpadu",
+    "author": "Moulana Syed Hamid Ali",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-352",
+    "isbn": "9788168113985",
+    "title": "Jamaat -e- Islami Hind Oru Paarvai",
+    "author": "K. Jalaludeen",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-353",
+    "isbn": "9788168113978",
+    "title": "Kaaladi Chuvadugal",
+    "author": "T. Azeez Luthfullah",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-354",
+    "isbn": "9788168113961",
+    "title": "Azhaippiyal Sindhanaigal",
+    "author": "H. Abdur Raqeeb",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-355",
+    "isbn": "9788168113954",
+    "title": "Engae Amaithi...?",
+    "author": "Dr. K.V.S. Habeeb Muhammad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-356",
+    "isbn": "9788168113947",
+    "title": "Samudayathin Yadirkalamum Pallivaasal Imamgalum",
+    "author": "Khurram Murad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-357",
+    "isbn": "9788168113930",
+    "title": "Ivarthaan Muslim",
+    "author": "Moulana Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-358",
+    "isbn": "9788168113923",
+    "title": "Iraivaa... Un Vaasalil...!",
+    "author": "Moulana Muhammad Farooq Khan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-359",
+    "isbn": "9788168113916",
+    "title": "Arulmarayin Naangu Aadhaara Chorkal",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-360",
+    "isbn": "9788168113909",
+    "title": "Agilathirkor Arutkodai Muhammad Nabi (SAL)",
+    "author": "Dr. Inayathullah Subhani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-361",
+    "isbn": "9788168113893",
+    "title": "Annal Nabigalaarin Arumai Thozhargal",
+    "author": "Abdur Rahman Rafat Pasha, Abdul Wahid Hamid, Ziauddin Buhari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-362",
+    "isbn": "9788168113886",
+    "title": "Jamaat Kadandhu Vandha Paadhai - V",
+    "author": "Jamaat -e- Islami Hind",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-363",
+    "isbn": "9788168113879",
+    "title": "Jamaat Kadandhu Vandha Paadhai - IV",
+    "author": "Jamaat -e- Islami Hind",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-364",
+    "isbn": "9788168113862",
+    "title": "Jamaat Kadandhu Vandha Paadhai - III",
+    "author": "Jamaat -e- Islami Hind",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-365",
+    "isbn": "9788168113855",
+    "title": "Jamaat Kadandhu Vandha Paadhai - II",
+    "author": "Jamaat -e- Islami Hind",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-366",
+    "isbn": "9788168113848",
+    "title": "Jamaat Kadandhu Vandha Paadhai - I",
+    "author": "Jamaat -e- Islami Hind",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-367",
+    "isbn": "9788168113831",
+    "title": "Nabimozhi Naarpathu",
+    "author": "Hazrat Sheikh Sha Waliullah, Muhaddis Dehlevi (Rah), Moulana Muhammad Farooq Khan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-368",
+    "isbn": "9788168113824",
+    "title": "Yellai Illa Arulalaa...!",
+    "author": "Soundara Kailasam",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-369",
+    "isbn": "9788168113817",
+    "title": "Ulagamayamaakkalum Muslim Ilainjargalum",
+    "author": "Syed Sadathullah Husseini, Prof. Malik Muhammad Hussain, Dr. Mansoor Durrani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-370",
+    "isbn": "9788168113800",
+    "title": "Magizhchiyaana Kudumbam",
+    "author": "Shaikh Muhammad Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-371",
+    "isbn": "9788168113794",
+    "title": "Ramalaan-e-Varuga",
+    "author": "Khurram Murad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-372",
+    "isbn": "9788168113787",
+    "title": "Manitharkale...!",
+    "author": "Moulana Abu Saleem Muhammad Abdul Hai",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-373",
+    "isbn": "9788168113770",
+    "title": "Nenjodu... (Second Volume)",
+    "author": "Sirajul hasan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-374",
+    "isbn": "9788168113763",
+    "title": "Nenjodu... (First Volume)",
+    "author": "Sirajul hasan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-375",
+    "isbn": "9788168113756",
+    "title": "Punidha Ramalaanil...",
+    "author": "Moulana Muhammad Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-376",
+    "isbn": "9788168113749",
+    "title": "Iyakka Thozharukku Iniya Vazhikaatti",
+    "author": "Jamaat-e-Islami Hind, Kerala",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-377",
+    "isbn": "9788168113732",
+    "title": "Ivarthaan Muhammad (Sal)",
+    "author": "Khurram Murad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-378",
+    "isbn": "9788168113725",
+    "title": "Muslim Mannaratchiyil Indiyavin Munnetram",
+    "author": "Karaikandam K. Nedunchezhian B.A., B.L.,",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-379",
+    "isbn": "9788168113718",
+    "title": "Uravukalum Urimaikalum",
+    "author": "Bintul Islam",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-380",
+    "isbn": "9788168113701",
+    "title": "Vaazhkkaiye Vazhipaadu",
+    "author": "Moulana Muhammad Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-381",
+    "isbn": "9788168113695",
+    "title": "Iraivan Azhaikkindraan",
+    "author": "Moulana Muhammad Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-382",
+    "isbn": "9788168113688",
+    "title": "Naamum Samoogamum",
+    "author": "Moulana Muhammad Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-383",
+    "isbn": "9788168113671",
+    "title": "Vazhipaattin Vazhigal",
+    "author": "Moulana Muhammad Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-384",
+    "isbn": "9788168113664",
+    "title": "Unnatha Ozhungugal",
+    "author": "Moulana Muhammad Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-385",
+    "isbn": "9788168113657",
+    "title": "VAAZHKKAI KALAI",
+    "author": "Moulana Muhammad Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-386",
+    "isbn": "9788168113640",
+    "title": "THIRAVUKOL - I",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-387",
+    "isbn": "9788168113633",
+    "title": "Thirumarai Thelivurai (Chapter 78-114)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-388",
+    "isbn": "9788168113626",
+    "title": "Sathya Peroli",
+    "author": "Ibrahim  Sayeed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-389",
+    "isbn": "9788168113619",
+    "title": "Azhaippu Pani Yane? Yeppadi?",
+    "author": "Moulana M.A. Jameel Ahmed, Abdullah Adiyar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-390",
+    "isbn": "9788168113602",
+    "title": "Irai Nambikkaiyaalargalin Annaiyar",
+    "author": "M. Abdul Hafeez Rahmani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-391",
+    "isbn": "9788168113596",
+    "title": "Annalaar (Sal) Avargalin Nabithuvam Oru Paguppaaivu",
+    "author": "Dr. Jamal A. Badawi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-392",
+    "isbn": "9788168113589",
+    "title": "THIRU QUR'AN SORKALANJIAM",
+    "author": "Moulana Shaikh Abdul Kareem Parekh",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-393",
+    "isbn": "9788168113572",
+    "title": "Chennai Perurai",
+    "author": "Moulana Syed Jalaludeen Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-394",
+    "isbn": "9788168113565",
+    "title": "Samooga Kattamaippil Pengalin Pangu",
+    "author": "Moulana Syed Jalaludeen Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-395",
+    "isbn": "9788168113558",
+    "title": "Thozhugai Islaathin Muzhumaiyaana Vazhipaadu",
+    "author": "Moulana Muhammad Farook Khan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-396",
+    "isbn": "9788168113541",
+    "title": "Vaazhvil Munnera",
+    "author": "Muhammad Basheer Juma",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-397",
+    "isbn": "9788168113534",
+    "title": "SUDHANTHIRa CHINTHANAIGAL",
+    "author": "Prabanjan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-398",
+    "isbn": "9788168113527",
+    "title": "Perumanar (Sal) Tharum Parisu",
+    "author": "Khurram Murad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-399",
+    "isbn": "9788168113510",
+    "title": "Vaanmarai Chelvam",
+    "author": "Khurram Murad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-400",
+    "isbn": "9788168113503",
+    "title": "Yousuffum Sagothararkalum",
+    "author": "Elma Ruth Harder",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-401",
+    "isbn": "9788168113497",
+    "title": "Maanabi Manimozhigal",
+    "author": "Moulana Abdul Gaffar Hasan (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-402",
+    "isbn": "9788168113480",
+    "title": "Nalla Vaazhkaikku Vallavan Kaattiya Vazhi",
+    "author": "Fathimuthu Siddiq",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-403",
+    "isbn": "9788168113473",
+    "title": "Makkal Sevai",
+    "author": "Moulana Syed Jalaludin Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-404",
+    "isbn": "9788168113466",
+    "title": "Islam Thakkappadum Podhu",
+    "author": "Dr. K.V.S. Habeeb Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-405",
+    "isbn": "9788168113459",
+    "title": "Nonbu Thingal Sirappu Thozhugai Thirumarai Unardhal",
+    "author": "Moulana Mohiyudeen Ayyubi, Moulana Khuthbudeen Ahmed Baqavi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-406",
+    "isbn": "9788168113442",
+    "title": "Siruvar Sirumiyarku Kuhai Thozhargalin Kadhai",
+    "author": "K.J. Masthan Ali Baqavi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-407",
+    "isbn": "9788168113435",
+    "title": "Nandri Yaarukku?",
+    "author": "MOULAVI KUTHBUDEEN AHMED BAQAVI",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-408",
+    "isbn": "9788168113428",
+    "title": "Thirumanam",
+    "author": "Muhammed Bin Salih - Al Uthaimin",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-409",
+    "isbn": "9788168113411",
+    "title": "Manuda Vasantham - Muhammad Nabikallar (Sal)",
+    "author": "K.S. Ramakrishna Rao",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-410",
+    "isbn": "9788168113404",
+    "title": "Islamiya Iyakkam",
+    "author": "Jamaat-e-Islami Hind",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-411",
+    "isbn": "9788168113398",
+    "title": "Nabimaargal Naadhaakkal Seidha Duakkal",
+    "author": "Moulavi Kuthbudeen Ahmed Baqavi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-412",
+    "isbn": "9788168113381",
+    "title": "Idhudhaan Irai Neri Porattam",
+    "author": "Abdul Wahidkhan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-413",
+    "isbn": "9788168113374",
+    "title": "Arthamulla Neethi",
+    "author": "Moulana Wahidudeen Khan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-414",
+    "isbn": "9788168113367",
+    "title": "Perumaanaar Eduthuraitha Theeya Gunangal - Nar Gunangal",
+    "author": "Moulana Jaleel Ahsan Nadhvi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-415",
+    "isbn": "9788168113350",
+    "title": "Perumaanaar Kanda samuga vaazhvu",
+    "author": "Moulana Jaleel Ahsan Nadvi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-416",
+    "isbn": "9788168113343",
+    "title": "Perumaanaar Bothitha Azhagiya Nadaimurai",
+    "author": "Moulana Jaleel Ahsan Nadvi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-417",
+    "isbn": "9788168113336",
+    "title": "Annal Nabikalar Vazhvinile",
+    "author": "Moulana Jaleel Ahsan Nadvi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-418",
+    "isbn": "9788168113329",
+    "title": "Ennai Kavarnda Perumaanar (Sal)",
+    "author": "Tamilanban",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-419",
+    "isbn": "9788168113312",
+    "title": "Nabi Tozhiyar Varalaaru",
+    "author": "Moulavi K.J. Masthan Ali Baqavi, Umari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-420",
+    "isbn": "9788168113305",
+    "title": "Shaik Abdul Kadir Jeelani (Rah)",
+    "author": "Moulana Abul Hasan Ali Nadhvi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-421",
+    "isbn": "9788168113299",
+    "title": "Iraivanai Patri Iraimarai",
+    "author": "Dr. Qurshid Ahmed, T.B. Irving, M.M. Ahsan",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-422",
+    "isbn": "9788168113282",
+    "title": "YEMMMATHAMUM SAMMATHAM - OOR AAIYVU",
+    "author": "Moulana Mayil Khairabadi, Moulana Wahiduddin Khan, Moulana Sadruddin Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-423",
+    "isbn": "9788168113275",
+    "title": "Im Maa Manidarai Therindukollungal",
+    "author": "A. Hussaini",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-424",
+    "isbn": "9788168113268",
+    "title": "Islamiya Iyakkam Ean Edharku?",
+    "author": "Khurram Murad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-425",
+    "isbn": "9788168113251",
+    "title": "Thirunabi Vazhvinilae",
+    "author": "Sayabu Maraickayer",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-426",
+    "isbn": "9788168113244",
+    "title": "Nalla Theerpu",
+    "author": "Matheen Tharique",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-427",
+    "isbn": "9788168113237",
+    "title": "KUTRAVALIK KOONDIL MUSLIM",
+    "author": "Abun Nasar Abir",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-428",
+    "isbn": "9788168113220",
+    "title": "ISLAMIYA SAMUGA AMAIPPU",
+    "author": "Moulana Syed Ahmed Uruj Kadiri",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-429",
+    "isbn": "9788168113213",
+    "title": "Yedir Paarkkappatta Andha Nabi Yaar?",
+    "author": "Dr. Zaki",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-430",
+    "isbn": "9788168113206",
+    "title": "Anbulla Annaikku",
+    "author": "Naseem Qazi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-431",
+    "isbn": "9788168113190",
+    "title": "theemaigal puyalay veesumpodhu",
+    "author": "Moulana Mohammad Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-432",
+    "isbn": "9788168113183",
+    "title": "Islamiya Inba Payanam",
+    "author": "Moulana Mohammad Yusuf Islahi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-433",
+    "isbn": "9788168113176",
+    "title": "PODHU CIVIL SATTAM  - YEAN KOODATHU?",
+    "author": "G.M. Banathwala Ex M.P",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-434",
+    "isbn": "9788168113169",
+    "title": "Manidhane Un Vilai Enna?",
+    "author": "Shihab",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-435",
+    "isbn": "9788168113152",
+    "title": "Edhirkaalam Nokki...",
+    "author": "Moulana Abul Lais Islahi Nadvi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-436",
+    "isbn": "9788168113145",
+    "title": "Islam Ungaludaiyade",
+    "author": "Moulana Md Sulaiman Barrukabadi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-437",
+    "isbn": "9788168113138",
+    "title": "Islam Oor Arimugam",
+    "author": "Dr. Qurshid Ahmed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-438",
+    "isbn": "9788168113121",
+    "title": "Ennaik Kavarntha Islam",
+    "author": "Leopald Mohammed Asad",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-439",
+    "isbn": "9788168113114",
+    "title": "Manitha Kulathai Orunginaikka",
+    "author": "Moulana Mohammed Yusuf",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-440",
+    "isbn": "9788168113107",
+    "title": "Nabi thozhargal seeriya varalaru",
+    "author": "M.S. Syed Mohammed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-441",
+    "isbn": "9788168113091",
+    "title": "Manappaadam",
+    "author": "Moulana Abdul Hafeez Rahmani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-442",
+    "isbn": "9788168113084",
+    "title": "Islamiya Chatta Vilakkam",
+    "author": "Moulana Abdul Hafeez Rahmani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-443",
+    "isbn": "9788168113077",
+    "title": "Islathil Urimaigal - Kadamaigal",
+    "author": "Moulana Abdul Hafeez Rahmani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-444",
+    "isbn": "9788168113060",
+    "title": "Islamiya Kolkai Vilakkam",
+    "author": "Moulana Abdul Hafeez Rahmani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-445",
+    "isbn": "9788168113053",
+    "title": "Islaathai Arindukollungal",
+    "author": "Moulana Abdul Hafeez Rahmani",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-446",
+    "isbn": "9788168113046",
+    "title": "'AT-TIBYAN' (Tamil)",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-447",
+    "isbn": "9788168113039",
+    "title": "Haj, Umra Vazhimuraigal Piraarthanaigal",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-448",
+    "isbn": "9788168113022",
+    "title": "Thiru Quran'nin Ulladakkam Enna?",
+    "author": "Abdullah Adiyar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-449",
+    "isbn": "9788168113015",
+    "title": "Naan Kaathalikkum Islam",
+    "author": "Abdullah Adiyar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-450",
+    "isbn": "9788168113008",
+    "title": "ISLAM OR ARULNERI",
+    "author": "Moulana Syed Hamid Ali",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-451",
+    "isbn": "9788168976696",
+    "title": "Muslimin Adippadai Kadamai",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-452",
+    "isbn": "9788168976689",
+    "title": "Islam Vazhangum Thoothu",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-453",
+    "isbn": "9788168976672",
+    "title": "Qur'aanai Anugum Murai",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-454",
+    "isbn": "9788168976665",
+    "title": "Ozhukkam Pena Orea Vazhi",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-455",
+    "isbn": "9788168976658",
+    "title": "Varalatru Oliyil Islam",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-456",
+    "isbn": "9788168976641",
+    "title": "ISLAMIYA VAZHKKAI MURAI",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-457",
+    "isbn": "9788168976634",
+    "title": "Ilaignanea Vizhithezhu",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-458",
+    "isbn": "9788168976627",
+    "title": "Thiru Qur’an Vilakkavurai Atthiyayam Yaseen",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-459",
+    "isbn": "9788168976610",
+    "title": "Idhuthaan Islam (Part - I)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-460",
+    "isbn": "9788168976603",
+    "title": "Idhuthaan Islam (Part - I & II)",
+    "author": "Moulana Syed Abul A'la Moududi (Rah)",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-461",
+    "isbn": "9788168141995",
+    "title": "Ramalan Parisu",
+    "author": "T. Azeez Luthfullah",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-462",
+    "isbn": "9788168141988",
+    "title": "Indraya Muslim Ilainjargalin Kadamai",
+    "author": "Dr. Yusuf Al Qaradawi",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-463",
+    "isbn": "9788168141971",
+    "title": "Egipthiya Israelgalum India Muslimgalum",
+    "author": "Shaikh Muhammad Karakunnu",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-464",
+    "isbn": "9788168141964",
+    "title": "Vaanmarai Koorum Vaazhkkai Paadangal",
+    "author": "Moulavi Nooh Mahlari",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-465",
+    "isbn": "9788168141957",
+    "title": "MODESTY A GIFT TO HUMANITY",
+    "author": "Safiya Syed",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-466",
+    "isbn": "9788168141940",
+    "title": "Jalwaha e pa ba Rikab",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-467",
+    "isbn": "9788168141933",
+    "title": "Dawat-e-Deen: Ahamiyat Aur Taqazay",
+    "author": "Moulana M.A. Jameel Ahmed, Abdullah Adiyar",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-468",
+    "isbn": "9788168141926",
+    "title": "Parda Utha Dun Agar Chehra-e-Alfaz Se",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-469",
+    "isbn": "9788168141919",
+    "title": "Remembering the Hijrah",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-470",
+    "isbn": "9788168141902",
+    "title": "Arabic Words for Children",
+    "author": "Maulavi, Fazil M.A. Mohamed Haneefa Manbayee",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-471",
+    "isbn": "9788168141896",
+    "title": "Sūrat al-‘Adiyāt with Lexical & Grammatical Notes",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-472",
+    "isbn": "9788168141889",
+    "title": "Iththaqaltum",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-473",
+    "isbn": "9788168141872",
+    "title": "Surat al-Isra' ayat 23-39 with Lexical & Grammatical Notes",
+    "author": "Dr. V. Abdur Rahim",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-474",
+    "isbn": "",
+    "title": "Al-Ajwibah",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-475",
+    "isbn": "",
+    "title": "Nur-un  ‘ala Nur",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-476",
+    "isbn": "",
+    "title": "Arabic Conversation Drills",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-477",
+    "isbn": "",
+    "title": "Surat al-Hujurat with Lexical & Grammatical Notes",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-478",
+    "isbn": "",
+    "title": "A Glossary of words used in Durus al-Lughah al-Arabiyyah li ghair al-natiqina biha",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-479",
+    "isbn": "",
+    "title": "Nusūs Islāmiyyah",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-480",
+    "isbn": "",
+    "title": "Rahabar-e-Mualim",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-481",
+    "isbn": "",
+    "title": "Ahaadith Sahlah",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-482",
+    "isbn": "",
+    "title": "Surat Yusuf with lexical and grammatical annotation",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-483",
+    "isbn": "",
+    "title": "Arabic Alphabet - II",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-484",
+    "isbn": "",
+    "title": "Arabic Alphabet - I",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-485",
+    "isbn": "",
+    "title": "Arabic Reader for Children - II",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-486",
+    "isbn": "",
+    "title": "Arabic Reader for Children - I",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-487",
+    "isbn": "",
+    "title": "Kaleed Urdu - III",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-488",
+    "isbn": "",
+    "title": "Kaleed Urdu - II",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-489",
+    "isbn": "",
+    "title": "Kaleed Urdu - I",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-490",
+    "isbn": "",
+    "title": "Key to Exercises  (Part - III)",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-491",
+    "isbn": "",
+    "title": "Key to Exercises  (Part - II)",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-492",
+    "isbn": "",
+    "title": "Key to Exercises  (Part - I)",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-493",
+    "isbn": "",
+    "title": "Key to Durus al-lughat al-arabiyya li ghair al-natiqina biha (Part - III)",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-494",
+    "isbn": "",
+    "title": "Key to Durus al-lughat al-arabiyya li ghair al-natiqina biha (Part - II)",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-495",
+    "isbn": "",
+    "title": "Key to Durus al-lughat al-arabiyya li ghair al-natiqina biha (Part - I)",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-496",
+    "isbn": "",
+    "title": "AT THE WELL OF MADYAN",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-497",
+    "isbn": "",
+    "title": "Both these lights emanate from the same niche",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-498",
+    "isbn": "",
+    "title": "Selections from the Glorious Qur'an with Lexical and Grammatical Notes",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-499",
+    "isbn": "",
+    "title": "At-Tibyan Easy way to Quranic Reading",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-500",
+    "isbn": "",
+    "title": "Allah Tests Three Men",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-501",
+    "isbn": "",
+    "title": "Let us Know Hijab",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-502",
+    "isbn": "",
+    "title": "I am Proud to be a Muslim",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-503",
+    "isbn": "",
+    "title": "DA’WA - WHAT AND HOW",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-504",
+    "isbn": "",
+    "title": "Inviting to Islam",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-505",
+    "isbn": "",
+    "title": "Islam Beliefs and Teachings",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-506",
+    "isbn": "",
+    "title": "Who is Muhammad",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-507",
+    "isbn": "",
+    "title": "Gist of the Quran Vis-A-Vis Tarawih Prayers",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-508",
+    "isbn": "",
+    "title": "The Quranic Treasures",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-509",
+    "isbn": "",
+    "title": "Living as a Muslim in a Plural Society",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-510",
+    "isbn": "",
+    "title": "Gifts from Muhammad",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-511",
+    "isbn": "",
+    "title": "The Qur'an in Plain English",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-512",
+    "isbn": "",
+    "title": "Muhammad's Prophethood An Analytical View",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-513",
+    "isbn": "",
+    "title": "Way to the Qur'an",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-514",
+    "isbn": "",
+    "title": "Hajj Umra and Ziyara",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-515",
+    "isbn": "",
+    "title": "Muhammad The Prophet of Islam",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-516",
+    "isbn": "",
+    "title": "The Message of Islam",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-517",
+    "isbn": "",
+    "title": "Muslim Thaniyaar Sattam",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-518",
+    "isbn": "",
+    "title": "Annal Nabi (Sal) Azhagiya Varalaaru",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-519",
+    "isbn": "",
+    "title": "Thozhugai",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-520",
+    "isbn": "",
+    "title": "Kadhaikkul Kadhai",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-521",
+    "isbn": "",
+    "title": "Anbulla Akkaavukku",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-522",
+    "isbn": "",
+    "title": "Umar-ibnu-abdul-azeez",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-523",
+    "isbn": "",
+    "title": "Thaen Thuligal",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-524",
+    "isbn": "",
+    "title": "Muthu Charangal",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-525",
+    "isbn": "",
+    "title": "Annal Nabi (Sal)",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-526",
+    "isbn": "",
+    "title": "Iyakkam Vetri Pera...",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-527",
+    "isbn": "",
+    "title": "Thondu Sirakka...",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-528",
+    "isbn": "",
+    "title": "Porulaadhaara Pidiyil Manidhan",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-529",
+    "isbn": "",
+    "title": "MAALAI AMARVUGALILE",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-530",
+    "isbn": "",
+    "title": "VIDHI ORU VILAKKAM",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-531",
+    "isbn": "",
+    "title": "Islaathil Manitha Urimaigal",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-532",
+    "isbn": "",
+    "title": "Manidha Inathin Aakkamum Azhivum",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-533",
+    "isbn": "",
+    "title": "Varalatril Oru Thiruppam",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-534",
+    "isbn": "",
+    "title": "Islathin Arasial Kolkai",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-535",
+    "isbn": "",
+    "title": "Vaddi Oru Kodumai",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-536",
+    "isbn": "",
+    "title": "Irudhi Nabitthuvam",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-537",
+    "isbn": "",
+    "title": "Theendamai",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-538",
+    "isbn": "",
+    "title": "Paguttharivu Theerpalikkirathu",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-539",
+    "isbn": "",
+    "title": "ISLAMIA VAAZHVU",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-540",
+    "isbn": "",
+    "title": "Hajj Oru Vilakkam",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-541",
+    "isbn": "",
+    "title": "SAMUTHAAYA VAAZHVIN UYIR - ZAKATH",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-542",
+    "isbn": "",
+    "title": "Islathil Irai Vazhipaadu",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-543",
+    "isbn": "",
+    "title": "ISLAM VAGUKKUM VAAZHKKAI VAZHI",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-544",
+    "isbn": "",
+    "title": "Irai Nambikkai Vaazhvin Adippadai",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-545",
+    "isbn": "",
+    "title": "ARAPPOR",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-546",
+    "isbn": "",
+    "title": "Ozhukka Maaligai",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-547",
+    "isbn": "",
+    "title": "Puratchi Thoodu",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-548",
+    "isbn": "",
+    "title": "Irulum Oliyum",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-549",
+    "isbn": "",
+    "title": "Sathiya Paathayil Latchiya Payanam",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-550",
+    "isbn": "",
+    "title": "Marai Kaattum Iraithoothar",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-551",
+    "isbn": "",
+    "title": "Shaanthikku Vazhi",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  },
+  {
+    "item_code": "IFT-552",
+    "isbn": "",
+    "title": "MARANATHIRKUP PIN",
+    "author": "",
+    "mrp": 0,
+    "purchase_rate": 0,
+    "current_stock": 0
+  }
+]

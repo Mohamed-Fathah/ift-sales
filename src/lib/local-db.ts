@@ -329,6 +329,9 @@ class IFTLocalDB extends Dexie {
       purchaseReturns:      'id, return_no, return_date, purchase_invoice_id, status',
       purchaseReturnItems:  'id, return_id, material_id',
     })
+    this.version(3).stores({
+      profiles: 'id, email, role, created_at',
+    })
   }
 }
 
@@ -338,7 +341,14 @@ export const localDB = new IFTLocalDB()
 
 export async function seedIfEmpty() {
   const orgCount = await localDB.organizations.count()
-  if (orgCount > 0) return
+  const isFirstRun = orgCount === 0
+
+  if (!isFirstRun) {
+    // Still seed books if materials table is empty (e.g. after data reset)
+    const matCount = await localDB.materials.count()
+    if (matCount === 0) await seedBooks()
+    return
+  }
 
   const orgId = uuid()
   const profileId = uuid()
@@ -388,6 +398,58 @@ export async function seedIfEmpty() {
   // Initialize invoice counters
   for (const type of ['sales', 'purchase', 'transfer', 'return_sales', 'return_purchase', 'payment', 'expense']) {
     await localDB.invoiceCounters.add({ type, last_number: 0 })
+  }
+
+  // Seed books from IFT stock report
+  await seedBooks()
+}
+
+async function seedBooks() {
+  try {
+    const booksData = (await import('@/data/ift-books.json')).default as Array<{
+      item_code: string; isbn: string; title: string; author: string;
+      mrp: number; purchase_rate: number; current_stock: number;
+    }>
+
+    const defaultLoc = await localDB.locations.where('is_default').equals(1).first()
+    const locationId = defaultLoc?.id ?? (await localDB.locations.toCollection().first())?.id
+
+    for (const book of booksData) {
+      const existing = book.item_code
+        ? await localDB.materials.where('item_code').equals(book.item_code).first()
+        : undefined
+      if (existing) continue
+
+      const matId = uuid()
+      await localDB.materials.add({
+        id: matId,
+        item_code: book.item_code,
+        isbn: book.isbn,
+        tracking_id: '',
+        title: book.title,
+        author: book.author,
+        category_id: '',
+        publication: '',
+        language: '',
+        mrp: book.mrp,
+        purchase_rate: book.purchase_rate,
+        discount_pct: 0,
+        description: '',
+        is_active: true,
+        created_at: nowISO(),
+      })
+
+      if (locationId && book.current_stock > 0) {
+        await localDB.stock.add({
+          id: uuid(),
+          material_id: matId,
+          location_id: locationId,
+          qty_in_hand: book.current_stock,
+        })
+      }
+    }
+  } catch (e) {
+    console.warn('Book seed skipped:', e)
   }
 }
 

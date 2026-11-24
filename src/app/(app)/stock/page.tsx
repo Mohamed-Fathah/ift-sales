@@ -628,6 +628,10 @@ function TransferStockModal({
 
 export default function StockPage() {
   const user = useAuthStore(s => s.user)
+  const can = useAuthStore(s => s.can)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  const canManageStock = mounted && can('manage_stock')
 
   const [rows,         setRows]         = useState<StockRow[]>([])
   const [locations,    setLocations]    = useState<LocationOption[]>([])
@@ -719,27 +723,29 @@ export default function StockPage() {
     <div className="space-y-5">
 
       {/* Page heading */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-center justify-between flex-wrap gap-3 page-header-mobile">
         <div>
           <h2 className="page-title">Stock Management</h2>
           <p className="page-sub mt-0.5">Real-time stock levels across all locations</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 page-actions">
           <button
             onClick={handleExport}
             disabled={filtered.length === 0}
             className="btn-outline"
           >
             <Download size={15} />
-            Export Excel
+            Export
           </button>
-          <button
-            onClick={() => { setAddStockPreset(null); setShowAddStock(true) }}
-            className="btn-primary"
-          >
-            <Plus size={15} />
-            Add Stock
-          </button>
+          {canManageStock && (
+            <button
+              onClick={() => { setAddStockPreset(null); setShowAddStock(true) }}
+              className="btn-primary"
+            >
+              <Plus size={15} />
+              Add Stock
+            </button>
+          )}
         </div>
       </div>
 
@@ -907,17 +913,78 @@ export default function StockPage() {
               )}
             </div>
           ) : (
-            <table className="table-auto-ift">
+            <>
+            {/* Mobile card view */}
+            <div className="md:hidden divide-y divide-gray-100">
+              {filtered.map((row, idx) => (
+                <div key={`m-${row.material_id}-${row.location_id}-${idx}`} className="px-4 py-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm text-gray-900 leading-snug">{row.title}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {row.item_code}{row.isbn ? ` · ${row.isbn}` : ''}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span
+                        className="font-bold text-lg tabular-nums"
+                        style={{
+                          color: row.qty_available <= 0 ? '#DC2626'
+                            : row.qty_available <= 10 ? '#D97706'
+                            : 'var(--ift-navy)',
+                        }}
+                      >
+                        {row.qty_available}
+                      </span>
+                      <StatusBadge qty={row.qty_available} />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="text-xs text-gray-500">
+                      MRP ₹{row.mrp.toLocaleString('en-IN')} · {row.location}
+                    </div>
+                    {canManageStock && (
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => {
+                            setAddStockPreset({ id: row.material_id, title: row.title, item_code: row.item_code, location_id: row.location_id })
+                            setShowAddStock(true)
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 active:bg-emerald-50 active:border-emerald-400 active:text-emerald-600"
+                        >
+                          <Plus size={14} />
+                        </button>
+                        <button
+                          onClick={() => setUpdateRow(row)}
+                          className="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 active:bg-blue-50 active:border-[#1B2A6B] active:text-[#1B2A6B]"
+                        >
+                          <RefreshCw size={14} />
+                        </button>
+                        <button
+                          onClick={() => setTransferRow(row)}
+                          className="px-2.5 py-1.5 rounded-lg border border-gray-200 text-gray-500 active:bg-amber-50 active:border-[#C8922A] active:text-[#C8922A]"
+                        >
+                          <ArrowLeftRight size={14} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop table view */}
+            <table className="table-auto-ift hidden md:table">
               <thead>
                 <tr>
-                  <th className="mobile-hide">Item Code</th>
+                  <th>Item Code</th>
                   <th>Title</th>
-                  <th className="mobile-hide">Author</th>
-                  <th className="mobile-hide">Category</th>
-                  <th className="mobile-hide">Location</th>
+                  <th>Author</th>
+                  <th>Category</th>
+                  <th>Location</th>
                   <th className="text-right">Qty Available</th>
-                  <th className="text-right mobile-hide">MRP</th>
-                  <th className="text-right mobile-hide">Stock Value</th>
+                  <th className="text-right">MRP</th>
+                  <th className="text-right">Stock Value</th>
                   <th className="text-center">Status</th>
                   <th className="text-center">Actions</th>
                 </tr>
@@ -926,7 +993,7 @@ export default function StockPage() {
               <tbody>
                 {filtered.map((row, idx) => (
                   <tr key={`${row.material_id}-${row.location_id}-${idx}`}>
-                    <td className="mobile-hide">
+                    <td>
                       <span className="text-xs font-mono text-gray-500">
                         {row.item_code || '—'}
                       </span>
@@ -939,14 +1006,14 @@ export default function StockPage() {
                         <p className="text-[11px] text-gray-400 mt-0.5">{row.isbn}</p>
                       )}
                     </td>
-                    <td className="text-sm text-gray-600 mobile-hide">{row.author || '—'}</td>
-                    <td className="mobile-hide">
+                    <td className="text-sm text-gray-600">{row.author || '—'}</td>
+                    <td>
                       {row.category
                         ? <span className="badge-blue">{row.category}</span>
                         : <span className="text-gray-400 text-sm">—</span>
                       }
                     </td>
-                    <td className="text-sm text-gray-600 mobile-hide">{row.location}</td>
+                    <td className="text-sm text-gray-600">{row.location}</td>
                     <td className="text-right">
                       <span
                         className="font-bold text-base tabular-nums"
@@ -961,16 +1028,17 @@ export default function StockPage() {
                         {row.qty_available}
                       </span>
                     </td>
-                    <td className="text-right text-sm text-gray-600 tabular-nums mobile-hide">
+                    <td className="text-right text-sm text-gray-600 tabular-nums">
                       ₹{row.mrp.toLocaleString('en-IN')}
                     </td>
-                    <td className="text-right text-sm font-medium tabular-nums mobile-hide" style={{ color: 'var(--ift-navy)' }}>
+                    <td className="text-right text-sm font-medium tabular-nums" style={{ color: 'var(--ift-navy)' }}>
                       {fmtRupee(row.stock_value)}
                     </td>
                     <td className="text-center">
                       <StatusBadge qty={row.qty_available} />
                     </td>
                     <td>
+                      {canManageStock ? (
                       <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => {
@@ -997,12 +1065,15 @@ export default function StockPage() {
                           <ArrowLeftRight size={13} />
                         </button>
                       </div>
+                      ) : (
+                        <span className="text-xs text-gray-400">View only</span>
+                      )}
                     </td>
                   </tr>
                 ))}
               </tbody>
 
-              <tfoot className="border-t-2 border-gray-200 bg-gray-50 mobile-hide">
+              <tfoot className="border-t-2 border-gray-200 bg-gray-50">
                 <tr>
                   <td
                     colSpan={7}
@@ -1017,6 +1088,7 @@ export default function StockPage() {
                 </tr>
               </tfoot>
             </table>
+            </>
           )}
         </div>
       </div>

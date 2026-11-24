@@ -73,7 +73,7 @@ export default function UsersPage() {
   const load = async () => {
     setLoading(true)
     try {
-      const allProfiles = await localDB.profiles.orderBy('created_at').reverse().toArray()
+      const allProfiles = (await localDB.profiles.toArray()).sort((a, b) => (b.created_at ?? '').localeCompare(a.created_at ?? ''))
       setFirstRun(allProfiles.length === 0)
       setUsers(allProfiles.map(r => ({
         id:         r.id,
